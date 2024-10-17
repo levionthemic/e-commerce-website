@@ -6,13 +6,15 @@ import './Navbar.css';
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <div className="navbar-logo">
-        <Link to="/">E-Shop</Link>
+      <div className="navbar-container"> {/* Thêm div này */}
+        <div className="navbar-logo">
+          <Link to="/">E-Shop</Link>
+        </div>
+        <ul className="navbar-links">
+          <li><Link to="/">Trang Chủ</Link></li>
+          <li><Link to="/login">Đăng Nhập</Link></li>
+        </ul>
       </div>
-      <ul className="navbar-links">
-        <li><Link to="/">Trang Chủ</Link></li>
-        <li><Link to="/login">Đăng Nhập</Link></li>
-      </ul>
     </nav>
   );
 };

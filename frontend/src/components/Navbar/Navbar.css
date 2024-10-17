@@ -1,32 +1,44 @@
 /* src/components/Navbar/Navbar.css */
 .navbar {
-    background-color: #007bff;
+    background-color: #ee4d2d;
     color: white;
     padding: 1rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Căn giữa */
+    position: fixed; /* Cố định vị trí */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar-container {
+    max-width: 1140px; /* Chiều rộng tối đa */
+    width: 100%; /* Đảm bảo nó chiếm toàn bộ chiều rộng của navbar */
+    display: flex;
+    justify-content: space-between; /* Giữ khoảng cách giữa logo và các liên kết */
     align-items: center;
-  }
-  
-  .navbar-logo a {
+    margin: 0 auto; /* Căn giữa */
+}
+
+.navbar-logo a {
     font-size: 1.5rem;
     color: white;
     text-decoration: none;
-  }
-  
-  .navbar-links {
+}
+
+.navbar-links {
     list-style: none;
     display: flex;
     gap: 1rem;
-  }
-  
-  .navbar-links a {
+}
+
+.navbar-links a {
     color: white;
     text-decoration: none;
     font-size: 1rem;
-  }
-  
-  .navbar-links a:hover {
+}
+
+.navbar-links a:hover {
     text-decoration: underline;
-  }
-  
+}
