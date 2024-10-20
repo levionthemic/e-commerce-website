@@ -1,44 +1,84 @@
-/* src/components/Navbar/Navbar.css */
 .navbar {
-    background-color: #ee4d2d;
-    color: white;
-    padding: 1rem;
-    display: flex;
-    justify-content: center; /* Căn giữa */
-    position: fixed; /* Cố định vị trí */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+  background-color: #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1px 20px;
+  height: 80px;
+  position: relative;
+  width: auto;
 }
 
-.navbar-container {
-    max-width: 1140px; /* Chiều rộng tối đa */
-    width: 100%; /* Đảm bảo nó chiếm toàn bộ chiều rộng của navbar */
-    display: flex;
-    justify-content: space-between; /* Giữ khoảng cách giữa logo và các liên kết */
-    align-items: center;
-    margin: 0 auto; /* Căn giữa */
+.navbar-logo {
+  display: flex;
+  align-items: center;
 }
 
-.navbar-logo a {
-    font-size: 1.5rem;
-    color: white;
-    text-decoration: none;
+.navbar-logo img {
+  height: 40px;
+  border-radius: 10px;
+  margin: 0 20px;
 }
 
-.navbar-links {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
+.navbar-icons .icon {
+  margin-left: 20px;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
 }
 
-.navbar-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 1rem;
+.navbar-icons .icon:hover {
+  opacity: 0.8;
 }
 
-.navbar-links a:hover {
-    text-decoration: underline;
+.search-bar {
+  position: relative;
+  width: 100%;
+  max-width: 200px; /* Giới hạn độ rộng cho thanh tìm kiếm */
+  margin-top: 15px;
+  flex-grow: 1;
+  left: 200px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding-right: 50px; /* Tạo khoảng trống để nút bấm nằm trong thanh */
+}
+
+.search-bar .ant-btn {
+  position: absolute;
+  background-color: #444;
+  color: white;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-73%) translateX(240%);
+  border-radius: 20%;
+  padding: 0;
+  width: 33px;
+  height: 33px;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar .right {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  position: relative;
+  margin-right: 100px;
+  margin-left: 50px;
+}
+.navbar .cart {
+  margin: 0px 20px;
+}
+.navbar .login {
+  margin: 0px 20px;
+}
+.navbar .right svg {
+  width: 24px;
+  height: 24px;
 }
