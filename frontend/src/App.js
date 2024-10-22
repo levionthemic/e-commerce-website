@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { resetUser, updateUser } from './redux/slices/UserSlice';
 import Loading from './components/Loading/Loading';
 import DefaultComponent from './components/DefaultComponent/DefaultComponent';
+import "./App.css";
 
 const isJsonString = (str) => {
   try {
