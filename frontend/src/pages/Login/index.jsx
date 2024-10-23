@@ -4,22 +4,22 @@ import "./Login.scss";
 import imageLogin from "../../assets/images/image-login.jpg";
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);
-  }
+  };
 
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Xử lý đăng nhập ở đây (gọi API hoặc kiểm tra thông tin)
-    console.log('Username:', username);
-    console.log('Password:', password);
+    console.log("Username:", username);
+    console.log("Password:", password);
   };
 
   return (
@@ -32,15 +32,9 @@ function Login() {
           <form>
             <h2>Đăng nhập</h2>
             <div class="button-group">
-              <button class="btn active">
-                Người mua
-              </button>
-              <button class="btn">
-                Người bán
-              </button>
-              <button class="btn">
-                Admin
-              </button>
+              <button class="btn active">Người mua</button>
+              <button class="btn">Người bán</button>
+              <button class="btn">Admin</button>
             </div>
             <div className="form-group input-box">
               <label for="username">
@@ -68,7 +62,11 @@ function Login() {
                 required
               />
             </div>
-            <button type="submit" className="form-control button-login" onSubmit={handleSubmit}>
+            <button
+              type="submit"
+              className="form-control button-login"
+              onSubmit={handleSubmit}
+            >
               Đăng nhập
             </button>
             <div className="options">
