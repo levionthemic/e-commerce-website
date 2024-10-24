@@ -2,10 +2,23 @@
 import React, { useState } from "react";
 import "./Login.scss";
 import imageLogin from "../../assets/images/image-login.jpg";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  // Chuyển sang trang chủ nếu đã đăng nhập (có token trong cookie)
+  const arr = document.cookie.split("; ");
+  for (const item of arr) {
+    const [ key ] = item.split("=");
+    if (key === "token") {
+      navigate("/");
+    }
+  }
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);
@@ -15,11 +28,34 @@ function Login() {
     setPassword(e.target.value);
   };
 
+  const handleClick = () => {
+    console.log("OK");
+    navigate("/auth/signin");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Xử lý đăng nhập ở đây (gọi API hoặc kiểm tra thông tin)
-    console.log("Username:", username);
-    console.log("Password:", password);
+    const fetchApi = async () => {
+      const res = await axios.post(
+        "http://localhost:3001/api/v1/user/login",
+        {
+          username: username,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(res);
+      if (res.data.code === 200) {
+        // Gán token lên cookie
+        document.cookie = `token=${res.data.token}`
+      }
+    };
+    fetchApi();
   };
 
   return (
@@ -29,7 +65,7 @@ function Login() {
           <img src={imageLogin} alt="" />
         </div>
         <div className="login__form">
-          <form>
+          <form onSubmit={handleSubmit}>
             <h2>Đăng nhập</h2>
             <div class="button-group">
               <button class="btn active">Người mua</button>
@@ -65,15 +101,16 @@ function Login() {
             <button
               type="submit"
               className="form-control button-login"
-              onSubmit={handleSubmit}
             >
               Đăng nhập
             </button>
-            <div className="options">
-              <button className="btn">Đăng kí</button>
-              <button className="btn">Quên mật khẩu</button>
-            </div>
           </form>
+          <div className="options">
+            <button className="btn" onClick={handleClick}>
+              Đăng kí
+            </button>
+            <button className="btn">Quên mật khẩu</button>
+          </div>
         </div>
       </div>
     </div>

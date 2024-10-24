@@ -88,6 +88,12 @@
         width: 48%;
         background-color: #d9d9d9;
         opacity: 0.8;
+
+        &:hover {
+          background-color: black;
+          color: white;
+          opacity: 1;
+        }
       }
     }
   }
