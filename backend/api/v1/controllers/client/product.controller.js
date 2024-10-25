@@ -22,3 +22,31 @@ module.exports.index = async (req, res) => {
     data: data,
   });
 };
+
+// [GET] /api/v1/products/search
+module.exports.search = async (req, res) => {
+  const keyword = req.query.keyword;
+  if (keyword) {
+    const regex = new RegExp(keyword, "i");
+
+    const products = await Product.find({
+      url_key: regex,
+    })
+      .select(
+        "id name price original_price rating-average discount_rate thumbnail_url primary_category_path quantity_sold"
+      )
+      .limit(100);
+
+    res.json({
+      code: 200,
+      message: "Success",
+      data: products
+    });
+    return;
+  }
+
+  res.json({
+    code: 400,
+    message: "Error",
+  });
+};
