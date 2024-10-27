@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Home.css";
 import bannerimg from "../../assets/images/banner.jpg";
 import {
@@ -9,7 +9,33 @@ import {
 } from "@ant-design/icons";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let isLogin = false;
+    const arr = document.cookie.split("; ");
+    for (const item of arr) {
+      const [key] = item.split("=");
+      if (key === "token") {
+        isLogin = true;
+      }
+    }
+    if (!isLogin) navigate("/auth/login");
+  });
+
+  let isLogin = false;
+  const arr = document.cookie.split("; ");
+  for (const item of arr) {
+    const [key] = item.split("=");
+    if (key === "token") {
+      isLogin = true;
+    }
+  }
+  if (!isLogin) navigate("/auth/login");
+
   const products = [
     {
       id: 1,

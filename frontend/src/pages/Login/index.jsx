@@ -1,5 +1,5 @@
 // src/pages/Login/Login.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Login.scss";
 import imageLogin from "../../assets/images/image-login.jpg";
 import { useNavigate } from "react-router-dom";
@@ -12,13 +12,15 @@ function Login() {
   const navigate = useNavigate();
 
   // Chuyển sang trang chủ nếu đã đăng nhập (có token trong cookie)
-  const arr = document.cookie.split("; ");
-  for (const item of arr) {
-    const [ key ] = item.split("=");
-    if (key === "token") {
-      navigate("/");
+  useEffect(() => {
+    const arr = document.cookie.split("; ");
+    for (const item of arr) {
+      const [key] = item.split("=");
+      if (key === "token") {
+        navigate("/");
+      }
     }
-  }
+  });
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);
@@ -29,7 +31,6 @@ function Login() {
   };
 
   const handleClick = () => {
-    console.log("OK");
     navigate("/auth/signin");
   };
 
@@ -49,10 +50,10 @@ function Login() {
           },
         }
       );
-      console.log(res);
       if (res.data.code === 200) {
         // Gán token lên cookie
-        document.cookie = `token=${res.data.token}`
+        document.cookie = `token=${res.data.token}`;
+        navigate("/");
       }
     };
     fetchApi();
@@ -98,10 +99,7 @@ function Login() {
                 required
               />
             </div>
-            <button
-              type="submit"
-              className="form-control button-login"
-            >
+            <button type="submit" className="form-control button-login">
               Đăng nhập
             </button>
           </form>
