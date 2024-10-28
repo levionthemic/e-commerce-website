@@ -1,4 +1,3 @@
-// redux/slices/productSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const productSlice = createSlice({
@@ -26,16 +25,23 @@ const productSlice = createSlice({
     removeProduct: (state, action) => {
       state.items = state.items.filter(product => product.id !== action.payload.id);
     },
+    searchProduct: (state, action) => {
+      const searchTerm = action.payload.toLowerCase();
+      state.items = state.items.filter(product =>
+        product.name.toLowerCase().includes(searchTerm) // Adjust based on your product structure
+      );
+    },
   },
 });
 
-// Xuất action creators và reducer
+// Export action creators and reducer
 export const {
   fetchProductsStart,
   fetchProductsSuccess,
   fetchProductsFailure,
   addProduct,
   removeProduct,
+  searchProduct, // Add this line
 } = productSlice.actions;
 
 export default productSlice.reducer;

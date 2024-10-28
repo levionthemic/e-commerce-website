@@ -16,10 +16,10 @@ function Signin() {
   };
 
   const handleChangeUsername = (event) => {
-    setUsername(event.target.value);
   };
 
   const handleChangePassword = (event) => {
+    setUsername(event.target.value);
     setPassword(event.target.value);
   };
 

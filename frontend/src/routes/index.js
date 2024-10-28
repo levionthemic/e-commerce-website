@@ -1,5 +1,6 @@
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login";
+import SearchPage from "../pages/SearchPage/SearchPage";
 import Signin from "../pages/Signin";
 
 export const routes = [
@@ -17,5 +18,10 @@ export const routes = [
     path: "/auth/signin",
     page: Signin,
     isShowHeader: false,
+  },
+  {
+    path: "/search",
+    page: SearchPage,
+    isShowHeader: true,
   },
 ];

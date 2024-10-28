@@ -1,22 +1,20 @@
 // src/components/Navbar/Navbar.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"; // Không cần useNavigate ở đây
 import logo from "../../assets/images/shoppee.png";
 import "./Navbar.css";
-import { Button, Dropdown, Space } from "antd";
+import { Dropdown, Space } from "antd";
 import {
-  SearchOutlined,
   UserOutlined,
   ShoppingCartOutlined,
-  DownOutlined,
 } from "@ant-design/icons";
+import SearchComponent from "../SearchComponent/SearchComponent"; // Import SearchComponent
 
 const items = [
   {
     label: <a href="">Tài khoản của tôi</a>,
     key: "0",
   },
-
   {
     label: <a href="">Cài đặt</a>,
     key: "2",
@@ -24,7 +22,6 @@ const items = [
   {
     type: "divider",
   },
-
   {
     label: (
       <a href="/login" style={{ color: "red" }}>
@@ -38,20 +35,12 @@ const items = [
 const Navbar = () => {
   return (
     <nav className="navbar">
-      {/* Thêm div này */}
       <div className="navbar-logo">
         <Link to="/">
           <img src={logo} alt="E-shop" />
         </Link>
       </div>
-      <div className="search-bar">
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Tìm kiếm sản phẩm"
-        />
-        <Button type="primary" icon={<SearchOutlined />} />
-      </div>
+      <SearchComponent /> {/* Sử dụng SearchComponent ở đây */}
       <div className="right">
         <div className="cart">
           <Link to="/cart">
@@ -59,11 +48,8 @@ const Navbar = () => {
               style={{
                 color: "#ffffff",
                 fontSize: "24px",
-                stroke: "#ffffff",
-                fill: "#ffffff",
               }}
-            />{" "}
-            {/* Đổi viền và nền icon thành trắng */}
+            />
           </Link>
         </div>
         <div className="login">
@@ -79,8 +65,6 @@ const Navbar = () => {
                   style={{
                     color: "#ffffff",
                     fontSize: "24px",
-                    stroke: "#ffffff",
-                    fill: "#ffffff",
                   }}
                 />
               </Space>

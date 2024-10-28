@@ -5,7 +5,7 @@ import { routes } from './routes';
 import { jwtDecode } from 'jwt-decode'; // Cập nhật import
 import * as UserService from './services/UserService';
 import { useDispatch, useSelector } from 'react-redux';
-import { resetUser, updateUser } from './redux/slices/UserSlice';
+import { resetUser, updateUser } from './redux/slices/userSlice';
 import Loading from './components/Loading/Loading';
 import DefaultComponent from './components/DefaultComponent/DefaultComponent';
 import "./App.css";

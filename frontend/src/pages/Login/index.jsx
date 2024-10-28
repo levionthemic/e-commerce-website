@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import "./Login.scss";
 import imageLogin from "../../assets/images/image-login.jpg";
 import { useNavigate } from "react-router-dom";
+import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import axios from "axios";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isShowPassword, setIsShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -92,12 +94,25 @@ function Login() {
               </label>
               <input
                 id="password"
-                type="password"
+                type={isShowPassword ? "text" : "password"}
                 className="form-control"
                 placeholder="Mật khẩu"
                 onChange={handleChangePassword}
                 required
+                
               />
+              <span
+                onClick={() => setIsShowPassword(!isShowPassword)}
+                style={{
+                  position: "absolute",
+                  top: "55%",
+                  right: "20px",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                }}
+              >
+                {isShowPassword ? <EyeFilled /> : <EyeInvisibleFilled />}
+              </span>
             </div>
             <button type="submit" className="form-control button-login">
               Đăng nhập
