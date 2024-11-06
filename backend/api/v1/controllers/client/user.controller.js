@@ -1,14 +1,25 @@
 const User = require("../../models/user.model");
-const md5 = require("md5");
+const CryptoJS = require("crypto-js");
 
 // [POST] /api/v1/user/signin
 module.exports.signin = async (req, res) => {
   const { email, username, password } = req.body;
   console.log(email, username, password);
 
+  const isUserExist = await User.findOne({
+    $or: [{ email: email }, { username: username }],
+  });
+  if (isUserExist) {
+    res.json({
+      code: 400,
+      message: "Error: Email or Username Existed",
+    });
+    return;
+  }
+
   const user = new User({
     username: username,
-    password: md5(password),
+    password: CryptoJS.SHA256(password).toString(),
     email: email,
   });
   await user.save();
@@ -23,8 +34,6 @@ module.exports.signin = async (req, res) => {
 module.exports.login = async (req, res) => {
   const { username, password } = req.body;
 
-  console.log(username, password);
-
   const user = await User.findOne({
     username: username,
   });
@@ -37,7 +46,7 @@ module.exports.login = async (req, res) => {
     return;
   }
 
-  if (md5(password) !== user.password) {
+  if (CryptoJS.SHA256(password).toString() !== user.password) {
     res.json({
       code: 400,
       message: "Wrong Password",
