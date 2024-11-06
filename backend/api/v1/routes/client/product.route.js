@@ -8,4 +8,6 @@ routes.get("/", controller.index);
 
 routes.get("/search", controller.search);
 
+routes.get("/detail/:productId", controller.detail);
+
 module.exports = routes;
