@@ -6,4 +6,10 @@ const routes = express.Router();
 
 routes.get("/", controller.index);
 
+routes.post("/add", controller.add);
+
+routes.delete("/delete", controller.delete);
+
+routes.patch("/update", controller.update);
+
 module.exports = routes;
