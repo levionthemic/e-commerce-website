@@ -7,11 +7,8 @@ const { requireCart } = require("../../middlewares/client/cart.middleware");
 module.exports = (app) => {
   const version = "/api/v1";
 
-  app.use(requireAuth);
-  app.use(requireCart);
-
-  app.use(version + "/products", productRoutes);
+  app.use(version + "/products", requireAuth, requireCart, productRoutes);
   app.use(version + "/user", userRoutes);
-  app.use(version + "/cart", cartRoutes);
+  app.use(version + "/cart", requireAuth, requireCart, cartRoutes);
 
 }
