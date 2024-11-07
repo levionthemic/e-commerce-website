@@ -1,9 +1,10 @@
 const Product = require("../../models/product.model");
 const Cart = require("../../models/cart.model");
+const { cookies } = require("../../../../helpers/cookies");
 
 // [GET] /cart
 module.exports.index = async (req, res) => {
-  const cartId = req.cookies.cartId;
+  const cartId = cookies(req).cartId;
 
   const cart = await Cart.findOne({ _id: cartId });
 
@@ -22,12 +23,17 @@ module.exports.index = async (req, res) => {
           message: error,
         })
       );
+  } else {
+    res.json({
+      code: 400,
+      message: "Error: Cart Empty",
+    });
   }
 };
 
 // [POST] /cart/add
 module.exports.add = async (req, res) => {
-  const cartId = req.cookies.cartId;
+  const cartId = cookies(req).cartId;
   const productId = req.body.productId;
   const quantity = parseInt(req.body.quantity);
 
@@ -36,7 +42,7 @@ module.exports.add = async (req, res) => {
   });
 
   const existProductInCart = cart.products.find(
-    (item) => item.product_id == productId
+    (item) => item.productId === productId
   );
 
   if (existProductInCart) {
@@ -44,7 +50,7 @@ module.exports.add = async (req, res) => {
     await Cart.updateOne(
       {
         _id: cartId,
-        "products.product_id": productId,
+        "products.productId": productId,
       },
       {
         $set: {
@@ -54,7 +60,7 @@ module.exports.add = async (req, res) => {
     );
   } else {
     const objectCart = {
-      product_id: productId,
+      productId: productId,
       quantity: quantity,
     };
     await Cart.updateOne(
@@ -64,33 +70,52 @@ module.exports.add = async (req, res) => {
       }
     );
   }
+  res.json({
+    code: 200,
+    message: "Success",
+  });
 };
 
 // [DELETE] /cart/delete
 module.exports.delete = async (req, res) => {
-  const cartId = req.cookies.cartId;
+  const cartId = cookies(req).cartId;
   const productId = req.body.productId;
+
+  const cart = await Cart.findOne({
+    _id: cartId,
+  });
+  if (!cart.products.length) {
+    res.json({
+      code: 400,
+      message: "Error: Products Array Empty",
+    });
+    return;
+  }
 
   await Cart.updateOne(
     {
       _id: cartId,
     },
     {
-      $pull: { products: { product_id: productId } },
+      $pull: { products: { productId: productId } },
     }
   );
+  res.json({
+    code: 200,
+    message: "Success",
+  });
 };
 
-// [PATCH] /cart/update/:productId/:quantity
+// [PATCH] /cart/update
 module.exports.update = async (req, res) => {
-  const cartId = req.cookies.cartId;
-  const productId = req.params.productId;
-  const quantity = req.params.quantity;
+  const cartId = cookies(req).cartId;
+  const productId = req.body.productId;
+  const quantity = req.body.quantity;
 
   await Cart.updateOne(
     {
       _id: cartId,
-      "products.product_id": productId,
+      "products.productId": productId,
     },
     {
       $set: {
@@ -98,4 +123,9 @@ module.exports.update = async (req, res) => {
       },
     }
   );
+
+  res.json({
+    code: 200,
+    message: "Success",
+  });
 };
