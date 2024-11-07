@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const slug = require("mongoose-slug-updater");
 mongoose.plugin(slug);
 
-const productDetailSchema = mongoose.Schema({
+const productDetailSchema = new mongoose.Schema({
   id: Number,
   name: String,
   slug: {

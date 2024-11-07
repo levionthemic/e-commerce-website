@@ -1,11 +1,10 @@
 const User = require("../../models/user.model");
 const CryptoJS = require("crypto-js");
 
-// [POST] /api/v1/user/signin
-module.exports.signin = async (req, res) => {
+// [POST] /api/v1/user/signup
+module.exports.signup = async (req, res) => {
   const { email, username, password } = req.body;
-  console.log(email, username, password);
-
+  
   const isUserExist = await User.findOne({
     $or: [{ email: email }, { username: username }],
   });

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { generateTokenString } = require("../../../helpers/generate");
 
-const userSchema = mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     username: String,
     password: String,
