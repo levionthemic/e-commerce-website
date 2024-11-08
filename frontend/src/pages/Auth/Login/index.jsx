@@ -39,29 +39,36 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Xử lý đăng nhập ở đây (gọi API hoặc kiểm tra thông tin)     
-    axios.post(
-      "http://localhost:3001/api/v1/user/login",
-      {
-        username: username,
-        password: password,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
+    const role = e.target[0].checked
+      ? "buyer"
+      : e.target[1].checked
+      ? "seller"
+      : "admin";
+    axios
+      .post(
+        "http://localhost:3001/api/v1/user/login",
+        {
+          username: username,
+          password: password,
+          role: role,
         },
-      }
-    ).then(res => {
-      document.cookie = `token=${res.data.token}`;
-      navigate("/");
-    })
-    .catch(error => {
-      Swal.fire({
-        icon: "error",
-        title: "Đăng nhập thất bại!",
-        text: error.response.data.message,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        document.cookie = `token=${res.data.token}`;
+        navigate("/");
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Đăng nhập thất bại!",
+          text: error.response.data.message,
+        });
       });
-    })
   };
 
   return (
@@ -73,10 +80,7 @@ function Login() {
         <div className="login__form">
           <form onSubmit={handleSubmit}>
             <h2>Đăng nhập</h2>
-            <div
-              className="btn-group"
-              role="group"
-            >
+            <div className="btn-group" role="group">
               <div className="options">
                 <input
                   type="radio"
@@ -141,7 +145,6 @@ function Login() {
                 placeholder="Mật khẩu"
                 onChange={handleChangePassword}
                 required
-                
               />
               <span
                 onClick={() => setIsShowPassword(!isShowPassword)}
@@ -164,7 +167,14 @@ function Login() {
             <button className="btn" onClick={handleClick}>
               Đăng kí
             </button>
-            <button className="btn">Quên mật khẩu</button>
+            <button
+              className="btn"
+              onClick={() => {
+                navigate("/auth/forgot-password");
+              }}
+            >
+              Quên mật khẩu
+            </button>
           </div>
         </div>
       </div>
