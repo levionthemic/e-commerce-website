@@ -1,7 +1,7 @@
 import Home from "../pages/Home/Home";
-import Login from "../pages/Login";
+import Login from "../pages/Auth/Login";
+import Signup from "../pages/Auth/Signup";
 import SearchPage from "../pages/SearchPage/SearchPage";
-import Signin from "../pages/Signin";
 
 export const routes = [
   {
@@ -15,8 +15,8 @@ export const routes = [
     isShowHeader: false,
   },
   {
-    path: "/auth/signin",
-    page: Signin,
+    path: "/auth/signup",
+    page: Signup,
     isShowHeader: false,
   },
   {

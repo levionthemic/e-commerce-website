@@ -3,14 +3,13 @@ const CryptoJS = require("crypto-js");
 
 // [POST] /api/v1/user/signup
 module.exports.signup = async (req, res) => {
-  const { email, username, password } = req.body;
+  const { email, username, password, role } = req.body;
   
   const isUserExist = await User.findOne({
     $or: [{ email: email }, { username: username }],
   });
   if (isUserExist) {
-    res.json({
-      code: 400,
+    res.status(400).json({
       message: "Error: Email or Username Existed",
     });
     return;
@@ -20,11 +19,11 @@ module.exports.signup = async (req, res) => {
     username: username,
     password: CryptoJS.SHA256(password).toString(),
     email: email,
+    role: role
   });
   await user.save();
 
   res.json({
-    code: 200,
     message: "Success",
   });
 };
@@ -38,23 +37,20 @@ module.exports.login = async (req, res) => {
   });
 
   if (!user) {
-    res.json({
-      code: 400,
+    res.status(400).json({
       message: "Not Exist Username",
     });
     return;
   }
 
   if (CryptoJS.SHA256(password).toString() !== user.password) {
-    res.json({
-      code: 400,
+    res.status(400).json({
       message: "Wrong Password",
     });
     return;
   }
 
-  res.json({
-    code: 200,
+  res.status(200).json({
     message: "Login Success",
     token: user.token,
   });

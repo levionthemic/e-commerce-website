@@ -1,10 +1,11 @@
 // src/pages/Login/Login.jsx
 import React, { useEffect, useState } from "react";
 import "./Login.scss";
-import imageLogin from "../../assets/images/image-login.jpg";
+import imageLogin from "../../../assets/images/image-login.jpg";
 import { useNavigate } from "react-router-dom";
 import { EyeFilled, EyeInvisibleFilled } from "@ant-design/icons";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -33,32 +34,34 @@ function Login() {
   };
 
   const handleClick = () => {
-    navigate("/auth/signin");
+    navigate("/auth/signup");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Xử lý đăng nhập ở đây (gọi API hoặc kiểm tra thông tin)
-    const fetchApi = async () => {
-      const res = await axios.post(
-        "http://localhost:3001/api/v1/user/login",
-        {
-          username: username,
-          password: password,
+    // Xử lý đăng nhập ở đây (gọi API hoặc kiểm tra thông tin)     
+    axios.post(
+      "http://localhost:3001/api/v1/user/login",
+      {
+        username: username,
+        password: password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.data.code === 200) {
-        // Gán token lên cookie
-        document.cookie = `token=${res.data.token}`;
-        navigate("/");
       }
-    };
-    fetchApi();
+    ).then(res => {
+      document.cookie = `token=${res.data.token}`;
+      navigate("/");
+    })
+    .catch(error => {
+      Swal.fire({
+        icon: "error",
+        title: "Đăng nhập thất bại!",
+        text: error.response.data.message,
+      });
+    })
   };
 
   return (
@@ -70,10 +73,49 @@ function Login() {
         <div className="login__form">
           <form onSubmit={handleSubmit}>
             <h2>Đăng nhập</h2>
-            <div class="button-group">
-              <button class="btn active">Người mua</button>
-              <button class="btn">Người bán</button>
-              <button class="btn">Admin</button>
+            <div
+              className="btn-group"
+              role="group"
+            >
+              <div className="options">
+                <input
+                  type="radio"
+                  className="btn-check"
+                  name="role"
+                  id="buyer"
+                  autoComplete="off"
+                  required
+                />
+                <label className="btn btn-outline-primary" htmlFor="buyer">
+                  Người mua
+                </label>
+              </div>
+              <div className="options">
+                <input
+                  type="radio"
+                  className="btn-check"
+                  name="role"
+                  id="seller"
+                  autoComplete="off"
+                  required
+                />
+                <label className="btn btn-outline-primary" htmlFor="seller">
+                  Người bán
+                </label>
+              </div>
+              <div className="options">
+                <input
+                  type="radio"
+                  className="btn-check"
+                  name="role"
+                  id="admin"
+                  autoComplete="off"
+                  required
+                />
+                <label className="btn btn-outline-primary" htmlFor="admin">
+                  Admin
+                </label>
+              </div>
             </div>
             <div className="form-group input-box">
               <label for="username">

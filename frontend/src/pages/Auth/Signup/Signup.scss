@@ -2,7 +2,7 @@
   height: 100vh;
 }
 
-.login {
+.signin {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -28,34 +28,46 @@
     background-color: white;
     padding: 50px;
     border-radius: 10px;
-    
+
     h2 {
       text-align: center;
       margin-bottom: 20px;
     }
 
-    .button-group {
+    .btn-group {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-evenly;
       gap: 10px;
 
-      button {
-        font-size: 0.85rem;
-        border: 2px solid black;
-        width: 33%;
-        border-radius: 10px;
-        font-weight: 500;
-
-        &:hover {
-          background-color: black;
-          color: white;
-        }
-      };
-
-      .active {
+      .btn-check:checked+.btn {
         background-color: black;
         color: white;
+      }
+
+      .options {
+        
+        border: 1px solid black;
+        width: 33%;
+        border-radius: 10px !important;
+        margin: 0;
+        overflow: hidden;
+
+        label {
+          padding: 6px 12px;
+          width: 100%;
+          border: none;
+          color: black;
+          font-weight: 500;
+          font-size: 0.85rem;
+  
+          &:hover {
+            background-color: black;
+            color: white;
+            border: 1px solid black;
+            margin: 0;
+          }
+        }
       }
     }
 
@@ -71,21 +83,28 @@
       background-color: #ddd;
       color: black;
       font-weight: bold;
+
+      &:hover {
+        background: black;
+        color: white;
+      }
     }
 
     .options {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       margin-top: 20px;
 
       button {
         border: 1px solid rgba(0, 0, 0, 0.2);
         font-style: italic;
         font-size: 0.8rem;
-        color: black;
+        color: rgba(0, 0, 0, 0.6);
         font-weight: 500;
-        width: 48%;
+        width: fit-content;
+        padding-left: 20px;
+        padding-right: 20px;
         background-color: #d9d9d9;
         opacity: 0.8;
 

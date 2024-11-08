@@ -1,25 +1,27 @@
 // src/pages/Login/Login.jsx
-import React, { useState } from "react";
-import "./Signin.scss";
-import imageLogin from "../../assets/images/image-login.jpg";
+import React, { memo, useState } from "react";
+import "./Signup.scss";
+import imageLogin from "../../../assets/images/image-login.jpg";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
-function Signin() {
+function Signup() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleChangeEmail = (event) => {
     setEmail(event.target.value);
   };
 
   const handleChangeUsername = (event) => {
+    setUsername(event.target.value);
   };
 
   const handleChangePassword = (event) => {
-    setUsername(event.target.value);
     setPassword(event.target.value);
   };
 
@@ -27,26 +29,38 @@ function Signin() {
     setConfirmPassword(event.target.value);
   };
 
-  // const [username, setUsername] = useState('');
-  // const [password, setPassword] = useState('');
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const role = e.target[0].checked ? "buyer" : "seller";
 
-    const res = await axios.post(
-      "http://localhost:3001/api/v1/user/signin",
-      {
-        email: email,
-        username: username,
-        password: password,
-      },
-      {
-        header: {
-          "Content-Type": "application/json",
+    try {
+      const res = await axios.post(
+        "http://localhost:3001/api/v1/user/signup",
+        {
+          email: email,
+          username: username,
+          password: password,
+          role: role
         },
-      }
-    );
-    console.log(res);
+        {
+          header: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(res);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Đăng ký thất bại!",
+        text: "Username hoặc email đã tồn tại!",
+        footer: ""
+      });
+    }
+  };
+
+  const handleClick = () => {
+    navigate("/auth/login");
   };
 
   return (
@@ -58,9 +72,36 @@ function Signin() {
         <div className="signin__form">
           <form onSubmit={handleSubmit}>
             <h2>Đăng kí</h2>
-            <div class="button-group">
-              <button class="btn">Người mua</button>
-              <button class="btn">Người bán</button>
+            <div
+              className="btn-group"
+              role="group"
+            >
+              <div className="options">
+                <input
+                  type="radio"
+                  className="btn-check"
+                  name="role"
+                  id="buyer"
+                  autoComplete="off"
+                  required
+                />
+                <label className="btn btn-outline-primary" htmlFor="buyer">
+                  Người mua
+                </label>
+              </div>
+              <div className="options">
+                <input
+                  type="radio"
+                  className="btn-check"
+                  name="role"
+                  id="seller"
+                  autoComplete="off"
+                  required
+                />
+                <label className="btn btn-outline-primary" htmlFor="seller">
+                  Người bán
+                </label>
+              </div>
             </div>
             <div className="form-group input-box">
               <label htmlFor="email">
@@ -74,6 +115,7 @@ function Signin() {
                 required
                 onChange={handleChangeEmail}
                 value={email}
+                autoComplete="off"
               />
             </div>
             <div className="form-group input-box">
@@ -88,6 +130,7 @@ function Signin() {
                 required
                 onChange={handleChangeUsername}
                 value={username}
+                autoComplete="off"
               />
             </div>
             <div className="form-group input-box">
@@ -101,6 +144,7 @@ function Signin() {
                 required
                 onChange={handleChangePassword}
                 value={password}
+                autoComplete="off"
               />
             </div>
             <div className="form-group input-box">
@@ -114,16 +158,15 @@ function Signin() {
                 required
                 onChange={handleChangeConfirmPassword}
                 value={confirmPassword}
+                autoComplete="off"
               />
             </div>
             <button type="submit" className="form-control button-login">
               Hoàn tất
             </button>
           </form>
-          <div className="options">
-            <Link to={"http://localhost:3000/auth/login"}>
-              <button className="btn">Đăng nhập</button>
-            </Link>
+          <div className="options" onClick={handleClick}>
+            <button className="btn">Đăng nhập</button>
           </div>
         </div>
       </div>
@@ -131,4 +174,4 @@ function Signin() {
   );
 }
 
-export default Signin;
+export default memo(Signup);
