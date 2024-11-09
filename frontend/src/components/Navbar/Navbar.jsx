@@ -4,10 +4,7 @@ import { Link } from "react-router-dom"; // Không cần useNavigate ở đây
 import logo from "../../assets/images/shoppee.png";
 import "./Navbar.css";
 import { Dropdown, Space } from "antd";
-import {
-  UserOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 const items = [
   {
@@ -23,7 +20,13 @@ const items = [
   },
   {
     label: (
-      <a href="/auth/login" style={{ color: "red" }}>
+      <a
+        href="/"
+        style={{ color: "red" }}
+        onClick={() => {
+          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        }}
+      >
         Đăng xuất
       </a>
     ),

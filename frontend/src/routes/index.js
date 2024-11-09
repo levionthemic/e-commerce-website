@@ -2,6 +2,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login";
 import SearchPage from "../pages/SearchPage/SearchPage";
 import Signin from "../pages/Signin";
+import UserInfo from "../pages/User/UserInfo";
 
 export const routes = [
   {
@@ -22,6 +23,11 @@ export const routes = [
   {
     path: "/search",
     page: SearchPage,
+    isShowHeader: true,
+  },
+  {
+    path: "/user/info",
+    page: UserInfo,
     isShowHeader: true,
   },
 ];
