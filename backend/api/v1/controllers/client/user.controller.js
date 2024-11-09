@@ -1,4 +1,5 @@
 const User = require("../../models/user.model");
+const Nation = require("../../models/nation.model");
 const CryptoJS = require("crypto-js");
 
 // [POST] /api/v1/user/signup
@@ -59,3 +60,12 @@ module.exports.login = async (req, res) => {
     token: user.token,
   });
 };
+
+// [GET] /api/v1/user/nations 
+module.exports.getNations = async (req, res) => {
+  const nations = await Nation.find({});
+  res.status(200).json({
+    message: "Success",
+    data: nations
+  })
+}

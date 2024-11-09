@@ -3,16 +3,17 @@ import { DatePicker, Radio } from "antd";
 import { LockOutlined, MailOutlined, PhoneOutlined, RestOutlined } from "@ant-design/icons";
 import axios from "axios";
 import "./UserInfo.scss";
+import avatar from "../../../assets/images/avatar.svg";
 
 function UserInfo() {
   const [sex, setSex] = useState("male");
   const [nations, setNations] = useState([]);
 
-  // useEffect(() => {
-  //   axios.get("http://localhost:3001/api/v1/nations").then((res) => {
-  //     setNations(res.data.data);
-  //   });
-  // });
+  useEffect(() => {
+    axios.get("http://localhost:3001/api/v1/user/nations").then((res) => {
+      setNations(res.data.data);
+    });
+  });
 
   return (
     <>
@@ -30,7 +31,7 @@ function UserInfo() {
                 <form action="">
                   <div className="form-section-1">
                     <div className="inner-avatar">
-                      <img src="" alt="" />
+                      <img src={avatar} alt="" />
                     </div>
                     <div className="inner-info">
                       <div className="form-group">
