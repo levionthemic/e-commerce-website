@@ -4,6 +4,7 @@ import { LockOutlined, MailOutlined, PhoneOutlined, RestOutlined } from "@ant-de
 import axios from "axios";
 import "./UserInfo.scss";
 import avatar from "../../../assets/images/avatar.svg";
+import icon from "../../../assets/images/icon.svg";
 
 function UserInfo() {
   const [sex, setSex] = useState("male");
@@ -18,20 +19,21 @@ function UserInfo() {
   return (
     <>
       <div className="container">
-        <div className="row">
+        <div className="row mt-5 mb-2">
           <div className="col-12">
-            <h2>Thông tin tài khoản</h2>
+            <h3>Thông tin tài khoản</h3>
           </div>
         </div>
         <div className="row">
           <div className="col-12">
             <div className="inner-wrap">
               <div className="inner-left-content">
-                <h5>Thông tin cá nhân</h5>
+                <h5 className="mb-4">Thông tin cá nhân</h5>
                 <form action="">
                   <div className="form-section-1">
                     <div className="inner-avatar">
                       <img src={avatar} alt="" />
+                      <img src={icon} alt="" />
                     </div>
                     <div className="inner-info">
                       <div className="form-group">
@@ -48,7 +50,7 @@ function UserInfo() {
                         <input
                           type="text"
                           className="form-control"
-                          value={"Thêm biệt danh"}
+                          placeholder={"Thêm biệt danh"}
                           id="nickname"
                         />
                       </div>
@@ -75,7 +77,7 @@ function UserInfo() {
                     </div>
                     <div className="form-group">
                       <label htmlFor="nationality">Quốc tịch</label>
-                      <select class="form-select" id="nationality">
+                      <select className="form-select" id="nationality">
                         <option selected disabled>
                           -- Chọn quốc tịch --
                         </option>
@@ -114,7 +116,7 @@ function UserInfo() {
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button">Cập nhật</button>
+                      <button type="button" className="btn">Cập nhật</button>
                     </div>
                   </div>
                   <div className="inner-item">
@@ -128,7 +130,7 @@ function UserInfo() {
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button">Cập nhật</button>
+                      <button type="button" className="btn">Cập nhật</button>
                     </div>
                   </div>
                 </div>
@@ -145,7 +147,7 @@ function UserInfo() {
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button">Cập nhật</button>
+                      <button type="button" className="btn">Cập nhật</button>
                     </div>
                   </div>
                   <div className="inner-item">
@@ -158,7 +160,7 @@ function UserInfo() {
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button">Cập nhật</button>
+                      <button type="button" className="btn">Cập nhật</button>
                     </div>
                   </div>
                 </div>
