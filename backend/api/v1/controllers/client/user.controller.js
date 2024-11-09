@@ -3,6 +3,7 @@ const OTP = require("../../models/otp.model");
 const CryptoJS = require("crypto-js");
 const { generateOTP } = require("../../../../helpers/generate");
 const { sendMail } = require("../../../../helpers/sendMail");
+const { cookies } = require("../../../../helpers/cookies");
 
 // [POST] /api/v1/user/signup
 module.exports.signup = async (req, res) => {
@@ -120,4 +121,25 @@ module.exports.otpCheck = async (req, res) => {
     message: "OTP hợp lệ",
     token: user.token,
   });
+};
+
+// [POST] /api/v1/user/reset-password
+module.exports.resetPassword = async (req, res) => {
+  const { token, password } = req.body;
+
+  try {
+    await User.updateOne(
+      {
+        token: token,
+      },
+      { password: CryptoJS.SHA256(password).toString() }
+    );
+    res.status(200).json({
+      message: "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại để tiếp tục.",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Đặt lại mật khẩu không thành công!",
+    });
+  }
 };
