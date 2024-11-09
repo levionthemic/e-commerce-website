@@ -8,7 +8,7 @@ import {
   UserOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
-import SearchComponent from "../SearchComponent/SearchComponent"; // Import SearchComponent
+
 
 const items = [
   {
@@ -40,7 +40,7 @@ const Navbar = () => {
           <img src={logo} alt="E-shop" />
         </Link>
       </div>
-      <SearchComponent /> {/* Sử dụng SearchComponent ở đây */}
+  
       <div className="right">
         <div className="cart">
           <Link to="/cart">
