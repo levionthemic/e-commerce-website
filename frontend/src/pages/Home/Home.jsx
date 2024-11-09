@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import "./Home.css";
-import bannerimg from "../../assets/images/banner.jpg";
 import {
   TruckFilled,
   ReloadOutlined,
@@ -9,32 +8,33 @@ import {
 } from "@ant-design/icons";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    let isLogin = false;
-    const arr = document.cookie.split("; ");
-    for (const item of arr) {
-      const [key] = item.split("=");
-      if (key === "token") {
-        isLogin = true;
-      }
-    }
-    if (!isLogin) navigate("/auth/login");
-  });
+  // useEffect(() => {
+  //   let isLogin = false;
+  //   const arr = document.cookie.split("; ");
+  //   for (const item of arr) {
+  //     const [key] = item.split("=");
+  //     if (key === "token") {
+  //       isLogin = true;
+  //     }
+  //   }
+  //   if (!isLogin) navigate("/auth/login");
+  // });
 
-  let isLogin = false;
-  const arr = document.cookie.split("; ");
-  for (const item of arr) {
-    const [key] = item.split("=");
-    if (key === "token") {
-      isLogin = true;
-    }
-  }
-  if (!isLogin) navigate("/auth/login");
+  // let isLogin = false;
+  // const arr = document.cookie.split("; ");
+  // for (const item of arr) {
+  //   const [key] = item.split("=");
+  //   if (key === "token") {
+  //     isLogin = true;
+  //   }
+  // }
+  // if (!isLogin) navigate("/auth/login");
 
   const products = [
     {
@@ -97,18 +97,6 @@ const Home = () => {
       price: "300.000 VNĐ",
       description: "Mô tả sản phẩm 3",
     },
-    {
-      id: 6,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 6,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
   ];
 
   const responsive = {
@@ -133,7 +121,7 @@ const Home = () => {
   return (
     <div className="home-container">
       <header className="home-header">
-        <img src={bannerimg} alt="banner" />
+        <div></div>
       </header>
 
       <section className="home-banner"></section>
@@ -160,8 +148,8 @@ const Home = () => {
 
         <section className="home-products">
           <h2>Sản phẩm bán chạy</h2>
-          <div className="best-selling products">
-            <Carousel responsive={responsive} centerMode={true}>
+          <section className="best-selling-products">
+            <Carousel responsive={responsive}>
               <div className="card">
                 <img
                   className="product image"
@@ -172,7 +160,7 @@ const Home = () => {
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
 
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
 
               <div className="card">
@@ -184,7 +172,7 @@ const Home = () => {
                 />
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
               <div className="card">
                 <img
@@ -195,7 +183,7 @@ const Home = () => {
                 />
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
               <div className="card">
                 <img
@@ -206,7 +194,7 @@ const Home = () => {
                 />
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
               <div className="card">
                 <img
@@ -217,7 +205,7 @@ const Home = () => {
                 />
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
               <div className="card">
                 <img
@@ -228,7 +216,7 @@ const Home = () => {
                 />
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
               <div className="card">
                 <img
@@ -239,7 +227,7 @@ const Home = () => {
                 />
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
               <div className="card">
                 <img
@@ -250,14 +238,12 @@ const Home = () => {
                 />
                 <h3>Giay Nike</h3>
                 <p className="price">1 000 000 đ</p>
-                <p>còn lại: 123</p>
+                <p className="number">còn lại: 123</p>
               </div>
             </Carousel>
-            ;
-          </div>
+          </section>
 
           <h2>Sản phẩm đề xuất</h2>
-          <div className="recommended products"></div>
           <div className="product-grid-container">
             {products.map((product) => (
               <div key={product.id} className="product-card">
@@ -268,11 +254,13 @@ const Home = () => {
                 />
                 <h3>{product.name}</h3>
                 <p className="price">{product.price}</p>
-                <p>Còn lại: {product.stock}</p>
+                <p className="number">Còn lại: {product.stock}</p>
               </div>
             ))}
           </div>
-          <button className="xemthem">Xem thêm</button>
+          <Button type="primary" className="xemthem">
+            Xem thêm
+          </Button>
         </section>
       </body>
       <footer className="home-footer"></footer>

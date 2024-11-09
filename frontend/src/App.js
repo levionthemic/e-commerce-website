@@ -1,14 +1,18 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { Fragment, useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import Home from './pages/Home/Home';
-import { routes } from './routes';
-import { jwtDecode } from 'jwt-decode'; // Cập nhật import
-import * as UserService from './services/UserService';
-import { useDispatch, useSelector } from 'react-redux';
-import { resetUser, updateUser } from './redux/slices/userSlice';
-import Loading from './components/Loading/Loading';
-import DefaultComponent from './components/DefaultComponent/DefaultComponent';
+import { routes } from "./routes";
+import { jwtDecode } from "jwt-decode"; // Cập nhật import
+import * as UserService from "./services/UserService";
+import { useDispatch, useSelector } from "react-redux";
+import { resetUser, updateUser } from "./redux/slices/userSlice";
+import Loading from "./components/Loading/Loading";
+import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import "./App.css";
+import CartPage from "./pages/CartPage/CartPage";
+
+// Trong Routes
+<Route path="/gio-hang" element={<CartPage />} />;
 
 const isJsonString = (str) => {
   try {
@@ -34,7 +38,8 @@ function App() {
   }, []);
 
   const handleDecoded = () => {
-    let storageData = user?.access_token || localStorage.getItem('access_token');
+    let storageData =
+      user?.access_token || localStorage.getItem("access_token");
     let decoded = {};
     if (storageData && isJsonString(storageData) && !user?.access_token) {
       storageData = JSON.parse(storageData);
@@ -47,14 +52,14 @@ function App() {
     async (config) => {
       const currentTime = new Date();
       const { decoded } = handleDecoded();
-      let storageRefreshToken = localStorage.getItem('refresh_token');
+      let storageRefreshToken = localStorage.getItem("refresh_token");
       const refreshToken = JSON.parse(storageRefreshToken);
       const decodedRefreshToken = jwtDecode(refreshToken); // Cập nhật ở đây
 
       if (decoded?.exp < currentTime.getTime() / 1000) {
         if (decodedRefreshToken?.exp > currentTime.getTime() / 1000) {
           const data = await UserService.refreshToken(refreshToken);
-          config.headers['token'] = `Bearer ${data?.access_token}`;
+          config.headers["token"] = `Bearer ${data?.access_token}`;
         } else {
           dispatch(resetUser());
         }
@@ -67,14 +72,20 @@ function App() {
   );
 
   const handleGetDetailsUser = async (id, token) => {
-    let storageRefreshToken = localStorage.getItem('refresh_token');
+    let storageRefreshToken = localStorage.getItem("refresh_token");
     const refreshToken = JSON.parse(storageRefreshToken);
     const res = await UserService.getDetailsUser(id, token);
-    dispatch(updateUser({ ...res?.data, access_token: token, refreshToken: refreshToken }));
+    dispatch(
+      updateUser({
+        ...res?.data,
+        access_token: token,
+        refreshToken: refreshToken,
+      })
+    );
   };
 
   return (
-    <div style={{ height: '100vh', width: '100%', backgroundColor: '#f0f0f0' }}>
+    <div style={{ height: "100vh", width: "100%", backgroundColor: "#f0f0f0" }}>
       <Loading isLoading={isLoading}>
         <Router>
           <Routes>

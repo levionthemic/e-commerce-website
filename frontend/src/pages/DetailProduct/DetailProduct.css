@@ -1,0 +1,149 @@
+
+.image-gallery {
+    position: relative;
+    overflow: hidden;
+    height: 550px;
+}
+
+.image-gallery img {
+    transition: transform 0.3s ease;
+}
+
+.image-gallery img:hover {
+    transform: scale(1.2);
+    position: relative;
+    z-index: 1;
+}
+
+.thumbnail {
+    border-radius: 4px;
+    transition: border 0.3s;
+}
+
+.product-info {
+    flex: 1;
+    margin-left: 20px;
+}
+
+.prices {
+    display: flex;
+    gap: 10px;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: gray;
+}
+
+.discount {
+    display: inline-block;
+    background-color: #f8d7da;
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.discount-rate {
+    color: #dc3545; /* Tô đỏ phần giảm giá */
+    font-weight: bold;
+    font-size: 1.1rem; /* Tăng kích thước chữ một chút */
+}
+
+.quantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity .btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+}
+
+.description {
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.description-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.quantity-input::-webkit-inner-spin-button,
+.quantity-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-input {
+    -moz-appearance: textfield; /* Đối với Firefox */
+}
+
+.button-container {
+    display: flex;
+    gap: 15px; /* Adjusts the space between buttons */
+    margin-top: 1rem; /* Add some margin above the buttons */
+}
+
+.button-container .btn {
+    flex: 1; /* Makes buttons take equal width */
+    padding: 10px; /* Adjust padding for better touch area */
+    font-size: 16px; /* Increase font size for readability */
+    border-radius: 5px; /* Optional: adds rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.button-container .btn-primary:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+}
+
+.button-container .btn-success:hover {
+    background-color: #4cae4f; /* Darker shade for hover effect */
+}
+
+
+.review-summary {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+}
+
+.review-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 5px;
+}
+
+.review-header {
+    display: flex;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.review-info {
+    flex: 1;
+}
+
+.star {
+    color: red;
+}

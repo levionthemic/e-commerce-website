@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+// redux/slices/productSlice.js
+import { createSlice } from "@reduxjs/toolkit";
 
 const productSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState: {
     items: [],
     loading: false,
@@ -23,7 +24,16 @@ const productSlice = createSlice({
       state.items.push(action.payload);
     },
     removeProduct: (state, action) => {
-      state.items = state.items.filter(product => product.id !== action.payload.id);
+      state.items = state.items.filter(
+        (product) => product.id !== action.payload.id
+      );
+    },
+    // Thêm hàm searchProduct
+    searchProduct: (state, action) => {
+      const keyword = action.payload.toLowerCase();
+      state.items = state.items.filter((product) =>
+        product.name.toLowerCase().includes(keyword)
+      );
     },
     searchProduct: (state, action) => {
       const searchTerm = action.payload.toLowerCase();
@@ -42,6 +52,7 @@ export const {
   addProduct,
   removeProduct,
   searchProduct, // Add this line
+  //searchProduct, // Xuất searchProduct để sử dụng trong các component
 } = productSlice.actions;
 
 export default productSlice.reducer;

@@ -1,0 +1,25 @@
+.product-item {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.product-item .btn-primary {
+  background-color: #ff4d4f;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.product-item .btn-primary:hover {
+  background-color: #ff7875;
+}
