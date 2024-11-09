@@ -1,10 +1,11 @@
 // src/pages/Login/Login.jsx
 import React, { memo, useState } from "react";
 import "./Signup.scss";
-import imageLogin from "../../../assets/images/image-login.jpg";
+import img from "../../../assets/images/image-login.jpg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -31,6 +32,15 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi!",
+        text: "Mật khẩu không khớp!",
+      });
+      return;
+    }
     const role = e.target[0].checked ? "buyer" : "seller";
 
     try {
@@ -40,7 +50,7 @@ function Signup() {
           email: email,
           username: username,
           password: password,
-          role: role
+          role: role,
         },
         {
           header: {
@@ -48,129 +58,117 @@ function Signup() {
           },
         }
       );
-      console.log(res);
+      Swal.fire({
+        icon: "success",
+        title: "Đăng kí thành công!",
+        text: "Vui lòng đăng nhập để tiếp tục",
+      });
+      navigate("/auth/login");
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Đăng ký thất bại!",
         text: "Username hoặc email đã tồn tại!",
-        footer: ""
       });
     }
   };
 
-  const handleClick = () => {
-    navigate("/auth/login");
-  };
-
   return (
-    <div className="container position-relative box">
-      <div className="signin">
-        <div className="signin__image">
-          <img src={imageLogin} alt="" />
-        </div>
-        <div className="signin__form">
-          <form onSubmit={handleSubmit}>
-            <h2>Đăng kí</h2>
+    <>
+      <div className="box-signup">
+        <div className="inner-wrap">
+          <div className="inner-content">
             <div
-              className="btn-group"
-              role="group"
+              className="inner-goback"
+              onClick={() => {
+                navigate(-1);
+              }}
             >
-              <div className="options">
+              <ArrowLeftOutlined />
+            </div>
+            <div className="inner-title">
+              <h3>Đăng ký</h3>
+            </div>
+            <div className="inner-form">
+              <form action="" onSubmit={handleSubmit}>
+                <div className="btn-group" role="group">
+                  <div className="options">
+                    <input
+                      type="radio"
+                      className="btn-check"
+                      name="role"
+                      id="buyer"
+                      autoComplete="off"
+                      required
+                    />
+                    <label className="btn btn-outline-primary" htmlFor="buyer">
+                      Người mua
+                    </label>
+                  </div>
+                  <div className="options">
+                    <input
+                      type="radio"
+                      className="btn-check"
+                      name="role"
+                      id="seller"
+                      autoComplete="off"
+                      required
+                    />
+                    <label className="btn btn-outline-primary" htmlFor="seller">
+                      Người bán
+                    </label>
+                  </div>
+                </div>
+
                 <input
-                  type="radio"
-                  className="btn-check"
-                  name="role"
-                  id="buyer"
-                  autoComplete="off"
+                  type="text"
+                  className="form-control"
+                  placeholder="Nhập tài khoản"
+                  onChange={handleChangeUsername}
+                  value={username}
                   required
+                  autoComplete="off"
                 />
-                <label className="btn btn-outline-primary" htmlFor="buyer">
-                  Người mua
-                </label>
-              </div>
-              <div className="options">
                 <input
-                  type="radio"
-                  className="btn-check"
-                  name="role"
-                  id="seller"
-                  autoComplete="off"
+                  type="email"
+                  className="form-control"
+                  placeholder="Nhập email"
                   required
+                  onChange={handleChangeEmail}
+                  value={email}
+                  autoComplete="off"
                 />
-                <label className="btn btn-outline-primary" htmlFor="seller">
-                  Người bán
-                </label>
-              </div>
+
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Nhập mật khẩu"
+                  onChange={handleChangePassword}
+                  value={password}
+                  required
+                  autoComplete="off"
+                />
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Xác nhận mật khẩu"
+                  onChange={handleChangeConfirmPassword}
+                  value={confirmPassword}
+                  required
+                  autoComplete="off"
+                />
+                <button type="submit" className="btn">
+                  Xác nhận
+                </button>
+              </form>
             </div>
-            <div className="form-group input-box">
-              <label htmlFor="email">
-                <i className="fa-solid fa-envelope"></i>
-              </label>
-              <input
-                id="email"
-                type="email"
-                className="form-control"
-                placeholder="Email"
-                required
-                onChange={handleChangeEmail}
-                value={email}
-                autoComplete="off"
-              />
-            </div>
-            <div className="form-group input-box">
-              <label htmlFor="username">
-                <i className="fa-solid fa-user"></i>
-              </label>
-              <input
-                id="username"
-                type="text"
-                className="form-control"
-                placeholder="Tài khoản"
-                required
-                onChange={handleChangeUsername}
-                value={username}
-                autoComplete="off"
-              />
-            </div>
-            <div className="form-group input-box">
-              <label htmlFor="password">
-                <i className="fa-solid fa-lock"></i>
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Mật khẩu"
-                required
-                onChange={handleChangePassword}
-                value={password}
-                autoComplete="off"
-              />
-            </div>
-            <div className="form-group input-box">
-              <label htmlFor="password">
-                <i className="fa-solid fa-lock"></i>
-              </label>
-              <input
-                type="password"
-                className="form-control"
-                placeholder="Xác nhận Mật khẩu"
-                required
-                onChange={handleChangeConfirmPassword}
-                value={confirmPassword}
-                autoComplete="off"
-              />
-            </div>
-            <button type="submit" className="form-control button-login">
-              Hoàn tất
-            </button>
-          </form>
-          <div className="options" onClick={handleClick}>
-            <button className="btn">Đăng nhập</button>
+          </div>
+          <div className="inner-image">
+            <img src={img} alt="" />
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

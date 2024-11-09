@@ -1,111 +1,121 @@
-.box {
+.box-login {
   height: 100vh;
-}
+  width: 100vw;
+  position: relative;
 
-.login {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  gap: 50px;
-
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  &__image {
-    img {
-      height: 600px;
-      width: 600px;
-      border: 1px solid #d9d9d9;
-      border-radius: 10px;
-      object-fit: contain;
-    }
-  }
-
-  &__form {
-    width: 450px;
+  .inner-wrap {
+    width: 60%;
+    height: fit-content;
     background-color: white;
-    padding: 50px;
-    border-radius: 10px;
-    
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate((-50%, -50%));
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
-    .btn-group {
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-      gap: 10px;
+    .inner-content {
+      width: 50%;
+      padding: 0 50px;
 
-      .btn-check:checked+.btn {
-        background-color: black;
-        color: white;
+      .inner-title {
+        margin-bottom: 40px;
       }
 
-      .options {
-        
-        border: 1px solid black;
-        width: 33%;
-        border-radius: 10px !important;
-        margin: 0;
-        overflow: hidden;
+      .inner-form {
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 40px;
 
-        label {
-          padding: 6px 12px;
-          width: 100%;
-          border: none;
-          color: black;
-          font-weight: 500;
-          font-size: 0.85rem;
-  
-          &:hover {
-            background-color: black;
-            color: white;
-            border: 1px solid black;
-            margin: 0;
+          .btn-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            gap: 10px;
+
+            .btn-check:checked + .btn {
+              background-color: black;
+              color: white;
+            }
+
+            .options {
+              border: 1px solid black;
+              width: 33%;
+              border-radius: 10px !important;
+              margin: 0;
+              overflow: hidden;
+
+              label {
+                padding: 6px 12px;
+                width: 100%;
+                border: none;
+                color: black;
+                font-weight: 500;
+                font-size: 0.85rem;
+
+                &:hover {
+                  background-color: black;
+                  color: white;
+                  border: 1px solid black;
+                  margin: 0;
+                }
+              }
+            }
+          }
+
+          input {
+            text-align: left;
+            border: 0;
+            outline: 0;
+            border-bottom: 1px solid #ddd;
+
+            &:focus {
+              box-shadow: none;
+            }
+
+            &::placeholder {
+              /* Nhập mật khẩu */
+              color: rgba(0, 0, 0, 0.2);
+            }
+          }
+
+          button {
+            margin-top: 10px;
+            width: 48%;
+            background-color: #d9d9d9;
+            columns: black;
+            font-weight: 500;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            padding: 15px 0;
+          }
+        }
+
+        .inner-forgot {
+          margin-top: 50px;
+          text-align: center;
+          span {
+            color: #2368C3;
+
+            &:hover {
+              cursor: pointer;
+            }
           }
         }
       }
     }
 
-    .input-box {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 20px 0;
-    }
-
-    .button-login {
-      border: 2px solid black;
-      background-color: #ddd;
-      color: black;
-      font-weight: bold;
-    }
-
-    .options {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 20px;
-
-      button {
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        font-style: italic;
-        font-size: 0.8rem;
-        color: black;
-        font-weight: 500;
-        width: 48%;
-        background-color: #d9d9d9;
-        opacity: 0.8;
-
-        &:hover {
-          background-color: black;
-          color: white;
-          opacity: 1;
-        }
+    .inner-image {
+      width: 50%;
+      img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1/1;
+        object-fit: contain;
       }
     }
   }

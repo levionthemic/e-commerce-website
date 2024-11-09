@@ -38,7 +38,7 @@ function ForgotPassword() {
     }
   };
   return (
-    <div className="box">
+    <div className="box-forgot">
       <div className="inner-wrap">
         <div className="inner-content">
           <div

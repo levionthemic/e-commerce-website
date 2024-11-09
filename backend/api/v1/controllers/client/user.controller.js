@@ -56,7 +56,7 @@ module.exports.login = async (req, res) => {
 
   if (role !== user.role) {
     res.status(400).json({
-      message: "Vai trò không khớp!",
+      message: "Tài khoản không tồn tại!",
     });
     return;
   }

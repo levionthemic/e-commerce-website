@@ -2,7 +2,7 @@ import { memo, useState } from "react";
 import "./ResetPassword.scss";
 import img from "../../../assets/images/image-login.jpg";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
 
@@ -50,9 +50,9 @@ function ResetPassword() {
       )
       .then((res) => {
         Swal.fire({
-          icon: "info",
-          title: "Thông báo",
-          text: res.data.message,
+          icon: "success",
+          title: "Đặt lại mật khẩu thành công!",
+          text: "Vui lòng đăng nhập lại để tiếp tục",
         });
         document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
         navigate("/auth/login");
