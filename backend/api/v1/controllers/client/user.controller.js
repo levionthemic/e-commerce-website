@@ -5,7 +5,7 @@ const CryptoJS = require("crypto-js");
 // [POST] /api/v1/user/signup
 module.exports.signup = async (req, res) => {
   const { email, username, password } = req.body;
-  
+
   const isUserExist = await User.findOne({
     $or: [{ email: email }, { username: username }],
   });
@@ -61,11 +61,43 @@ module.exports.login = async (req, res) => {
   });
 };
 
-// [GET] /api/v1/user/nations 
+// [GET] /api/v1/user/nations
 module.exports.getNations = async (req, res) => {
   const nations = await Nation.find({});
   res.status(200).json({
     message: "Success",
-    data: nations
-  })
-}
+    data: nations,
+  });
+};
+
+// [GET] /api/v1/user/:token
+module.exports.getUser = async (req, res) => {
+  const user = await User.findOne({ token: req.params.token });
+  res.status(200).json({
+    message: "Success",
+    user: user,
+  });
+};
+
+// [POST] /api/v1/user/update
+module.exports.update = async (req, res) => {
+  const { ...userInfo } = req.body;
+
+  try {
+    await User.updateOne(
+      {
+        token: userInfo.token,
+      },
+      { ...userInfo }
+    );
+  
+    res.status(200).json({
+      message: "Cập nhật thành công!",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Cập nhật không thành công!",
+    });
+  }
+  
+};
