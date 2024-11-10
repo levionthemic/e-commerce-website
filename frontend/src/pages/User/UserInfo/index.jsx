@@ -49,26 +49,173 @@ function UserInfo() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios
-      .patch(
-        "http://localhost:3001/api/v1/user/update",
-        { ...user },
-        { headers: { "Content-Type": "application/json" } }
-      )
-      .then((res) => {
+    Swal.fire({
+      icon: "warning",
+      showCancelButton: true,
+      showConfirmButton: true,
+      title: "Cảnh báo!",
+      text: "Bạn có chắc chắn muốn cập nhật?",
+      confirmButtonText: "Cập nhật",
+      cancelButtonText: "Hủy",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axios
+          .patch(
+            "http://localhost:3001/api/v1/user/update",
+            { ...user },
+            { headers: { "Content-Type": "application/json" } }
+          )
+          .then((res) => {
+            Swal.fire({
+              icon: "success",
+              title: "Thành công!",
+              text: res.data.message,
+              didClose: () => {
+                window.location.reload();
+              },
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Lỗi!",
+              text: error.response.data.message,
+            });
+          });
+      }
+    });
+  };
+
+  const handleUpdatePhoneNumber = () => {
+    Swal.fire({
+      title: "Nhập số điện thoại: ",
+      input: "tel",
+      inputAttributes: {
+        maxlength: "10",
+        pattern: "[0-9]{10}",
+        required: true,
+        placeholder: "Cần nhập 10 chữ số",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Cập nhật",
+      cancelButtonText: "Hủy bỏ",
+      showLoaderOnConfirm: true,
+      preConfirm: async (phoneNumber) => {
         Swal.fire({
-          icon: "success",
-          title: "Thành công!",
-          text: res.data.message,
+          icon: "warning",
+          showCancelButton: true,
+          showConfirmButton: true,
+          title: "Cảnh báo!",
+          text: "Bạn có chắc chắn muốn cập nhật?",
+          confirmButtonText: "Cập nhật",
+          cancelButtonText: "Hủy",
+        }).then((res) => {
+          if (res.isConfirmed) {
+            const token = cookies().token;
+            axios
+              .patch(
+                "http://localhost:3001/api/v1/user/update",
+                {
+                  token: token,
+                  phoneNumber: phoneNumber,
+                },
+                { headers: { "Content-Type": "application/json" } }
+              )
+              .then((res) => {
+                Swal.fire({
+                  icon: "success",
+                  title: "Thành công!",
+                  text: res.data.message,
+                  didClose: () => {
+                    window.location.reload();
+                  },
+                });
+              })
+              .catch((error) => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Lỗi!",
+                  text: error.response.data.message,
+                });
+              });
+          }
         });
-      })
-      .catch((error) => {
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+  };
+
+  const handleUpdateEmail = () => {
+    Swal.fire({
+      title: "Nhập email: ",
+      input: "email",
+      inputAttributes: {
+        required: true,
+        placeholder: "Vd: abc@gmail.com",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Cập nhật",
+      cancelButtonText: "Hủy bỏ",
+      showLoaderOnConfirm: true,
+      preConfirm: async (email) => {
         Swal.fire({
-          icon: "error",
-          title: "Lỗi!",
-          text: error.response.data.message,
+          icon: "warning",
+          showCancelButton: true,
+          showConfirmButton: true,
+          title: "Cảnh báo!",
+          text: "Bạn có chắc chắn muốn cập nhật?",
+          confirmButtonText: "Cập nhật",
+          cancelButtonText: "Hủy",
+        }).then((res) => {
+          if (res.isConfirmed) {
+            const token = cookies().token;
+            axios
+              .patch(
+                "http://localhost:3001/api/v1/user/update",
+                {
+                  token: token,
+                  email: email,
+                },
+                { headers: { "Content-Type": "application/json" } }
+              )
+              .then((res) => {
+                Swal.fire({
+                  icon: "success",
+                  title: "Thành công!",
+                  text: res.data.message,
+                  didClose: () => {
+                    window.location.reload();
+                  },
+                });
+              })
+              .catch((error) => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Lỗi!",
+                  text: error.response.data.message,
+                });
+              });
+          }
         });
-      });
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+  };
+
+  const handleClick = () => {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+      icon: "info",
+      title: "Tính năng chưa được hoàn thiện!",
+    });
   };
 
   return (
@@ -206,11 +353,15 @@ function UserInfo() {
                       </div>
                       <div className="inner-content">
                         <h6>Số điện thoại</h6>
-                        <p>0862787097</p>
+                        <p>{user.phoneNumber || "Chưa cập nhật"}</p>
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button" className="btn">
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={handleUpdatePhoneNumber}
+                      >
                         Cập nhật
                       </button>
                     </div>
@@ -222,11 +373,15 @@ function UserInfo() {
                       </div>
                       <div className="inner-content">
                         <h6>Địa chỉ Email</h6>
-                        <p>ngocliem10a5nth@gmail.com</p>
+                        <p>{user.email || "Chưa cập nhật"}</p>
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button" className="btn">
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={handleUpdateEmail}
+                      >
                         Cập nhật
                       </button>
                     </div>
@@ -245,7 +400,11 @@ function UserInfo() {
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button" className="btn">
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={handleClick}
+                      >
                         Cập nhật
                       </button>
                     </div>
@@ -260,7 +419,11 @@ function UserInfo() {
                       </div>
                     </div>
                     <div className="inner-button">
-                      <button type="button" className="btn">
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={handleClick}
+                      >
                         Cập nhật
                       </button>
                     </div>
