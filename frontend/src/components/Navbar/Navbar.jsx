@@ -60,7 +60,7 @@ const Navbar = () => {
             }}
             trigger={["click"]}
           >
-            <a onClick={(e) => e.preventDefault()}>
+            <a href="/" onClick={(e) => e.preventDefault()}>
               <Space>
                 <UserOutlined
                   style={{

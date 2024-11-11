@@ -2,7 +2,6 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
 import SearchPage from "../pages/SearchPage/SearchPage";
-import Signup from "../pages/Signin";
 import UserInfo from "../pages/User/UserInfo";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import OTPConfirm from "../pages/Auth/OTPConfirm";

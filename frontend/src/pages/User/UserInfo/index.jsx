@@ -228,7 +228,7 @@ function UserInfo() {
         </div>
         <div className="row">
           <div className="col-12">
-            <div className="inner-wrap">
+            <div className="inner-wrap-user-info">
               <div className="inner-left-content">
                 <h5 className="mb-4">Thông tin cá nhân</h5>
                 <form action="#" onSubmit={handleSubmit}>

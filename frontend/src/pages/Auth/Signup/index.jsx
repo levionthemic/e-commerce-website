@@ -44,7 +44,7 @@ function Signup() {
     const role = e.target[0].checked ? "buyer" : "seller";
 
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:3001/api/v1/user/signup",
         {
           email: email,
