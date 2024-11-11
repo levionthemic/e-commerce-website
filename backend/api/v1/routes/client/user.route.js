@@ -16,4 +16,5 @@ routes.get("/:token", controller.getUser);
 
 routes.patch("/update", controller.update);
 
+routes.get("/order", controller.order);
 module.exports = routes;

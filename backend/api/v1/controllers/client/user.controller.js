@@ -1,6 +1,7 @@
 const User = require("../../models/user.model");
 const Nation = require("../../models/nation.model");
 const OTP = require("../../models/otp.model");
+const Order = require("../../models/order.model");
 const CryptoJS = require("crypto-js");
 const { generateOTP } = require("../../../../helpers/generate");
 const { sendMail } = require("../../../../helpers/sendMail");
@@ -181,4 +182,21 @@ module.exports.resetPassword = async (req, res) => {
       message: "Đặt lại mật khẩu không thành công!",
     });
   }
+};
+
+// [GET] /api/v1/user/order
+module.exports.order = async (req, res) => {
+  const { status, token } = req.body;
+
+  const user = await User.findOne({ token: token });
+
+  const orders = await Order.find({
+    userId: user.id,
+    status: status,
+  });
+
+  res.status(200).json({
+    message: "Success",
+    data: orders,
+  });
 };
