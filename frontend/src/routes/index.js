@@ -1,8 +1,12 @@
 import Home from "../pages/Home/Home";
-import Login from "../pages/Login";
+import Login from "../pages/Auth/Login";
+import Signup from "../pages/Auth/Signup";
 import SearchPage from "../pages/SearchPage/SearchPage";
-import Signin from "../pages/Signin";
+import Signup from "../pages/Signin";
 import UserInfo from "../pages/User/UserInfo";
+import ForgotPassword from "../pages/Auth/ForgotPassword";
+import OTPConfirm from "../pages/Auth/OTPConfirm";
+import ResetPassword from "../pages/Auth/ResetPassword";
 
 export const routes = [
   {
@@ -16,8 +20,23 @@ export const routes = [
     isShowHeader: false,
   },
   {
-    path: "/auth/signin",
-    page: Signin,
+    path: "/auth/signup",
+    page: Signup,
+    isShowHeader: false,
+  },
+  {
+    path: "/auth/forgot-password",
+    page: ForgotPassword,
+    isShowHeader: false,
+  },
+  {
+    path: "/auth/otp-confirm",
+    page: OTPConfirm,
+    isShowHeader: false,
+  },
+  {
+    path: "/auth/reset-password",
+    page: ResetPassword,
     isShowHeader: false,
   },
   {

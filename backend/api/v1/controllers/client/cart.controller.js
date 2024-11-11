@@ -4,7 +4,8 @@ const { cookies } = require("../../../../helpers/cookies");
 
 // [GET] /cart
 module.exports.index = async (req, res) => {
-  const cartId = cookies(req).cartId;
+  // const cartId = cookies(req).cartId;
+  const cartId = req.body.cartId;
 
   const cart = await Cart.findOne({ _id: cartId });
 
@@ -33,7 +34,8 @@ module.exports.index = async (req, res) => {
 
 // [POST] /cart/add
 module.exports.add = async (req, res) => {
-  const cartId = cookies(req).cartId;
+  // const cartId = cookies(req).cartId;
+  const cartId = req.body.cartId;
   const productId = req.body.productId;
   const quantity = parseInt(req.body.quantity);
 
@@ -78,7 +80,8 @@ module.exports.add = async (req, res) => {
 
 // [DELETE] /cart/delete
 module.exports.delete = async (req, res) => {
-  const cartId = cookies(req).cartId;
+  // const cartId = cookies(req).cartId;
+  const cartId = req.body.cartId;
   const productId = req.body.productId;
 
   const cart = await Cart.findOne({
@@ -108,7 +111,8 @@ module.exports.delete = async (req, res) => {
 
 // [PATCH] /cart/update
 module.exports.update = async (req, res) => {
-  const cartId = cookies(req).cartId;
+  // const cartId = cookies(req).cartId;
+  const cartId = req.body.cartId;
   const productId = req.body.productId;
   const quantity = req.body.quantity;
 
