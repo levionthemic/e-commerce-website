@@ -6,6 +6,7 @@ import UserInfo from "../pages/User/UserInfo";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import OTPConfirm from "../pages/Auth/OTPConfirm";
 import ResetPassword from "../pages/Auth/ResetPassword";
+import Checkout from "../pages/Checkout";
 
 export const routes = [
   {
@@ -46,6 +47,11 @@ export const routes = [
   {
     path: "/user/info",
     page: UserInfo,
+    isShowHeader: true,
+  },
+  {
+    path: "/checkout",
+    page: Checkout,
     isShowHeader: true,
   },
 ];
