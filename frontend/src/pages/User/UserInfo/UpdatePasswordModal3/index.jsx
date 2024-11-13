@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { CustomModal } from "../style";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -8,12 +8,94 @@ import {
 import img from "../../../../assets/images/lock-icon.svg";
 import img2 from "../../../../assets/images/goback-icon.svg";
 import "./UpdatePasswordModal3.scss";
+import Swal from "sweetalert2";
+import axios from "axios";
+
+const cookies = () => {
+  const cookies = document.cookie.split("; ");
+  let result = {};
+  cookies.forEach((cookie) => {
+    const [key, value] = cookie.split("=");
+    result[key] = value;
+  });
+  return result;
+};
 
 function UpdatePasswordModal3() {
   const updatePasswordModal = useSelector(
     (state) => state.updatePasswordModal.modal3
   );
   const dispatch = useDispatch();
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+        icon: "error",
+        title: "Mật khẩu xác nhận không trùng khớp",
+      });
+      return;
+    }
+    const token = cookies().token;
+
+    axios
+      .post(
+        "http://localhost:3001/api/v1/user/reset-password",
+        {
+          token: token,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(() => {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+          icon: "success",
+          title: "Cập nhật mật khẩu thành công!",
+        });
+        window.location.reload();
+      })
+      .catch((error) => {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+          icon: "error",
+          title: "Lỗi!",
+          text: error.response.data.message,
+        });
+      });
+  };
   return (
     <>
       <CustomModal
@@ -39,18 +121,24 @@ function UpdatePasswordModal3() {
             <img src={img} alt="" />
           </div>
           <div className="inner-form">
-            <form action="">
+            <form action="" onSubmit={handleSubmit}>
               <input
                 type="password"
                 className="form-control"
                 placeholder="Nhập mật khẩu mới"
                 required
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
               />
               <input
                 type="password"
                 className="form-control"
                 placeholder="Xác nhận mật khẩu"
                 required
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                }}
               />
 
               <button type="submit" className="btn">

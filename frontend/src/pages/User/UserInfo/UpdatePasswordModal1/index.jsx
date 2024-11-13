@@ -49,7 +49,7 @@ function UpdatePasswordModal1() {
       });
       return;
     }
-   
+
     const token = cookies().token;
 
     axios
@@ -94,6 +94,49 @@ function UpdatePasswordModal1() {
           title: "Cập nhật mật khẩu thất bại!",
           text: error.response.data.message,
         });
+      });
+  };
+
+  const handleOption = (e) => {
+    const token = cookies().token;
+    let email = "";
+    axios
+      .get(`http://localhost:3001/api/v1/user/${token}`)
+      .then((res) => {
+        email = res.data.user.email;
+      })
+      .then(() => {
+        axios
+          .post(
+            "http://localhost:3001/api/v1/user/otp-request",
+            {
+              email: email,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((res) => {
+            dispatch(closeModal1());
+            dispatch(openModal2());
+          })
+          .catch((error) => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "error",
+              title: "Không gửi được OTP!",
+            });
+          });
       });
   };
 
@@ -147,14 +190,7 @@ function UpdatePasswordModal1() {
             </form>
           </div>
           <div className="inner-option">
-            <span
-              onClick={() => {
-                dispatch(closeModal1());
-                dispatch(openModal2());
-              }}
-            >
-              Cập nhật qua Email
-            </span>
+            <span onClick={handleOption}>Cập nhật qua Email</span>
           </div>
         </div>
       </CustomModal>
