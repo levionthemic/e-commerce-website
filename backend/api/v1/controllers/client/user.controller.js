@@ -165,7 +165,25 @@ module.exports.otpCheck = async (req, res) => {
 
 // [POST] /api/v1/user/reset-password
 module.exports.resetPassword = async (req, res) => {
-  const { token, password } = req.body;
+  const { token, password, currentPassword } = req.body;
+
+  if (currentPassword) {
+    const user = await User.findOne({ token: token });
+    if (
+      CryptoJS.SHA256(currentPassword).toString() !== user.password
+    ) {
+      res.status(400).json({
+        message: "Mật khẩu hiện tại không trùng khớp!",
+      });
+      return;
+    }
+    if (password === currentPassword) {
+      res.status(400).json({
+        message: "Mật khẩu mới không được giống mật khẩu hiện tại!",
+      });
+      return;
+    }
+  }
   try {
     await User.updateOne(
       {
@@ -174,12 +192,15 @@ module.exports.resetPassword = async (req, res) => {
       { password: CryptoJS.SHA256(password).toString() }
     );
     res.status(200).json({
-      message:
-        "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại để tiếp tục.",
+      message: currentPassword
+        ? "Cập nhật mật khẩu thành công!"
+        : "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại để tiếp tục.",
     });
   } catch (error) {
     res.status(400).json({
-      message: "Đặt lại mật khẩu không thành công!",
+      message: currentPassword
+        ? "Cập nhật mật khẩu không thành công !"
+        : "Đặt lại mật khẩu không thành công!",
     });
   }
 };

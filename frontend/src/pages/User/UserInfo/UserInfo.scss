@@ -111,12 +111,13 @@ input, select {
     border-left: 1px solid #ddd;
 
     .section-1,
-    .section-2 {
+    .section-2,
+    .section-3 {
       .inner-item {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin: 30px 0;
+        margin: 20px 0;
 
         .inner-item-info {
           display: flex;
@@ -136,6 +137,9 @@ input, select {
             margin: 0;
             padding: 0;
           }
+        }
+        .inner-address {
+          width: 60%;
         }
 
         .inner-button {
