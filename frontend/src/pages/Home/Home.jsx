@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.css";
 import {
   TruckFilled,
@@ -6,98 +6,68 @@ import {
   CustomerServiceFilled,
   StarOutlined,
 } from "@ant-design/icons";
+import {
+  Button,
+  Card,
+  Col,
+} from "react-bootstrap";
 import Carousel from "react-multi-carousel";
+import { FaStar } from "react-icons/fa";
 import "react-multi-carousel/lib/styles.css";
-import { Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Home = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   let isLogin = false;
-  //   const arr = document.cookie.split("; ");
-  //   for (const item of arr) {
-  //     const [key] = item.split("=");
-  //     if (key === "token") {
-  //       isLogin = true;
-  //     }
-  //   }
-  //   if (!isLogin) navigate("/auth/login");
-  // });
+  // Lọc và sắp xếp sản phẩm bán chạy
+  const [bestSellingProducts, setBestSellingProducts] = useState([]);
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [productsDisplayed, setProductsDisplayed] = useState(12);
 
-  // let isLogin = false;
-  // const arr = document.cookie.split("; ");
-  // for (const item of arr) {
-  //   const [key] = item.split("=");
-  //   if (key === "token") {
-  //     isLogin = true;
-  //   }
-  // }
-  // if (!isLogin) navigate("/auth/login");
+  useEffect(() => {
+    let isLogin = false;
+    const arr = document.cookie.split("; ");
+    for (const item of arr) {
+      const [key] = item.split("=");
+      if (key === "token") {
+        isLogin = true;
+      }
+    }
+    if (!isLogin) navigate("/auth/login");
+  }, [navigate]);
 
-  const products = [
-    {
-      id: 1,
-      name: "Giày Nike",
-      price: "100.000 VNĐ",
-      description: "Mô tả sản phẩm 1",
-    },
-    {
-      id: 2,
-      name: "Giày Nike",
-      price: "200.000 VNĐ",
-      description: "Mô tả sản phẩm 2",
-    },
-    {
-      id: 3,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 4,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 5,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 6,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 6,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 6,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 6,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-    {
-      id: 6,
-      name: "Giày Nike",
-      price: "300.000 VNĐ",
-      description: "Mô tả sản phẩm 3",
-    },
-  ];
+  // Lấy dữ liệu sản phẩm bán chạy
+  useEffect(() => {
+    fetch("http://localhost:3001/api/v1/products")
+      .then((response) => response.json())
+      .then((responseData) => {
+        const sortedProducts = responseData.data
+          .filter((product) => product.quantity_sold && product.quantity_sold.value > 0)
+          .sort((a, b) => b.quantity_sold.value - a.quantity_sold.value)
+          .slice(0, 10);
+        setBestSellingProducts(sortedProducts);
+      })
+      .catch((error) => console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error));
+  }, []);
+
+  // Lấy dữ liệu sản phẩm đề xuất
+  useEffect(() => {
+    fetch("http://localhost:3001/api/v1/products")
+      .then((response) => response.json())
+      .then((responseData) => {
+        const sortedProducts = responseData.data
+          .filter((product) => product.rating_average !== null && product.rating_average !== undefined)
+          .sort((a, b) => b.rating_average - a.rating_average)
+          .slice(0, 36); // Lấy 30 sản phẩm để hiển thị và có thể tải thêm
+        setRecommendedProducts(sortedProducts);
+      })
+      .catch((error) => console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error));
+  }, []);
+
+  // Hàm xử lý khi nhấn nút "Xem thêm"
+  const loadMoreRecommendedProducts = () => {
+    setProductsDisplayed((prev) => prev + 12); // Tăng số lượng sản phẩm hiển thị lên 10
+  };
 
   const responsive = {
     superLargeDesktop: {
@@ -150,115 +120,81 @@ const Home = () => {
           <h2>Sản phẩm bán chạy</h2>
           <section className="best-selling-products">
             <Carousel responsive={responsive}>
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-
-                <p className="number">còn lại: 123</p>
-              </div>
-
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-                <p className="number">còn lại: 123</p>
-              </div>
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-                <p className="number">còn lại: 123</p>
-              </div>
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-                <p className="number">còn lại: 123</p>
-              </div>
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-                <p className="number">còn lại: 123</p>
-              </div>
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-                <p className="number">còn lại: 123</p>
-              </div>
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-                <p className="number">còn lại: 123</p>
-              </div>
-              <div className="card">
-                <img
-                  className="product image"
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt="product"
-                  width={200}
-                />
-                <h3>Giay Nike</h3>
-                <p className="price">1 000 000 đ</p>
-                <p className="number">còn lại: 123</p>
-              </div>
+              {bestSellingProducts.length > 0 ? (
+                bestSellingProducts.map((product) => (
+                  <Col key={product.id}>
+                    <Card className="product-card">
+                      <Card.Img
+                        variant="top"
+                        src={product.thumbnail_url || "/images/default/default-product.png"}
+                        alt={product.name}
+                      />
+                      <Card.Body>
+                        <Card.Title>{product.name}</Card.Title>
+                        <Card.Text>
+                          <span className="product-price">
+                            {product.price.toLocaleString()} VNĐ
+                          </span>
+                        </Card.Text>
+                        <Card.Text className="product-info">
+                          <span>
+                            {product.rating_average || "0"}{" "}
+                            <FaStar color="#ffab00" />
+                          </span>{" "}
+                          | Đã bán: {product.quantity_sold?.value || 0}
+                        </Card.Text>
+                        <Link to={`/detailproduct/${product.id}`}>
+                          <Button variant="primary" className="w-100">
+                            Xem Chi Tiết
+                          </Button>
+                        </Link>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))
+              ) : (
+                <p>Đang tải sản phẩm...</p>
+              )}
             </Carousel>
           </section>
 
           <h2>Sản phẩm đề xuất</h2>
           <div className="product-grid-container">
-            {products.map((product) => (
-              <div key={product.id} className="product-card">
-                <img
-                  src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/u_126ab356-44d8-4a06-89b4-fcdcc8df0245/c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/7b286498-95fa-4ffc-a62a-d440c12a304d/WMNS+AIR+JORDAN+1+LOW.png"
-                  alt={product.name}
-                  className="product-image"
-                />
-                <h3>{product.name}</h3>
-                <p className="price">{product.price}</p>
-                <p className="number">Còn lại: {product.stock}</p>
-              </div>
+            {recommendedProducts.slice(0, productsDisplayed).map((product) => (
+              <Col key={product.id}>
+                <Card className="product-card">
+                  <Card.Img
+                    variant="top"
+                    src={product.thumbnail_url || "/images/default/default-product.png"}
+                    alt={product.name}
+                  />
+                  <Card.Body>
+                    <Card.Title>{product.name}</Card.Title>
+                    <Card.Text>
+                      <span className="product-price">
+                        {product.price.toLocaleString()} VNĐ
+                      </span>
+                    </Card.Text>
+                    <Card.Text className="product-info">
+                      <span>
+                        {product.rating_average || "0"}{" "}
+                        <FaStar color="#ffab00" />
+                      </span>{" "}
+                      | Đã bán: {product.quantity_sold?.value || 0}
+                    </Card.Text>
+                    <Link to={`/detailproduct/${product.id}`}>
+                      <Button variant="primary" className="w-100">
+                        Xem Chi Tiết
+                      </Button>
+                    </Link>
+                  </Card.Body>
+                </Card>
+              </Col>
             ))}
           </div>
-          <Button type="primary" className="xemthem">
+
+          {/* Nút xem thêm */}
+          <Button type="button" className="xemthem" onClick={loadMoreRecommendedProducts}>
             Xem thêm
           </Button>
         </section>

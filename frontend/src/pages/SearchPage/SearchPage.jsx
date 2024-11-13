@@ -8,7 +8,6 @@ import {
   Dropdown,
   Pagination,
 } from "react-bootstrap";
-import RangeSlider from "react-bootstrap-range-slider";
 import "./SearchPage.css";
 import { useLocation, Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
@@ -113,13 +112,13 @@ const SearchPage = () => {
     );
   };
 
-  const toggleBrand = (brandName) => {
-    setBrand((prev) =>
-      prev.includes(brandName)
-        ? prev.filter((b) => b !== brandName)
-        : [...prev, brandName]
-    );
-  };
+  // const toggleBrand = (brandName) => {
+  //   setBrand((prev) =>
+  //     prev.includes(brandName)
+  //       ? prev.filter((b) => b !== brandName)
+  //       : [...prev, brandName]
+  //   );
+  // };
 
   return (
     <div className="search-page container">
