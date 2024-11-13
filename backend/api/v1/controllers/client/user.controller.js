@@ -87,7 +87,7 @@ module.exports.getUser = async (req, res) => {
   });
 };
 
-// [POST] /api/v1/user/update
+// [PATCH] /api/v1/user/update
 module.exports.update = async (req, res) => {
   const { ...userInfo } = req.body;
   try {
@@ -109,18 +109,25 @@ module.exports.update = async (req, res) => {
 };
 // [POST] /api/v1/user/otp-request
 module.exports.otpRequest = async (req, res) => {
-  const { email } = req.body;
+  let { email, newEmail } = req.body;
 
-  const user = await User.findOne({
-    email: email,
-  });
-
-  if (!user) {
-    res.status(400).json({
-      message: "Email không tồn tại!",
+  if (email) {
+    const user = await User.findOne({
+      email: email,
     });
-    return;
+  
+    if (!user) {
+      res.status(400).json({
+        message: "Email không tồn tại!",
+      });
+      return;
+    }
   }
+
+  if (newEmail) {
+    email = newEmail;
+  }
+  
 
   const otp = new OTP({
     email: email,
@@ -159,7 +166,7 @@ module.exports.otpCheck = async (req, res) => {
   });
   res.status(200).json({
     message: "OTP hợp lệ",
-    token: user.token,
+    token: user ? user.token : "",
   });
 };
 

@@ -14,9 +14,13 @@ import Swal from "sweetalert2";
 import dayjs from "dayjs";
 import { useDispatch } from "react-redux";
 import { openModal1 } from "../../../redux/slices/UpdatePasswordModalSlice";
+import { openEmailModal1 } from "../../../redux/slices/UpdateEmailModalSlice";
 import UpdatePasswordModal1 from "./UpdatePasswordModal1";
 import UpdatePasswordModal2 from "./UpdatePasswordModal2";
 import UpdatePasswordModal3 from "./UpdatePasswordModal3";
+import UpdateEmailModal1 from "./UpdateEmailModal1";
+import UpdateEmailModal3 from "./UpdateEmailModal3";
+import UpdateEmailModal2 from "./UpdateEmailModal2";
 
 const cookies = () => {
   const cookieArr = document.cookie.split(";");
@@ -213,60 +217,7 @@ function UserInfo() {
   }
 
   const handleUpdateEmail = () => {
-    Swal.fire({
-      title: "Nhập email: ",
-      input: "email",
-      inputAttributes: {
-        required: true,
-        placeholder: "Vd: abc@gmail.com",
-      },
-      showCancelButton: true,
-      confirmButtonText: "Cập nhật",
-      cancelButtonText: "Hủy bỏ",
-      showLoaderOnConfirm: true,
-      preConfirm: async (email) => {
-        Swal.fire({
-          icon: "warning",
-          showCancelButton: true,
-          showConfirmButton: true,
-          title: "Cảnh báo!",
-          text: "Bạn có chắc chắn muốn cập nhật?",
-          confirmButtonText: "Cập nhật",
-          cancelButtonText: "Hủy",
-        }).then((res) => {
-          if (res.isConfirmed) {
-            const token = cookies().token;
-            axios
-              .patch(
-                "http://localhost:3001/api/v1/user/update",
-                {
-                  token: token,
-                  email: email,
-                },
-                { headers: { "Content-Type": "application/json" } }
-              )
-              .then((res) => {
-                Swal.fire({
-                  icon: "success",
-                  title: "Thành công!",
-                  text: res.data.message,
-                  didClose: () => {
-                    window.location.reload();
-                  },
-                });
-              })
-              .catch((error) => {
-                Swal.fire({
-                  icon: "error",
-                  title: "Lỗi!",
-                  text: error.response.data.message,
-                });
-              });
-          }
-        });
-      },
-      allowOutsideClick: () => !Swal.isLoading(),
-    });
+    dispatch(openEmailModal1());
   };
 
   const handleClick = () => {
@@ -453,6 +404,9 @@ function UserInfo() {
                       </button>
                     </div>
                   </div>
+                  <UpdateEmailModal1 />
+                  <UpdateEmailModal2 />
+                  <UpdateEmailModal3 />
                 </div>
 
                 <div className="section-2">

@@ -5,7 +5,8 @@ h5 {
   color: rgba(0, 0, 0, 0.6);
 }
 
-input, select {
+input,
+select {
   &:focus {
     box-shadow: none !important;
     border-color: #ddd !important;
@@ -40,7 +41,6 @@ input, select {
           position: absolute;
           right: 25px;
           top: 0;
-          
         }
       }
       .inner-info {
