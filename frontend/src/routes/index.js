@@ -9,6 +9,7 @@ import ResetPassword from "../pages/Auth/ResetPassword";
 import CartPage from "../pages/CartPage/CartPage";
 import DetailProduct from "../pages/DetailProduct/DetailProduct";
 import UserOrder from "../pages/User/UserOrder";
+import Checkout from "../pages/Checkout";
 
 export const routes = [
   {
@@ -66,5 +67,9 @@ export const routes = [
     page: UserOrder,
     isShowHeader: true,
   },
-
+  {
+    path: "/checkout",
+    page: Checkout,
+    isShowHeader: true,
+  },
 ];
