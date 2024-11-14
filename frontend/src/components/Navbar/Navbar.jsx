@@ -4,7 +4,11 @@ import { Link } from "react-router-dom"; // Không cần useNavigate ở đây
 import logo from "../../assets/images/shoppee.png";
 import "./Navbar.css";
 import { Dropdown, Space } from "antd";
-import { UserOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
+
 
 const items = [
   {
@@ -42,6 +46,7 @@ const Navbar = () => {
           <img src={logo} alt="E-shop" />
         </Link>
       </div>
+  
       <div className="right">
         <div className="cart">
           <Link to="/cart">
