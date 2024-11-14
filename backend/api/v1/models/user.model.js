@@ -3,6 +3,7 @@ const { generateTokenString } = require("../../../helpers/generate");
 
 const userSchema = new mongoose.Schema(
   {
+    avatar: String,
     username: String,
     password: String,
     role: String,

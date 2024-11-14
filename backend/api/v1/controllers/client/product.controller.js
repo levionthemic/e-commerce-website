@@ -1,4 +1,3 @@
-const ProductDetail = require("../../models/product-detail.model");
 const Product = require("../../models/product.model");
 const unidecode = require("unidecode");
 
@@ -47,22 +46,17 @@ module.exports.search = async (req, res) => {
 
     let limit = limitQuantity || 100;
 
-    const productsDetail = await ProductDetail.find({
+    const products = await Product.find({
       $or: [{ name: regex }, { slug: regexSlug }],
     }).limit(limit);
 
-    if (productsDetail) {
-      Promise.all(
-        productsDetail.map((product) => Product.findOne({ id: product.id }))
-      ).then((products) => {
-        const result = products;
-        res.json({
-          code: 200,
-          message: "Success",
-          data: result,
-          length: result.length,
-          limit: limit,
-        });
+    if (products) {
+      res.json({
+        code: 200,
+        message: "Success",
+        data: products,
+        length: products.length,
+        limit: limit,
       });
     } else {
       res.json({
@@ -70,20 +64,14 @@ module.exports.search = async (req, res) => {
         message: "Error",
       });
     }
-    return;
   }
-
-  res.json({
-    code: 400,
-    message: "Error",
-  });
 };
 
 // [GET] /api/v1/products/detail/:productId
 module.exports.detail = async (req, res) => {
   const productId = req.params.productId;
 
-  const product = await ProductDetail.findOne({
+  const product = await Product.findOne({
     id: productId,
   });
 
