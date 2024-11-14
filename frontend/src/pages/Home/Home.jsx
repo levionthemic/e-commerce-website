@@ -13,18 +13,6 @@ import "react-multi-carousel/lib/styles.css";
 import { useNavigate, Link } from "react-router-dom";
 import { axiosApi } from "../../services/UserService";
 
-const auth = (navigate) => {
-  let isLogin = false;
-  const arr = document.cookie.split("; ");
-  for (const item of arr) {
-    const [key] = item.split("=");
-    if (key === "token") {
-      isLogin = true;
-    }
-  }
-  if (!isLogin) navigate("/auth/login");
-};
-
 const Home = () => {
   const navigate = useNavigate();
 
@@ -33,7 +21,19 @@ const Home = () => {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [productsDisplayed, setProductsDisplayed] = useState(12);
 
-  auth(navigate);
+  useEffect(() => {
+    let isLogin = false;
+    const arr = document.cookie.split("; ");
+    for (const item of arr) {
+      const [key] = item.split("=");
+      if (key === "token") {
+        isLogin = true;
+      }
+    }
+    if (!isLogin) {
+      navigate("/auth/login");
+    }
+  });
 
   // Lấy dữ liệu sản phẩm bán chạy
   useEffect(() => {
@@ -49,9 +49,10 @@ const Home = () => {
           .slice(0, 10);
         setBestSellingProducts(sortedProducts);
       })
-      .catch((error) =>
-        console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error)
-      );
+      .catch((error) => {
+        console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error);
+        window.location.reload();
+      });
   }, []);
 
   // Lấy dữ liệu sản phẩm đề xuất
@@ -69,9 +70,10 @@ const Home = () => {
           .slice(0, 36); // Lấy 30 sản phẩm để hiển thị và có thể tải thêm
         setRecommendedProducts(sortedProducts);
       })
-      .catch((error) =>
-        console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error)
-      );
+      .catch((error) => {
+        console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error);
+        window.location.reload();
+      });
   }, []);
 
   // Hàm xử lý khi nhấn nút "Xem thêm"

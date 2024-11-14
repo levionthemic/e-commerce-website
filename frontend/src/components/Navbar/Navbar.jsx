@@ -32,6 +32,7 @@ const items = [
         style={{ color: "red" }}
         onClick={() => {
           document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+          document.cookie = "cartId=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
           window.location.reload();
         }}
       >

@@ -1,14 +1,16 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
+import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { Provider } from "react-redux";
-import store from "./redux/store"; // Sửa lại import của store
+import { BrowserRouter } from "react-router-dom";
+import store from "./redux/store"; 
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
   <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById("root")
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>
 );
