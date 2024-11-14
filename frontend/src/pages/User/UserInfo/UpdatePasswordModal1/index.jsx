@@ -41,11 +41,8 @@ function UpdatePasswordModal1() {
       return;
     }
 
-    const token = cookies().token;
-
     axiosApi
       .post("/api/v1/user/reset-password", {
-        token: token,
         currentPassword: currentPassword,
         password: newPassword,
       })

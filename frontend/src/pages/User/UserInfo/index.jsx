@@ -109,10 +109,8 @@ function UserInfo() {
           cancelButtonText: "Hủy",
         }).then((res) => {
           if (res.isConfirmed) {
-            const token = cookies().token;
             axiosApi
               .patch("/api/v1/user/update", {
-                token: token,
                 phoneNumber: phoneNumber,
               })
               .then((res) => {
@@ -160,10 +158,8 @@ function UserInfo() {
           cancelButtonText: "Hủy",
         }).then((res) => {
           if (res.isConfirmed) {
-            const token = cookies().token;
             axiosApi
               .patch("/api/v1/user/update", {
-                token: token,
                 address: address,
               })
               .then((res) => {

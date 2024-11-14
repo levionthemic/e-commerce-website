@@ -4,6 +4,7 @@ import { routes } from "./routes";
 import Loading from "./components/Loading/Loading";
 import DefaultComponent from "./components/DefaultComponent/DefaultComponent";
 import "./App.css";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
@@ -15,18 +16,30 @@ function App() {
           <Routes>
             {routes.map((route) => {
               const Page = route.page;
-              const Layout = route.isShowHeader ? DefaultComponent : Fragment;
-              return (
+              const Layout = route.isShowHeader ? (
                 <Route
                   key={route.path}
                   path={route.path}
                   element={
-                    <Layout>
+                    <PrivateRoute>
+                      <DefaultComponent>
+                        <Page />
+                      </DefaultComponent>
+                    </PrivateRoute>
+                  }
+                />
+              ) : (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={
+                    <>
                       <Page />
-                    </Layout>
+                    </>
                   }
                 />
               );
+              return Layout;
             })}
           </Routes>
         </Loading>

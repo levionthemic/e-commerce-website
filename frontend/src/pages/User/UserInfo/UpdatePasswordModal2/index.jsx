@@ -25,17 +25,9 @@ function UpdatePasswordModal2() {
     e.preventDefault();
 
     axiosApi
-      .post(
-        "/api/v1/user/otp-check",
-        {
-          otp: otp,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      .post("/api/v1/user/otp-check", {
+        otp: otp,
+      })
       .then(() => {
         dispatch(closeModal2());
         dispatch(openModal3());

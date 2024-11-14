@@ -22,7 +22,6 @@ function UpdateEmailModal3() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const token = cookies().token;
 
     axiosApi
       .post("/api/v1/user/otp-check", {
@@ -32,7 +31,6 @@ function UpdateEmailModal3() {
         console.log(updateEmailModal.email);
         axiosApi
           .patch("/api/v1/user/update", {
-            token: token,
             email: updateEmailModal.email,
           })
           .then(() => {

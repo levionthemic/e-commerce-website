@@ -98,11 +98,12 @@ module.exports.getUser = async (req, res) => {
 
 // [PATCH] /api/v1/user/update
 module.exports.update = async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
   const { ...userInfo } = req.body;
   try {
     await User.updateOne(
       {
-        token: userInfo.token,
+        token: token,
       },
       { ...userInfo }
     );
@@ -180,7 +181,8 @@ module.exports.otpCheck = async (req, res) => {
 
 // [POST] /api/v1/user/reset-password
 module.exports.resetPassword = async (req, res) => {
-  const { token, password, currentPassword } = req.body;
+  const { password, currentPassword } = req.body;
+  const token = req.headers.authorization.split(" ")[1];
 
   if (currentPassword) {
     const user = await User.findOne({ token: token });
@@ -220,7 +222,8 @@ module.exports.resetPassword = async (req, res) => {
 
 // [GET] /api/v1/user/order
 module.exports.order = async (req, res) => {
-  const { status, token } = req.body;
+  const { status } = req.body;
+  const token = req.headers.authorization.split(" ")[1];
 
   const user = await User.findOne({ token: token });
 

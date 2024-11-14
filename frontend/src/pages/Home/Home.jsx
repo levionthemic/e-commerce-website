@@ -21,6 +21,17 @@ const Home = () => {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [productsDisplayed, setProductsDisplayed] = useState(12);
 
+  let isLogin = false;
+  const arr = document.cookie.split("; ");
+  for (const item of arr) {
+    const [key] = item.split("=");
+    if (key === "token") {
+      isLogin = true;
+    }
+  }
+  if (!isLogin) {
+    navigate("/auth/login");
+  }
   useEffect(() => {
     let isLogin = false;
     const arr = document.cookie.split("; ");

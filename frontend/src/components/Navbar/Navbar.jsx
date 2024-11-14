@@ -11,15 +11,15 @@ import {
 
 const items = [
   {
-    label: <a href="/user/info">Tài khoản của tôi</a>,
+    label: <Link to="/user/info">Tài khoản của tôi</Link>,
     key: "0",
   },
   {
-    label: <a href="/user/order">Đơn hàng của tôi</a>,
+    label: <Link to="/user/order">Đơn hàng của tôi</Link>,
     key: "1",
   },
   {
-    label: <a href="/settings">Cài đặt</a>,
+    label: <Link to="/settings">Cài đặt</Link>,
     key: "2",
   },
   {
@@ -27,9 +27,8 @@ const items = [
   },
   {
     label: (
-      <a
-        href="/"
-        style={{ color: "red" }}
+      <span
+        style={{ color: "red", fontWeight: "bold" }}
         onClick={() => {
           document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
           document.cookie = "cartId=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
@@ -37,7 +36,7 @@ const items = [
         }}
       >
         Đăng xuất
-      </a>
+      </span>
     ),
     key: "3",
   },
