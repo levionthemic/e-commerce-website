@@ -6,6 +6,8 @@ import UserInfo from "../pages/User/UserInfo";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import OTPConfirm from "../pages/Auth/OTPConfirm";
 import ResetPassword from "../pages/Auth/ResetPassword";
+import CartPage from "../pages/CartPage";
+import DetailProduct from "../pages/DetailProduct";
 
 export const routes = [
   {
@@ -39,6 +41,11 @@ export const routes = [
     isShowHeader: false,
   },
   {
+    path: "/cart",
+    page: CartPage,
+    isShowHeader: true,
+  },
+  {
     path: "/search",
     page: SearchPage,
     isShowHeader: true,
@@ -46,6 +53,11 @@ export const routes = [
   {
     path: "/user/info",
     page: UserInfo,
+    isShowHeader: true,
+  },
+  {
+    path: "/detailproduct/:productId",
+    page: DetailProduct,
     isShowHeader: true,
   },
 ];

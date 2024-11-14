@@ -3,9 +3,9 @@ const User = require("../../models/user.model");
 const { cookies } = require("../../../../helpers/cookies");
 
 module.exports.requireCart = async (req, res, next) => {
-  const cartId = req.body.cartId;
+  const cartId = cookies(req).cartId;
   if (!cartId) {
-    const token = req.body.token;
+    const token = cookies(req).token;
     const user = await User.findOne({ token: token });
     const cart = new Cart({
       userId: user.id,

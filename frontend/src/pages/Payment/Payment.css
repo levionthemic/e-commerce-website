@@ -1,0 +1,51 @@
+/* payment.css */
+.payment-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .payment-info-card, .order-info-card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .payment-info-card .ant-card-body, .order-info-card .ant-card-body {
+    padding: 20px;
+  }
+  
+  .order-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .order-price {
+    font-weight: bold;
+    color: #ff6a00;
+  }
+  
+  .order-summary .total-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #e60000;
+  }
+  
+  button[type="submit"] {
+    background-color: #ff6a00;
+    border: none;
+    color: white;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #e56d00;
+  }
+  
+  @media (max-width: 767px) {
+    .payment-container {
+      padding: 10px;
+    }
+  
+    .payment-info-card, .order-info-card {
+      margin-bottom: 20px;
+    }
+  }
+  
