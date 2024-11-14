@@ -1,9 +1,7 @@
-// const { cookies } = require("../../../../helpers/cookies");
-// const User = require("../../models/user.model");
+const User = require("../../models/user.model");
 
 module.exports.requireAuth = async (req, res, next) => {
-  // const token = cookies(req).token;
-  const token = req.body.token;
+  const token = req.headers.authorization.split(" ")[1];
 
   const user = await User.findOne({
     token: token,
@@ -11,7 +9,7 @@ module.exports.requireAuth = async (req, res, next) => {
 
   if (!user) {
     res.json({
-      code: 400,
+      code: 401,
       message: "Invalid Token",
     });
     return;

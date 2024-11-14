@@ -2,10 +2,10 @@
 import React, { memo, useState } from "react";
 import "./Signup.scss";
 import img from "../../../assets/images/image-login.jpg";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { axiosApi } from "../../../services/UserService";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -44,20 +44,12 @@ function Signup() {
     const role = e.target[0].checked ? "buyer" : "seller";
 
     try {
-      await axios.post(
-        "http://localhost:3001/api/v1/user/signup",
-        {
-          email: email,
-          username: username,
-          password: password,
-          role: role,
-        },
-        {
-          header: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axiosApi.post("/api/v1/user/signup", {
+        email: email,
+        username: username,
+        password: password,
+        role: role,
+      });
       Swal.fire({
         icon: "success",
         title: "Đăng kí thành công!",

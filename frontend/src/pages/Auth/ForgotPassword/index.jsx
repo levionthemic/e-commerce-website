@@ -3,7 +3,7 @@ import "./ForgotPassword.scss";
 import img from "../../../assets/images/image-login.jpg";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosApi } from "../../../services/UserService";
 import Swal from "sweetalert2";
 
 function ForgotPassword() {
@@ -13,18 +13,10 @@ function ForgotPassword() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email) {
-      axios
-        .post(
-          "http://localhost:3001/api/v1/user/otp-request",
-          {
-            email: email,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
+      axiosApi
+        .post("/api/v1/user/otp-request", {
+          email: email,
+        })
         .then((res) => {
           navigate("/auth/otp-confirm", { state: email });
         })

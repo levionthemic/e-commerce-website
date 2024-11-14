@@ -7,18 +7,9 @@ import {
 } from "../../../../redux/slices/UpdatePasswordModalSlice";
 import img from "../../../../assets/images/lock-icon.svg";
 import "./UpdatePasswordModal1.scss";
-import axios from "axios";
 import Swal from "sweetalert2";
-
-const cookies = () => {
-  const cookies = document.cookie.split("; ");
-  let result = {};
-  cookies.forEach((cookie) => {
-    const [key, value] = cookie.split("=");
-    result[key] = value;
-  });
-  return result;
-};
+import { cookies } from "../../../../helpers/cookies";
+import { axiosApi } from "../../../../services/UserService";
 
 function UpdatePasswordModal1() {
   const updatePasswordModal = useSelector(
@@ -52,17 +43,13 @@ function UpdatePasswordModal1() {
 
     const token = cookies().token;
 
-    axios
-      .post(
-        "http://localhost:3001/api/v1/user/reset-password",
-        {
-          token: token,
-          currentPassword: currentPassword,
-          password: newPassword,
-        },
-        { headers: { "Content-Type": "application/json" } }
-      )
-      .then((res) => {
+    axiosApi
+      .post("/api/v1/user/reset-password", {
+        token: token,
+        currentPassword: currentPassword,
+        password: newPassword,
+      })
+      .then(() => {
         dispatch(closeModal1());
         Swal.fire({
           toast: true,
@@ -100,29 +87,21 @@ function UpdatePasswordModal1() {
   const handleOption = (e) => {
     const token = cookies().token;
     let email = "";
-    axios
-      .get(`http://localhost:3001/api/v1/user/${token}`)
+    axiosApi
+      .get(`/api/v1/user/${token}`)
       .then((res) => {
         email = res.data.user.email;
       })
       .then(() => {
-        axios
-          .post(
-            "http://localhost:3001/api/v1/user/otp-request",
-            {
-              email: email,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then((res) => {
+        axiosApi
+          .post("/api/v1/user/otp-request", {
+            email: email,
+          })
+          .then(() => {
             dispatch(closeModal1());
             dispatch(openModal2());
           })
-          .catch((error) => {
+          .catch(() => {
             Swal.fire({
               toast: true,
               position: "top-end",

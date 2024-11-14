@@ -4,25 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import img from "../../../../assets/images/email-icon.svg";
 import img2 from "../../../../assets/images/goback-icon.svg";
 import "./UpdateEmailModal3.scss";
-import axios from "axios";
 import Swal from "sweetalert2";
 import {
-  closeEmailModal1,
-  closeEmailModal2,
   closeEmailModal3,
   openEmailModal2,
-  openEmailModal3,
 } from "../../../../redux/slices/UpdateEmailModalSlice";
-
-const cookies = () => {
-  const cookies = document.cookie.split("; ");
-  let result = {};
-  cookies.forEach((cookie) => {
-    const [key, value] = cookie.split("=");
-    result[key] = value;
-  });
-  return result;
-};
+import { cookies } from "../../../../helpers/cookies";
+import { axiosApi } from "../../../../services/UserService";
 
 function UpdateEmailModal3() {
   const updateEmailModal = useSelector(
@@ -36,33 +24,17 @@ function UpdateEmailModal3() {
     e.preventDefault();
     const token = cookies().token;
 
-    axios
-      .post(
-        "http://localhost:3001/api/v1/user/otp-check",
-        {
-          otp: otp,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+    axiosApi
+      .post("/api/v1/user/otp-check", {
+        otp: otp,
+      })
       .then(() => {
         console.log(updateEmailModal.email);
-        axios
-          .patch(
-            "http://localhost:3001/api/v1/user/update",
-            {
-              token: token,
-              email: updateEmailModal.email,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
+        axiosApi
+          .patch("/api/v1/user/update", {
+            token: token,
+            email: updateEmailModal.email,
+          })
           .then(() => {
             Swal.fire({
               toast: true,
@@ -116,24 +88,16 @@ function UpdateEmailModal3() {
   const handleResendOTP = (e) => {
     const token = cookies().token;
     let email = "";
-    axios
-      .get(`http://localhost:3001/api/v1/user/${token}`)
+    axiosApi
+      .get(`/api/v1/user/${token}`)
       .then((res) => {
         email = res.data.user.email;
       })
       .then(() => {
-        axios
-          .post(
-            "http://localhost:3001/api/v1/user/otp-request",
-            {
-              email: email,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
+        axiosApi
+          .post("/api/v1/user/otp-request", {
+            email: email,
+          })
           .then((res) => {
             Swal.fire({
               toast: true,

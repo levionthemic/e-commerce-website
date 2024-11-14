@@ -2,9 +2,16 @@
 import React, { useEffect, useState } from "react";
 import "./Login.scss";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosApi } from "../../../services/UserService";
 import Swal from "sweetalert2";
 import img from "../../../assets/images/image-login.jpg";
+
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -42,22 +49,18 @@ function Login() {
       ? "seller"
       : "admin";
 
-    axios
+    axiosApi
       .post(
-        "http://localhost:3001/api/v1/user/login",
+        "/api/v1/user/login",
         {
           username: username,
           password: password,
           role: role,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
       )
       .then((res) => {
-        document.cookie = `token=${res.data.token}`;
+        setCookie("token", res.data.token, 1);
+        setCookie("cartId", res.data.cartId, 1);
         navigate("/");
       })
       .catch((error) => {

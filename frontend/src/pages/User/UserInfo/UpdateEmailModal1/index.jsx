@@ -3,23 +3,14 @@ import { CustomModal } from "../style";
 import { useSelector, useDispatch } from "react-redux";
 import img from "../../../../assets/images/email-icon.svg";
 import "./UpdateEmailModal1.scss";
-import axios from "axios";
 import Swal from "sweetalert2";
 import {
   closeEmailModal1,
   openEmailModal2,
 } from "../../../../redux/slices/UpdateEmailModalSlice";
 import CryptoJS from "crypto-js";
-
-const cookies = () => {
-  const cookies = document.cookie.split("; ");
-  let result = {};
-  cookies.forEach((cookie) => {
-    const [key, value] = cookie.split("=");
-    result[key] = value;
-  });
-  return result;
-};
+import { cookies } from "../../../../helpers/cookies";
+import { axiosApi } from "../../../../services/UserService";
 
 function UpdateEmailModal1() {
   const updateEmailModal = useSelector(
@@ -34,7 +25,7 @@ function UpdateEmailModal1() {
 
     const token = cookies().token;
 
-    axios.get("http://localhost:3001/api/v1/user/" + token).then((res) => {
+    axiosApi.get("/api/v1/user/" + token).then((res) => {
       const userPassword = res.data.user.password;
       if (userPassword !== CryptoJS.SHA256(password).toString()) {
         Swal.fire({

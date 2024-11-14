@@ -4,25 +4,13 @@ import { useSelector, useDispatch } from "react-redux";
 import img from "../../../../assets/images/email-icon.svg";
 import img2 from "../../../../assets/images/goback-icon.svg";
 import "./UpdateEmailModal2.scss";
-import axios from "axios";
 import Swal from "sweetalert2";
 import {
-  closeEmailModal1,
   closeEmailModal2,
   openEmailModal1,
-  openEmailModal2,
   openEmailModal3,
 } from "../../../../redux/slices/UpdateEmailModalSlice";
-
-const cookies = () => {
-  const cookies = document.cookie.split("; ");
-  let result = {};
-  cookies.forEach((cookie) => {
-    const [key, value] = cookie.split("=");
-    result[key] = value;
-  });
-  return result;
-};
+import { axiosApi } from "../../../../services/UserService";
 
 function UpdateEmailModal2() {
   const updateEmailModal = useSelector(
@@ -35,23 +23,15 @@ function UpdateEmailModal2() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios
-      .post(
-        "http://localhost:3001/api/v1/user/otp-request",
-        {
-          newEmail: email,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
+    axiosApi
+      .post("/api/v1/user/otp-request", {
+        newEmail: email,
+      })
+      .then(() => {
         dispatch(closeEmailModal2());
         dispatch(openEmailModal3(email));
       })
-      .catch((error) => {
+      .catch(() => {
         Swal.fire({
           toast: true,
           position: "top-end",

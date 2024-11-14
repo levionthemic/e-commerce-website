@@ -4,7 +4,7 @@ import img from "../../../assets/images/image-login.jpg";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "axios";
+import { axiosApi } from "../../../services/UserService";
 
 function OTPConfirm() {
   const navigate = useNavigate();
@@ -14,18 +14,10 @@ function OTPConfirm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios
-      .post(
-        "http://localhost:3001/api/v1/user/otp-check",
-        {
-          otp: otp,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+    axiosApi
+      .post("/api/v1/user/otp-check", {
+        otp: otp,
+      })
       .then((res) => {
         document.cookie = `token=${res.data.token}`;
         navigate("/auth/reset-password");
@@ -40,18 +32,10 @@ function OTPConfirm() {
   };
 
   const handleResendOTP = (e) => {
-    axios
-      .post(
-        "http://localhost:3001/api/v1/user/otp-request",
-        {
-          email: email,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+    axiosApi
+      .post("/api/v1/user/otp-request", {
+        email: email,
+      })
       .then((res) => {
         Swal.fire({
           icon: "info",

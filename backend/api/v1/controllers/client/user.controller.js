@@ -5,7 +5,7 @@ const Order = require("../../models/order.model");
 const CryptoJS = require("crypto-js");
 const { generateOTP } = require("../../../../helpers/generate");
 const { sendMail } = require("../../../../helpers/sendMail");
-const { cookies } = require("../../../../helpers/cookies");
+const Cart = require("../../models/cart.model");
 
 // [POST] /api/v1/user/signup
 module.exports.signup = async (req, res) => {
@@ -63,9 +63,18 @@ module.exports.login = async (req, res) => {
     return;
   }
 
+  let cart = await Cart.findOne({ userId: user.id });
+  if (!cart) {
+    cart = new Cart({
+      userId: user.id,
+    });
+    await cart.save();
+  }
+
   res.status(200).json({
     message: "Login Success",
     token: user.token,
+    cartId: cart.id,
   });
 };
 
@@ -115,7 +124,7 @@ module.exports.otpRequest = async (req, res) => {
     const user = await User.findOne({
       email: email,
     });
-  
+
     if (!user) {
       res.status(400).json({
         message: "Email không tồn tại!",
@@ -127,7 +136,6 @@ module.exports.otpRequest = async (req, res) => {
   if (newEmail) {
     email = newEmail;
   }
-  
 
   const otp = new OTP({
     email: email,
@@ -176,9 +184,7 @@ module.exports.resetPassword = async (req, res) => {
 
   if (currentPassword) {
     const user = await User.findOne({ token: token });
-    if (
-      CryptoJS.SHA256(currentPassword).toString() !== user.password
-    ) {
+    if (CryptoJS.SHA256(currentPassword).toString() !== user.password) {
       res.status(400).json({
         message: "Mật khẩu hiện tại không trùng khớp!",
       });

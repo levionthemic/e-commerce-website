@@ -9,17 +9,8 @@ import img from "../../../../assets/images/lock-icon.svg";
 import img2 from "../../../../assets/images/goback-icon.svg";
 import "./UpdatePasswordModal3.scss";
 import Swal from "sweetalert2";
-import axios from "axios";
-
-const cookies = () => {
-  const cookies = document.cookie.split("; ");
-  let result = {};
-  cookies.forEach((cookie) => {
-    const [key, value] = cookie.split("=");
-    result[key] = value;
-  });
-  return result;
-};
+import { cookies } from "../../../../helpers/cookies";
+import { axiosApi } from "../../../../services/UserService";
 
 function UpdatePasswordModal3() {
   const updatePasswordModal = useSelector(
@@ -50,19 +41,11 @@ function UpdatePasswordModal3() {
     }
     const token = cookies().token;
 
-    axios
-      .post(
-        "http://localhost:3001/api/v1/user/reset-password",
-        {
-          token: token,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+    axiosApi
+      .post("/api/v1/user/reset-password", {
+        token: token,
+        password: password,
+      })
       .then(() => {
         Swal.fire({
           toast: true,

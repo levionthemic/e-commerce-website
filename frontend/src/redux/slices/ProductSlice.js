@@ -28,17 +28,10 @@ const productSlice = createSlice({
         (product) => product.id !== action.payload.id
       );
     },
-    // Thêm hàm searchProduct
     searchProduct: (state, action) => {
       const keyword = action.payload.toLowerCase();
       state.items = state.items.filter((product) =>
         product.name.toLowerCase().includes(keyword)
-      );
-    },
-    searchProduct: (state, action) => {
-      const searchTerm = action.payload.toLowerCase();
-      state.items = state.items.filter(product =>
-        product.name.toLowerCase().includes(searchTerm) // Adjust based on your product structure
       );
     },
   },
@@ -51,8 +44,7 @@ export const {
   fetchProductsFailure,
   addProduct,
   removeProduct,
-  searchProduct, // Add this line
-  //searchProduct, // Xuất searchProduct để sử dụng trong các component
+  searchProduct, 
 } = productSlice.actions;
 
 export default productSlice.reducer;

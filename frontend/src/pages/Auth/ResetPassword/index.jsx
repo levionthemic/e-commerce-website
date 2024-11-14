@@ -4,17 +4,8 @@ import img from "../../../assets/images/image-login.jpg";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import axios from "axios";
 
-const cookies = () => {
-  const cookies = document.cookie.split("; ");
-  let result = {};
-  cookies.forEach((cookie) => {
-    const [key, value] = cookie.split("=");
-    result[key] = value;
-  });
-  return result;
-}
+import { axiosApi } from "../../../services/UserService";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -33,22 +24,12 @@ function ResetPassword() {
       });
       return;
     }
-    const token = cookies().token;
-    
-    axios
-      .post(
-        "http://localhost:3001/api/v1/user/reset-password",
-        {
-          token: token,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
+
+    axiosApi
+      .post("/api/v1/user/reset-password", {
+        password: password,
+      })
+      .then(() => {
         Swal.fire({
           icon: "success",
           title: "Đặt lại mật khẩu thành công!",

@@ -11,17 +11,18 @@ import {
 import "./SearchPage.css";
 import { useLocation, Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+import { axiosApi } from "../../services/UserService";
 
 const SearchPage = () => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState(1000000);
-  const [sortBy, setSortBy] = useState("Liên Quan");
+  // const [sortBy, _] = useState("Liên Quan");
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [storeType, setStoreType] = useState([]);
-  const [productCondition, setProductCondition] = useState([]);
-  const [brand, setBrand] = useState([]);
+  // const [storeType, setStoreType] = useState([]);
+  // const [productCondition, setProductCondition] = useState([]);
+  // const [brand, setBrand] = useState([]);
   const [ratingFilter, setRatingFilter] = useState(null);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -35,81 +36,57 @@ const SearchPage = () => {
   };
 
   const handleResetFilters = () => {
-    setMinPrice("");
-    setMaxPrice(1000000);
-    setStoreType([]);
-    setProductCondition([]);
-    setBrand([]);
-    setRatingFilter(null);
-    setPromotions([]);
-    fetchProducts();
-  };
-
-  const fetchProducts = async () => {
-    try {
-      const url = new URL("http://localhost:3001/api/v1/products/search");
-      url.searchParams.append("keyword", keyword);
-      url.searchParams.append("minPrice", minPrice || 0);
-      url.searchParams.append("maxPrice", maxPrice || 1000000);
-      url.searchParams.append("sortBy", sortBy);
-      url.searchParams.append("page", page);
-
-      // Add other filters if selected
-      if (storeType.length > 0)
-        url.searchParams.append("storeType", storeType.join(","));
-      if (productCondition.length > 0)
-        url.searchParams.append("productCondition", productCondition.join(","));
-      if (brand.length > 0) url.searchParams.append("brand", brand.join(","));
-      if (ratingFilter) url.searchParams.append("ratingFilter", ratingFilter);
-      if (promotions.length > 0)
-        url.searchParams.append("promotions", promotions.join(","));
-
-      const response = await fetch(url);
-      const data = await response.json();
-      setProducts(data.data);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
+    // setMinPrice("");
+    // setMaxPrice(1000000);
+    // setStoreType([]);
+    // setProductCondition([]);
+    // setBrand([]);
+    // setRatingFilter(null);
+    // setPromotions([]);
+    // fetchProducts();
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, [
-    keyword,
-    minPrice,
-    maxPrice,
-    sortBy,
-    page,
-    storeType,
-    productCondition,
-    brand,
-    ratingFilter,
-  ]);
+    try {
+     
+      console.log(keyword);
+      axiosApi("/api/v1/products/search", {
+        params: {
+          keyword: keyword,
+        },
+      }).then((data) => {
+        console.log(data);
+        setProducts(data.data.data);
+        setTotalPages(data.data.totalPages);
+      });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }, [keyword]);
 
   const handleApplyFilters = () => {
-    setPage(1);
-    fetchProducts();
+    // setPage(1);
+    // fetchProducts();
   };
 
   const handleSortChange = (sortOption) => {
-    setSortBy(sortOption);
-    setPage(1); // Đảm bảo về trang đầu
-    fetchProducts();
+    // setSortBy(sortOption);
+    // setPage(1); // Đảm bảo về trang đầu
+    // fetchProducts();
   };
 
   const toggleStoreType = (type) => {
-    setStoreType((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
+    // setStoreType((prev) =>
+    //   prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    // );
   };
 
   const toggleProductCondition = (condition) => {
-    setProductCondition((prev) =>
-      prev.includes(condition)
-        ? prev.filter((c) => c !== condition)
-        : [...prev, condition]
-    );
+    // setProductCondition((prev) =>
+    //   prev.includes(condition)
+    //     ? prev.filter((c) => c !== condition)
+    //     : [...prev, condition]
+    // );
   };
 
   // const toggleBrand = (brandName) => {
@@ -161,19 +138,19 @@ const SearchPage = () => {
                 type="checkbox"
                 label="Shopee Mall"
                 onChange={() => toggleStoreType("Shopee Mall")}
-                checked={storeType.includes("Shopee Mall")}
+                // checked={storeType.includes("Shopee Mall")}
               />
               <Form.Check
                 type="checkbox"
                 label="Shop Yêu Thích"
                 onChange={() => toggleStoreType("Shop Yêu Thích")}
-                checked={storeType.includes("Shop Yêu Thích")}
+                // checked={storeType.includes("Shop Yêu Thích")}
               />
               <Form.Check
                 type="checkbox"
                 label="Xử lý đơn hàng bởi Shopee"
                 onChange={() => toggleStoreType("Shopee")}
-                checked={storeType.includes("Shopee")}
+                // checked={storeType.includes("Shopee")}
               />
             </Form.Group>
 
@@ -183,13 +160,13 @@ const SearchPage = () => {
                 type="checkbox"
                 label="Đã sử dụng"
                 onChange={() => toggleProductCondition("Đã sử dụng")}
-                checked={productCondition.includes("Đã sử dụng")}
+                // checked={productCondition.includes("Đã sử dụng")}
               />
               <Form.Check
                 type="checkbox"
                 label="Mới"
                 onChange={() => toggleProductCondition("Mới")}
-                checked={productCondition.includes("Mới")}
+                // checked={productCondition.includes("Mới")}
               />
             </Form.Group>
 
@@ -244,7 +221,7 @@ const SearchPage = () => {
             <h5>Kết quả tìm kiếm cho "{keyword}"</h5>
             <Dropdown onSelect={(e) => handleSortChange(e)}>
               <Dropdown.Toggle variant="outline-primary">
-                {sortBy}
+                {/* {sortBy} */}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item eventKey="Liên Quan">Liên Quan</Dropdown.Item>

@@ -10,17 +10,8 @@ import img from "../../../../assets/images/lock-icon.svg";
 import img2 from "../../../../assets/images/goback-icon.svg";
 import "./UpdatePasswordModal2.scss";
 import Swal from "sweetalert2";
-import axios from "axios";
-
-const cookies = () => {
-  const cookies = document.cookie.split("; ");
-  let result = {};
-  cookies.forEach((cookie) => {
-    const [key, value] = cookie.split("=");
-    result[key] = value;
-  });
-  return result;
-};
+import { cookies } from "../../../../helpers/cookies";
+import { axiosApi } from "../../../../services/UserService";
 
 function UpdatePasswordModal2() {
   const updatePasswordModal = useSelector(
@@ -33,9 +24,9 @@ function UpdatePasswordModal2() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios
+    axiosApi
       .post(
-        "http://localhost:3001/api/v1/user/otp-check",
+        "/api/v1/user/otp-check",
         {
           otp: otp,
         },
@@ -45,7 +36,7 @@ function UpdatePasswordModal2() {
           },
         }
       )
-      .then((res) => {
+      .then(() => {
         dispatch(closeModal2());
         dispatch(openModal3());
       })
@@ -69,25 +60,17 @@ function UpdatePasswordModal2() {
   const handleResendOTP = (e) => {
     const token = cookies().token;
     let email = "";
-    axios
-      .get(`http://localhost:3001/api/v1/user/${token}`)
+    axiosApi
+      .get(`/api/v1/user/${token}`)
       .then((res) => {
         email = res.data.user.email;
       })
       .then(() => {
-        axios
-          .post(
-            "http://localhost:3001/api/v1/user/otp-request",
-            {
-              email: email,
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then((res) => {
+        axiosApi
+          .post("/api/v1/user/otp-request", {
+            email: email,
+          })
+          .then(() => {
             Swal.fire({
               toast: true,
               position: "top-end",
@@ -102,7 +85,7 @@ function UpdatePasswordModal2() {
               title: "Đã gửi lại OTP!",
             });
           })
-          .catch((error) => {
+          .catch(() => {
             Swal.fire({
               toast: true,
               position: "top-end",

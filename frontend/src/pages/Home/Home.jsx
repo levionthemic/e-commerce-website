@@ -6,15 +6,24 @@ import {
   CustomerServiceFilled,
   StarOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Col,
-} from "react-bootstrap";
+import { Button, Card, Col } from "react-bootstrap";
 import Carousel from "react-multi-carousel";
 import { FaStar } from "react-icons/fa";
 import "react-multi-carousel/lib/styles.css";
 import { useNavigate, Link } from "react-router-dom";
+import { axiosApi } from "../../services/UserService";
+
+const auth = (navigate) => {
+  let isLogin = false;
+  const arr = document.cookie.split("; ");
+  for (const item of arr) {
+    const [key] = item.split("=");
+    if (key === "token") {
+      isLogin = true;
+    }
+  }
+  if (!isLogin) navigate("/auth/login");
+};
 
 const Home = () => {
   const navigate = useNavigate();
@@ -24,44 +33,45 @@ const Home = () => {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [productsDisplayed, setProductsDisplayed] = useState(12);
 
-  useEffect(() => {
-    let isLogin = false;
-    const arr = document.cookie.split("; ");
-    for (const item of arr) {
-      const [key] = item.split("=");
-      if (key === "token") {
-        isLogin = true;
-      }
-    }
-    if (!isLogin) navigate("/auth/login");
-  }, [navigate]);
+  auth(navigate);
 
   // Lấy dữ liệu sản phẩm bán chạy
   useEffect(() => {
-    fetch("http://localhost:3001/api/v1/products")
-      .then((response) => response.json())
-      .then((responseData) => {
-        const sortedProducts = responseData.data
-          .filter((product) => product.quantity_sold && product.quantity_sold.value > 0)
+    axiosApi
+      .get("/api/v1/products")
+      .then((res) => {
+        const sortedProducts = res.data.data
+          .filter(
+            (product) =>
+              product.quantity_sold && product.quantity_sold.value > 0
+          )
           .sort((a, b) => b.quantity_sold.value - a.quantity_sold.value)
           .slice(0, 10);
         setBestSellingProducts(sortedProducts);
       })
-      .catch((error) => console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error));
+      .catch((error) =>
+        console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error)
+      );
   }, []);
 
   // Lấy dữ liệu sản phẩm đề xuất
   useEffect(() => {
-    fetch("http://localhost:3001/api/v1/products")
-      .then((response) => response.json())
-      .then((responseData) => {
-        const sortedProducts = responseData.data
-          .filter((product) => product.rating_average !== null && product.rating_average !== undefined)
+    axiosApi
+      .get("/api/v1/products")
+      .then((res) => {
+        const sortedProducts = res.data.data
+          .filter(
+            (product) =>
+              product.rating_average !== null &&
+              product.rating_average !== undefined
+          )
           .sort((a, b) => b.rating_average - a.rating_average)
           .slice(0, 36); // Lấy 30 sản phẩm để hiển thị và có thể tải thêm
         setRecommendedProducts(sortedProducts);
       })
-      .catch((error) => console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error));
+      .catch((error) =>
+        console.error("Có lỗi khi lấy dữ liệu sản phẩm:", error)
+      );
   }, []);
 
   // Hàm xử lý khi nhấn nút "Xem thêm"
@@ -126,7 +136,10 @@ const Home = () => {
                     <Card className="product-card">
                       <Card.Img
                         variant="top"
-                        src={product.thumbnail_url || "/images/default/default-product.png"}
+                        src={
+                          product.thumbnail_url ||
+                          "/images/default/default-product.png"
+                        }
                         alt={product.name}
                       />
                       <Card.Body>
@@ -165,7 +178,10 @@ const Home = () => {
                 <Card className="product-card">
                   <Card.Img
                     variant="top"
-                    src={product.thumbnail_url || "/images/default/default-product.png"}
+                    src={
+                      product.thumbnail_url ||
+                      "/images/default/default-product.png"
+                    }
                     alt={product.name}
                   />
                   <Card.Body>
@@ -194,7 +210,11 @@ const Home = () => {
           </div>
 
           {/* Nút xem thêm */}
-          <Button type="button" className="xemthem" onClick={loadMoreRecommendedProducts}>
+          <Button
+            type="button"
+            className="xemthem"
+            onClick={loadMoreRecommendedProducts}
+          >
             Xem thêm
           </Button>
         </section>

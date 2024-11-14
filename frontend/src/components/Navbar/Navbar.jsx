@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/images/AniCart.png";
 import "./Navbar.css";
-import { Dropdown, Button} from "antd";
+import { Dropdown, Button } from "antd";
 import {
   UserOutlined,
   ShoppingCartOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-
 
 const items = [
   {
@@ -33,6 +32,7 @@ const items = [
         style={{ color: "red" }}
         onClick={() => {
           document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+          window.location.reload();
         }}
       >
         Đăng xuất
@@ -42,28 +42,25 @@ const items = [
   },
 ];
 
-const Navbar = () => {
-  const [search, setSearch] = useState("");
+function Navbar() {
+  const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
 
-  // Xử lý sự kiện khi người dùng nhấn "Enter" hoặc nút "Tìm kiếm"
   const handleSearch = () => {
-    if (search.trim()) {
-      navigate(`/search?keyword=${search.trim()}`); // Điều hướng đến trang tìm kiếm với từ khóa
+    if (searchKeyword.trim()) {
+      navigate(`/search?keyword=${searchKeyword.trim()}`);
     }
   };
 
-  // Xử lý sự kiện nhấn "Enter" trong ô tìm kiếm
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
 
-  // Xử lý reload trang khi nhấn vào logo
   const handleLogoClick = (e) => {
     e.preventDefault();
-    window.location.href = "/"; // Reload trang
+    window.location.href = "/";
   };
 
   return (
@@ -79,8 +76,8 @@ const Navbar = () => {
             type="text"
             className="search-input"
             placeholder="Tìm kiếm sản phẩm"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
             onKeyPress={handleKeyPress} // Bắt sự kiện nhấn phím
           />
           <Button
@@ -105,6 +102,6 @@ const Navbar = () => {
       </div>
     </nav>
   );
-};
+}
 
-export default Navbar;
+export default memo(Navbar);

@@ -6,7 +6,6 @@ import {
   PhoneOutlined,
   RestOutlined,
 } from "@ant-design/icons";
-import axios from "axios";
 import "./UserInfo.scss";
 import avatar from "../../../assets/images/avatar.svg";
 import icon from "../../../assets/images/icon.svg";
@@ -21,19 +20,10 @@ import UpdatePasswordModal3 from "./UpdatePasswordModal3";
 import UpdateEmailModal1 from "./UpdateEmailModal1";
 import UpdateEmailModal3 from "./UpdateEmailModal3";
 import UpdateEmailModal2 from "./UpdateEmailModal2";
-
-const cookies = () => {
-  const cookieArr = document.cookie.split(";");
-  let result = {};
-  for (const cookieItem of cookieArr) {
-    const [key, value] = cookieItem.split("=");
-    result[key] = value;
-  }
-  return result;
-};
+import { cookies } from "../../../helpers/cookies";
+import { axiosApi } from "../../../services/UserService";
 
 function UserInfo() {
-
   const dispatch = useDispatch();
 
   const [user, setUser] = useState({
@@ -46,14 +36,14 @@ function UserInfo() {
   const [nations, setNations] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/api/v1/user/nations").then((res) => {
+    axiosApi.get("/api/v1/user/nations").then((res) => {
       setNations(res.data.data);
     });
   }, []);
 
   useEffect(() => {
     const token = cookies().token;
-    axios.get(`http://localhost:3001/api/v1/user/${token}`).then((res) => {
+    axiosApi.get(`/api/v1/user/${token}`).then((res) => {
       setUser(res.data.user);
     });
   }, []);
@@ -71,12 +61,8 @@ function UserInfo() {
       cancelButtonText: "Hủy",
     }).then((res) => {
       if (res.isConfirmed) {
-        axios
-          .patch(
-            "http://localhost:3001/api/v1/user/update",
-            { ...user },
-            { headers: { "Content-Type": "application/json" } }
-          )
+        axiosApi
+          .patch("/api/v1/user/update", { ...user })
           .then((res) => {
             Swal.fire({
               icon: "success",
@@ -124,15 +110,11 @@ function UserInfo() {
         }).then((res) => {
           if (res.isConfirmed) {
             const token = cookies().token;
-            axios
-              .patch(
-                "http://localhost:3001/api/v1/user/update",
-                {
-                  token: token,
-                  phoneNumber: phoneNumber,
-                },
-                { headers: { "Content-Type": "application/json" } }
-              )
+            axiosApi
+              .patch("/api/v1/user/update", {
+                token: token,
+                phoneNumber: phoneNumber,
+              })
               .then((res) => {
                 Swal.fire({
                   icon: "success",
@@ -179,15 +161,11 @@ function UserInfo() {
         }).then((res) => {
           if (res.isConfirmed) {
             const token = cookies().token;
-            axios
-              .patch(
-                "http://localhost:3001/api/v1/user/update",
-                {
-                  token: token,
-                  address: address,
-                },
-                { headers: { "Content-Type": "application/json" } }
-              )
+            axiosApi
+              .patch("/api/v1/user/update", {
+                token: token,
+                address: address,
+              })
               .then((res) => {
                 Swal.fire({
                   icon: "success",
@@ -214,7 +192,7 @@ function UserInfo() {
 
   const handleUpdatePassword = () => {
     dispatch(openModal1());
-  }
+  };
 
   const handleUpdateEmail = () => {
     dispatch(openEmailModal1());
