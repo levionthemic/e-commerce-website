@@ -8,6 +8,7 @@ import OTPConfirm from "../pages/Auth/OTPConfirm";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import CartPage from "../pages/CartPage/CartPage";
 import DetailProduct from "../pages/DetailProduct/DetailProduct";
+import UserOrder from "../pages/User/UserOrder";
 
 export const routes = [
   {
@@ -60,4 +61,10 @@ export const routes = [
     page: DetailProduct,
     isShowHeader: true,
   },
+  {
+    path: "/user/order",
+    page: UserOrder,
+    isShowHeader: true,
+  },
+
 ];

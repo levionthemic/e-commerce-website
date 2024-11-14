@@ -12,6 +12,15 @@ import avatar from "../../../assets/images/avatar.svg";
 import icon from "../../../assets/images/icon.svg";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+import { openModal1 } from "../../../redux/slices/UpdatePasswordModalSlice";
+import { openEmailModal1 } from "../../../redux/slices/UpdateEmailModalSlice";
+import UpdatePasswordModal1 from "./UpdatePasswordModal1";
+import UpdatePasswordModal2 from "./UpdatePasswordModal2";
+import UpdatePasswordModal3 from "./UpdatePasswordModal3";
+import UpdateEmailModal1 from "./UpdateEmailModal1";
+import UpdateEmailModal3 from "./UpdateEmailModal3";
+import UpdateEmailModal2 from "./UpdateEmailModal2";
 
 const cookies = () => {
   const cookieArr = document.cookie.split(";");
@@ -24,6 +33,9 @@ const cookies = () => {
 };
 
 function UserInfo() {
+
+  const dispatch = useDispatch();
+
   const [user, setUser] = useState({
     fullname: "",
     nickname: "",
@@ -144,20 +156,18 @@ function UserInfo() {
       allowOutsideClick: () => !Swal.isLoading(),
     });
   };
-
-  const handleUpdateEmail = () => {
+  const handleUpdateAddress = () => {
     Swal.fire({
-      title: "Nhập email: ",
-      input: "email",
+      title: "Nhập địa chỉ: ",
+      input: "text",
       inputAttributes: {
         required: true,
-        placeholder: "Vd: abc@gmail.com",
       },
       showCancelButton: true,
       confirmButtonText: "Cập nhật",
       cancelButtonText: "Hủy bỏ",
       showLoaderOnConfirm: true,
-      preConfirm: async (email) => {
+      preConfirm: async (address) => {
         Swal.fire({
           icon: "warning",
           showCancelButton: true,
@@ -174,7 +184,7 @@ function UserInfo() {
                 "http://localhost:3001/api/v1/user/update",
                 {
                   token: token,
-                  email: email,
+                  address: address,
                 },
                 { headers: { "Content-Type": "application/json" } }
               )
@@ -200,6 +210,14 @@ function UserInfo() {
       },
       allowOutsideClick: () => !Swal.isLoading(),
     });
+  };
+
+  const handleUpdatePassword = () => {
+    dispatch(openModal1());
+  }
+
+  const handleUpdateEmail = () => {
+    dispatch(openEmailModal1());
   };
 
   const handleClick = () => {
@@ -386,6 +404,9 @@ function UserInfo() {
                       </button>
                     </div>
                   </div>
+                  <UpdateEmailModal1 />
+                  <UpdateEmailModal2 />
+                  <UpdateEmailModal3 />
                 </div>
 
                 <div className="section-2">
@@ -403,12 +424,15 @@ function UserInfo() {
                       <button
                         type="button"
                         className="btn"
-                        onClick={handleClick}
+                        onClick={handleUpdatePassword}
                       >
                         Cập nhật
                       </button>
                     </div>
                   </div>
+                  <UpdatePasswordModal1 />
+                  <UpdatePasswordModal2 />
+                  <UpdatePasswordModal3 />
                   <div className="inner-item">
                     <div className="inner-item-info">
                       <div className="inner-icon">
@@ -423,6 +447,24 @@ function UserInfo() {
                         type="button"
                         className="btn"
                         onClick={handleClick}
+                      >
+                        Cập nhật
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="section-3">
+                  <h5>Địa chỉ</h5>
+                  <div className="inner-item">
+                    <div className="inner-item-info inner-address">
+                      <p>{user.address || "Chưa cập nhật"}</p>
+                    </div>
+                    <div className="inner-button">
+                      <button
+                        type="button"
+                        className="btn"
+                        onClick={handleUpdateAddress}
                       >
                         Cập nhật
                       </button>

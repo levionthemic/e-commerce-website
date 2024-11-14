@@ -1,6 +1,7 @@
 const User = require("../../models/user.model");
 const Nation = require("../../models/nation.model");
 const OTP = require("../../models/otp.model");
+const Order = require("../../models/order.model");
 const CryptoJS = require("crypto-js");
 const { generateOTP } = require("../../../../helpers/generate");
 const { sendMail } = require("../../../../helpers/sendMail");
@@ -86,7 +87,7 @@ module.exports.getUser = async (req, res) => {
   });
 };
 
-// [POST] /api/v1/user/update
+// [PATCH] /api/v1/user/update
 module.exports.update = async (req, res) => {
   const { ...userInfo } = req.body;
   try {
@@ -108,18 +109,25 @@ module.exports.update = async (req, res) => {
 };
 // [POST] /api/v1/user/otp-request
 module.exports.otpRequest = async (req, res) => {
-  const { email } = req.body;
+  let { email, newEmail } = req.body;
 
-  const user = await User.findOne({
-    email: email,
-  });
-
-  if (!user) {
-    res.status(400).json({
-      message: "Email không tồn tại!",
+  if (email) {
+    const user = await User.findOne({
+      email: email,
     });
-    return;
+  
+    if (!user) {
+      res.status(400).json({
+        message: "Email không tồn tại!",
+      });
+      return;
+    }
   }
+
+  if (newEmail) {
+    email = newEmail;
+  }
+  
 
   const otp = new OTP({
     email: email,
@@ -158,13 +166,31 @@ module.exports.otpCheck = async (req, res) => {
   });
   res.status(200).json({
     message: "OTP hợp lệ",
-    token: user.token,
+    token: user ? user.token : "",
   });
 };
 
 // [POST] /api/v1/user/reset-password
 module.exports.resetPassword = async (req, res) => {
-  const { token, password } = req.body;
+  const { token, password, currentPassword } = req.body;
+
+  if (currentPassword) {
+    const user = await User.findOne({ token: token });
+    if (
+      CryptoJS.SHA256(currentPassword).toString() !== user.password
+    ) {
+      res.status(400).json({
+        message: "Mật khẩu hiện tại không trùng khớp!",
+      });
+      return;
+    }
+    if (password === currentPassword) {
+      res.status(400).json({
+        message: "Mật khẩu mới không được giống mật khẩu hiện tại!",
+      });
+      return;
+    }
+  }
   try {
     await User.updateOne(
       {
@@ -173,12 +199,32 @@ module.exports.resetPassword = async (req, res) => {
       { password: CryptoJS.SHA256(password).toString() }
     );
     res.status(200).json({
-      message:
-        "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại để tiếp tục.",
+      message: currentPassword
+        ? "Cập nhật mật khẩu thành công!"
+        : "Đặt lại mật khẩu thành công! Vui lòng đăng nhập lại để tiếp tục.",
     });
   } catch (error) {
     res.status(400).json({
-      message: "Đặt lại mật khẩu không thành công!",
+      message: currentPassword
+        ? "Cập nhật mật khẩu không thành công !"
+        : "Đặt lại mật khẩu không thành công!",
     });
   }
+};
+
+// [GET] /api/v1/user/order
+module.exports.order = async (req, res) => {
+  const { status, token } = req.body;
+
+  const user = await User.findOne({ token: token });
+
+  const orders = await Order.find({
+    userId: user.id,
+    status: status,
+  });
+
+  res.status(200).json({
+    message: "Success",
+    data: orders,
+  });
 };

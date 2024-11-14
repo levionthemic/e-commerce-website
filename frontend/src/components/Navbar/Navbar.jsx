@@ -16,6 +16,10 @@ const items = [
     key: "0",
   },
   {
+    label: <a href="/user/order">Đơn hàng của tôi</a>,
+    key: "1",
+  },
+  {
     label: <a href="/settings">Cài đặt</a>,
     key: "2",
   },
