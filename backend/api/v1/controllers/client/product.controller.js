@@ -37,18 +37,27 @@ module.exports.index = async (req, res) => {
 module.exports.search = async (req, res) => {
   const limitQuantity = parseInt(req.query.limitQuantity);
   const keyword = req.query.keyword;
-
+  const page = parseInt(req.query.page);
+ 
   if (keyword) {
     const regex = new RegExp(keyword, "i");
 
     const slug = unidecode(keyword).trim().replace(/\s+/g, "-");
     const regexSlug = new RegExp(slug, "i");
 
-    let limit = limitQuantity || 100;
+    let limit = limitQuantity || 40;
+
+    const totalProducts = await Product.countDocuments({
+      $or: [{ name: regex }, { slug: regexSlug }],
+    });
+
+    const totalPages = Math.ceil(totalProducts / limit);
 
     const products = await Product.find({
       $or: [{ name: regex }, { slug: regexSlug }],
-    }).limit(limit);
+    })
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     if (products) {
       res.json({
@@ -57,6 +66,7 @@ module.exports.search = async (req, res) => {
         data: products,
         length: products.length,
         limit: limit,
+        totalPages: totalPages
       });
     } else {
       res.json({

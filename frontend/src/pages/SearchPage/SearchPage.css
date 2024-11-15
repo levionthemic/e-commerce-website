@@ -6,9 +6,14 @@
 /* CSS cho các bộ lọc */
 .search-page .filters-section {
   background-color: #f8f8f8;
-  padding: 20px;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  left: 0;
+  margin-bottom: 20px;
 }
 
 .search-page .filters-section h5 {
@@ -35,7 +40,6 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 180px;
   margin: 5px;
 }
 
@@ -43,6 +47,7 @@
   transform: translateY(-3px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   border-color: #ff4d4f;
+  cursor: pointer;
 }
 
 .search-page .product-card img {
@@ -61,8 +66,8 @@
 }
 
 .search-page .product-card .card-title {
-  font-size: 0.9em;
-  font-weight: normal;
+  font-size: 0.95em;
+  font-weight: 500;
   color: #333;
   margin-bottom: 5px;
   max-height: 40px;

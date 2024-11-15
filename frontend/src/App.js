@@ -9,9 +9,7 @@ import PrivateRoute from "./components/PrivateRoute";
 function App() {
   return (
     <>
-      <div
-        style={{ height: "100vh", width: "100%", backgroundColor: "#f0f0f0" }}
-      >
+      <div>
         <Loading isLoading={false}>
           <Routes>
             {routes.map((route) => {
