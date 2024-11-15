@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Button,
-  Card,
-  Row,
-  Col,
-  Dropdown,
-  Pagination,
-} from "react-bootstrap";
+import { Form, Button, Row, Col, Dropdown, Pagination } from "react-bootstrap";
 import "./SearchPage.css";
-import { Link, useNavigate } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
 import { axiosApi } from "../../services/UserService";
+import ProductItem from "../../components/ProductItem";
+import { useNavigate } from "react-router-dom";
+import { animateScroll } from "react-scroll";
 
 const SearchPage = () => {
   const [minPrice, setMinPrice] = useState("");
@@ -19,17 +12,19 @@ const SearchPage = () => {
   // const [sortBy, _] = useState("Liên Quan");
   const [products, setProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
   // const [storeType, setStoreType] = useState([]);
   // const [productCondition, setProductCondition] = useState([]);
   // const [brand, setBrand] = useState([]);
   const [ratingFilter, setRatingFilter] = useState(null);
+
   const url = new URL(window.location.href);
   const keyword = url.searchParams.get("keyword").toLowerCase() || "";
   const page = parseInt(url.searchParams.get("page")) || 1;
 
-  const [promotions, setPromotions] = useState([]);
-
   const navigate = useNavigate();
+
+  const [promotions, setPromotions] = useState([]);
 
   const togglePromotion = (promo) => {
     setPromotions((prev) =>
@@ -60,6 +55,7 @@ const SearchPage = () => {
           setTotalPages(data.data.totalPages);
         }
         setProducts(data.data.data);
+        setLoading(false);
       });
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -100,229 +96,228 @@ const SearchPage = () => {
   // };
 
   return (
-    <div className="search-page container">
-      <Row>
-        {/* Bộ lọc tìm kiếm */}
-        <Col md={3}>
-          <div className="filters-section">
-            <h5>Bộ Lọc Tìm Kiếm</h5>
-            <Form>
-              <Form.Group controlId="priceRange" className="mb-4">
-                <Form.Label>Khoảng Giá</Form.Label>
-                <div className="d-flex align-items-center mb-2">
-                  <Form.Control
-                    type="number"
-                    placeholder="Từ"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    className="me-2"
-                    style={{ width: "45%" }}
-                  />
-                  <Form.Control
-                    type="number"
-                    placeholder="Đến"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    style={{ width: "45%" }}
-                  />
-                </div>
-                <Button
-                  variant="danger"
-                  className="mt-2 w-100"
-                  onClick={handleApplyFilters}
-                >
-                  Áp Dụng
-                </Button>
-              </Form.Group>
+    <>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="search-page container">
+          <Row>
+            {/* Bộ lọc tìm kiếm */}
+            <Col md={3}>
+              <div className="filters-section">
+                <h5>Bộ Lọc Tìm Kiếm</h5>
+                <Form>
+                  <Form.Group controlId="priceRange" className="mb-4">
+                    <Form.Label>Khoảng Giá</Form.Label>
+                    <div className="d-flex align-items-center mb-2">
+                      <Form.Control
+                        type="number"
+                        placeholder="Từ"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        className="me-2"
+                        style={{ width: "45%" }}
+                      />
+                      <Form.Control
+                        type="number"
+                        placeholder="Đến"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        style={{ width: "45%" }}
+                      />
+                    </div>
+                    <Button
+                      variant="danger"
+                      className="mt-2 w-100"
+                      onClick={handleApplyFilters}
+                    >
+                      Áp Dụng
+                    </Button>
+                  </Form.Group>
 
-              <Form.Group controlId="storeType" className="mb-4">
-                <Form.Label>Loại Shop</Form.Label>
-                <Form.Check
-                  type="checkbox"
-                  label="Shopee Mall"
-                  onChange={() => toggleStoreType("Shopee Mall")}
-                  // checked={storeType.includes("Shopee Mall")}
-                />
-                <Form.Check
-                  type="checkbox"
-                  label="Shop Yêu Thích"
-                  onChange={() => toggleStoreType("Shop Yêu Thích")}
-                  // checked={storeType.includes("Shop Yêu Thích")}
-                />
-                <Form.Check
-                  type="checkbox"
-                  label="Xử lý đơn hàng bởi Shopee"
-                  onChange={() => toggleStoreType("Shopee")}
-                  // checked={storeType.includes("Shopee")}
-                />
-              </Form.Group>
+                  <Form.Group controlId="storeType" className="mb-4">
+                    <Form.Label>Loại Shop</Form.Label>
+                    <Form.Check
+                      type="checkbox"
+                      label="Shopee Mall"
+                      onChange={() => toggleStoreType("Shopee Mall")}
+                      // checked={storeType.includes("Shopee Mall")}
+                    />
+                    <Form.Check
+                      type="checkbox"
+                      label="Shop Yêu Thích"
+                      onChange={() => toggleStoreType("Shop Yêu Thích")}
+                      // checked={storeType.includes("Shop Yêu Thích")}
+                    />
+                    <Form.Check
+                      type="checkbox"
+                      label="Xử lý đơn hàng bởi Shopee"
+                      onChange={() => toggleStoreType("Shopee")}
+                      // checked={storeType.includes("Shopee")}
+                    />
+                  </Form.Group>
 
-              <Form.Group controlId="productCondition" className="mb-4">
-                <Form.Label>Tình Trạng</Form.Label>
-                <Form.Check
-                  type="checkbox"
-                  label="Đã sử dụng"
-                  onChange={() => toggleProductCondition("Đã sử dụng")}
-                  // checked={productCondition.includes("Đã sử dụng")}
-                />
-                <Form.Check
-                  type="checkbox"
-                  label="Mới"
-                  onChange={() => toggleProductCondition("Mới")}
-                  // checked={productCondition.includes("Mới")}
-                />
-              </Form.Group>
+                  <Form.Group controlId="productCondition" className="mb-4">
+                    <Form.Label>Tình Trạng</Form.Label>
+                    <Form.Check
+                      type="checkbox"
+                      label="Đã sử dụng"
+                      onChange={() => toggleProductCondition("Đã sử dụng")}
+                      // checked={productCondition.includes("Đã sử dụng")}
+                    />
+                    <Form.Check
+                      type="checkbox"
+                      label="Mới"
+                      onChange={() => toggleProductCondition("Mới")}
+                      // checked={productCondition.includes("Mới")}
+                    />
+                  </Form.Group>
 
-              <Form.Group controlId="rating" className="mb-4">
-                <Form.Label>Đánh Giá</Form.Label>
-                {[5, 4, 3].map((star) => (
-                  <Form.Check
-                    key={star}
-                    type="checkbox"
-                    label={`${"⭐️".repeat(star)} trở lên`}
-                    onChange={() => setRatingFilter(star)}
-                    checked={ratingFilter === star}
-                  />
-                ))}
-              </Form.Group>
+                  <Form.Group controlId="rating" className="mb-4">
+                    <Form.Label>Đánh Giá</Form.Label>
+                    {[5, 4, 3].map((star) => (
+                      <Form.Check
+                        key={star}
+                        type="checkbox"
+                        label={`${"⭐️".repeat(star)} trở lên`}
+                        onChange={() => setRatingFilter(star)}
+                        checked={ratingFilter === star}
+                      />
+                    ))}
+                  </Form.Group>
 
-              <Form.Group controlId="promotion" className="mb-4">
-                <Form.Label>Dịch Vụ & Khuyến Mãi</Form.Label>
-                <Form.Check
-                  type="checkbox"
-                  label="Voucher Xtra"
-                  onChange={() => togglePromotion("Voucher Xtra")}
-                  checked={promotions.includes("Voucher Xtra")}
+                  <Form.Group controlId="promotion" className="mb-4">
+                    <Form.Label>Dịch Vụ & Khuyến Mãi</Form.Label>
+                    <Form.Check
+                      type="checkbox"
+                      label="Voucher Xtra"
+                      onChange={() => togglePromotion("Voucher Xtra")}
+                      checked={promotions.includes("Voucher Xtra")}
+                    />
+                    <Form.Check
+                      type="checkbox"
+                      label="Đang giảm giá"
+                      onChange={() => togglePromotion("Đang giảm giá")}
+                      checked={promotions.includes("Đang giảm giá")}
+                    />
+                    <Form.Check
+                      type="checkbox"
+                      label="Hàng có sẵn"
+                      onChange={() => togglePromotion("Hàng có sẵn")}
+                      checked={promotions.includes("Hàng có sẵn")}
+                    />
+                  </Form.Group>
+
+                  <Button
+                    variant="secondary"
+                    className="mt-3 w-100"
+                    onClick={handleResetFilters}
+                  >
+                    Xóa Tất Cả
+                  </Button>
+                </Form>
+              </div>
+            </Col>
+
+            {/* Kết quả tìm kiếm */}
+            <Col md={9}>
+              <Row className="align-items-center justify-content-between mb-3">
+                <h5>Kết quả tìm kiếm cho "{keyword}"</h5>
+                <Dropdown onSelect={(e) => handleSortChange(e)}>
+                  <Dropdown.Toggle variant="outline-primary">
+                    {/* {sortBy} */}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item eventKey="Liên Quan">
+                      Liên Quan
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="Giá: Từ Thấp đến Cao">
+                      Giá: Từ Thấp đến Cao
+                    </Dropdown.Item>
+                    <Dropdown.Item eventKey="Giá: Từ Cao đến Thấp">
+                      Giá: Từ Cao đến Thấp
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </Row>
+
+              {/* Danh sách sản phẩm */}
+              <Row xs={1} md={4} className="g-3">
+                {products && (
+                  <>
+                    {products.map((product) => (
+                      <Col
+                        key={product.id}
+                        style={{
+                          padding: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <ProductItem product={product} />
+                      </Col>
+                    ))}
+                  </>
+                )}
+              </Row>
+
+              {/* Phân trang */}
+              <Pagination className="mt-4 justify-content-center">
+                <Pagination.Prev
+                  onClick={() => {
+                    animateScroll.scrollToTop({
+                      duration: 800,
+                      smooth: true,
+                      offset: -70,
+                    });
+                    setTimeout(() => {
+                      url.searchParams.set("page", Math.max(page - 1, 1));
+                      navigate(url.pathname + url.search);
+                    }, 800);
+                  }}
                 />
-                <Form.Check
-                  type="checkbox"
-                  label="Đang giảm giá"
-                  onChange={() => togglePromotion("Đang giảm giá")}
-                  checked={promotions.includes("Đang giảm giá")}
-                />
-                <Form.Check
-                  type="checkbox"
-                  label="Hàng có sẵn"
-                  onChange={() => togglePromotion("Hàng có sẵn")}
-                  checked={promotions.includes("Hàng có sẵn")}
-                />
-              </Form.Group>
-
-              <Button
-                variant="secondary"
-                className="mt-3 w-100"
-                onClick={handleResetFilters}
-              >
-                Xóa Tất Cả
-              </Button>
-            </Form>
-          </div>
-        </Col>
-
-        {/* Kết quả tìm kiếm */}
-        <Col md={9}>
-          <Row className="align-items-center justify-content-between mb-3">
-            <h5>Kết quả tìm kiếm cho "{keyword}"</h5>
-            <Dropdown onSelect={(e) => handleSortChange(e)}>
-              <Dropdown.Toggle variant="outline-primary">
-                {/* {sortBy} */}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item eventKey="Liên Quan">Liên Quan</Dropdown.Item>
-                <Dropdown.Item eventKey="Giá: Từ Thấp đến Cao">
-                  Giá: Từ Thấp đến Cao
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="Giá: Từ Cao đến Thấp">
-                  Giá: Từ Cao đến Thấp
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Row>
-
-          {/* Danh sách sản phẩm */}
-          <Row xs={1} md={4} className="g-3">
-            {products && (
-              <>
-                {products.map((product) => (
-                  <Col
-                    key={product.id}
-                    style={{
-                      padding: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                {[...Array(totalPages)].map((_, index) => (
+                  <Pagination.Item
+                    key={index}
+                    active={index + 1 === page}
+                    onClick={() => {
+                      animateScroll.scrollToTop({
+                        duration: 800,
+                        smooth: true,
+                        offset: -70,
+                      });
+                      setTimeout(() => {
+                        url.searchParams.set("page", index + 1);
+                        navigate(url.pathname + url.search);
+                      }, 800);
                     }}
                   >
-                    <Card
-                      className="product-card"
-                      onClick={() => {
-                        navigate(`/detailproduct/${product.id}`);
-                      }}
-                    >
-                      <Card.Img
-                        variant="top"
-                        src={
-                          product.thumbnail_url ||
-                          "/images/default/default-product.png"
-                        }
-                      />
-                      <Card.Body>
-                        <Card.Title>{product.name}</Card.Title>
-                        <Card.Text>
-                          <span className="product-price">
-                            {product.price.toLocaleString()} VNĐ
-                          </span>
-                        </Card.Text>
-                        <Card.Text className="product-info">
-                          <span>
-                            {product.rating_average || "0"}{" "}
-                            <FaStar color="#ffab00" />
-                          </span>{" "}
-                          | Đã bán: {product.quantity_sold?.value || 0}
-                        </Card.Text>
-                        <Link to={`/detailproduct/${product.id}`}>
-                          <Button variant="primary" className="w-100">
-                            Xem Chi Tiết
-                          </Button>
-                        </Link>
-                      </Card.Body>
-                    </Card>
-                  </Col>
+                    {index + 1}
+                  </Pagination.Item>
                 ))}
-              </>
-            )}
+                <Pagination.Next
+                  onClick={() => {
+                    animateScroll.scrollToTop({
+                      duration: 800,
+                      smooth: true,
+                      offset: -70,
+                    });
+                    setTimeout(() => {
+                      url.searchParams.set(
+                        "page",
+                        Math.min(page + 1, totalPages)
+                      );
+                      navigate(url.pathname + url.search);
+                    }, 800);
+                  }}
+                />
+              </Pagination>
+            </Col>
           </Row>
-
-          {/* Phân trang */}
-          <Pagination className="mt-4 justify-content-center">
-            <Pagination.Prev
-              onClick={() => {
-                url.searchParams.set("page", Math.max(page - 1, 1));
-                window.location.href = url.href;
-              }}
-            />
-            {[...Array(totalPages)].map((_, index) => (
-              <Pagination.Item
-                key={index}
-                active={index + 1 === page}
-                onClick={() => {
-                  url.searchParams.set("page", index + 1);
-                  window.location.href = url.href;
-                }}
-              >
-                {index + 1}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next
-              onClick={() => {
-                url.searchParams.set("page", Math.min(page + 1, totalPages));
-                window.location.href = url.href;
-              }}
-            />
-          </Pagination>
-        </Col>
-      </Row>
-    </div>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -104,7 +104,7 @@ const DetailProduct = () => {
 
         {/* Thông tin sản phẩm */}
         <div className="col-md-8">
-          <div className="product-info">
+          <div className="product-infomation">
             <h1>{product.name}</h1>
             <hr />
             <div className="d-flex align-items-center">

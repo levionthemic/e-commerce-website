@@ -6,12 +6,12 @@ import {
   CustomerServiceFilled,
   StarOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Col } from "react-bootstrap";
+import { Button, Col } from "react-bootstrap";
 import Carousel from "react-multi-carousel";
-import { FaStar } from "react-icons/fa";
 import "react-multi-carousel/lib/styles.css";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { axiosApi } from "../../services/UserService";
+import ProductItem from "../../components/ProductItem";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -146,36 +146,7 @@ const Home = () => {
               {bestSellingProducts.length > 0 ? (
                 bestSellingProducts.map((product) => (
                   <Col key={product.id}>
-                    <Card className="product-card">
-                      <Card.Img
-                        variant="top"
-                        src={
-                          product.thumbnail_url ||
-                          "/images/default/default-product.png"
-                        }
-                        alt={product.name}
-                      />
-                      <Card.Body>
-                        <Card.Title>{product.name}</Card.Title>
-                        <Card.Text>
-                          <span className="product-price">
-                            {product.price.toLocaleString()} VNĐ
-                          </span>
-                        </Card.Text>
-                        <Card.Text className="product-info">
-                          <span>
-                            {product.rating_average || "0"}{" "}
-                            <FaStar color="#ffab00" />
-                          </span>{" "}
-                          | Đã bán: {product.quantity_sold?.value || 0}
-                        </Card.Text>
-                        <Link to={`/detailproduct/${product.id}`}>
-                          <Button variant="primary" className="w-100">
-                            Xem Chi Tiết
-                          </Button>
-                        </Link>
-                      </Card.Body>
-                    </Card>
+                    <ProductItem product={product} />
                   </Col>
                 ))
               ) : (
@@ -188,36 +159,7 @@ const Home = () => {
           <div className="product-grid-container">
             {recommendedProducts.slice(0, productsDisplayed).map((product) => (
               <Col key={product.id}>
-                <Card className="product-card">
-                  <Card.Img
-                    variant="top"
-                    src={
-                      product.thumbnail_url ||
-                      "/images/default/default-product.png"
-                    }
-                    alt={product.name}
-                  />
-                  <Card.Body>
-                    <Card.Title>{product.name}</Card.Title>
-                    <Card.Text>
-                      <span className="product-price">
-                        {product.price.toLocaleString()} VNĐ
-                      </span>
-                    </Card.Text>
-                    <Card.Text className="product-info">
-                      <span>
-                        {product.rating_average || "0"}{" "}
-                        <FaStar color="#ffab00" />
-                      </span>{" "}
-                      | Đã bán: {product.quantity_sold?.value || 0}
-                    </Card.Text>
-                    <Link to={`/detailproduct/${product.id}`}>
-                      <Button variant="primary" className="w-100">
-                        Xem Chi Tiết
-                      </Button>
-                    </Link>
-                  </Card.Body>
-                </Card>
+                <ProductItem product={product} />
               </Col>
             ))}
           </div>
