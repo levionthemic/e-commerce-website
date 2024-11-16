@@ -3,6 +3,11 @@ import { FaRegMinusSquare, FaRegPlusSquare } from "react-icons/fa";
 import { useParams } from "react-router-dom"; // Import useParams để lấy params từ URL
 import "./DetailProduct.css";
 import { axiosApi } from "../../services/UserService";
+import Rating from "react-rating";
+import { cookies } from "../../helpers/cookies";
+import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { increaseCartQuantity } from "../../redux/slices/cartSlice";
 
 const DetailProduct = () => {
   const { productId } = useParams(); // Lấy productId từ URL
@@ -11,6 +16,7 @@ const DetailProduct = () => {
   const [quantity, setQuantity] = useState(1); // Số lượng sản phẩm
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // Chỉ mục ảnh hiện tại
   const reviewSectionRef = useRef(null);
+  const dispatch = useDispatch();
 
   // Lấy dữ liệu sản phẩm từ API
   useEffect(() => {
@@ -52,6 +58,48 @@ const DetailProduct = () => {
     if (reviewSectionRef.current) {
       reviewSectionRef.current.scrollIntoView({ behavior: "smooth" });
     }
+  };
+
+  const handlePurchaseNow = () => {};
+
+  const handleAddToCart = () => {
+    axiosApi
+      .post("api/v1/cart/add", {
+        cartId: cookies().cartId,
+        productId: productId,
+        quantity: quantity,
+      })
+      .then(() => {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+          icon: "success",
+          title: "Thêm vào giỏ hàng thành công!",
+        });
+        dispatch(increaseCartQuantity(1));
+      })
+      .catch(() => {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+          icon: "error",
+          title: "Không thể thêm sản phẩm vào giỏ hàng!",
+        });
+      });
   };
 
   return (
@@ -107,11 +155,18 @@ const DetailProduct = () => {
           <div className="product-infomation">
             <h1>{product.name}</h1>
             <hr />
-            <div className="d-flex align-items-center">
-              <div className="rating" style={{ marginRight: "30px" }}>
-                ⭐ {product.rating || 5}{" "}
-                {/* Hiển thị sao giả định nếu không có rating */}
+            <div className="inner-rating">
+              <div className="rating">
+                <Rating
+                  emptySymbol="fa-regular fa-star"
+                  fullSymbol="fa-solid fa-star"
+                  initialRating={product.rating_average}
+                  readonly
+                  style={{ color: "#dfdf29" }}
+                />{" "}
+                {product.rating || 5}{" "}
               </div>
+              <div className="divider"></div>
               <div className="review-info d-flex align-items-center">
                 <span style={{ marginRight: "-5px" }}>
                   {product.reviews ? product.reviews.length : 0}
@@ -133,7 +188,8 @@ const DetailProduct = () => {
               Số lượng còn: {product.stock_item ? product.stock_item.qty : 0}
             </div>
             <div className="quantity-sold mb-2">
-              Đã bán: {product.quantity_sold ? product.quantity_sold.text : "0"}
+              Đã bán:{" "}
+              {product.quantity_sold ? product.quantity_sold.value : "0"}
             </div>
             <hr />
 
@@ -211,8 +267,12 @@ const DetailProduct = () => {
             </div>
 
             <div className="button-container mt-3">
-              <button className="btn btn-primary">Mua ngay</button>
-              <button className="btn btn-success">Thêm vào giỏ hàng</button>
+              <button className="btn btn-primary" onClick={handlePurchaseNow}>
+                Mua ngay
+              </button>
+              <button className="btn btn-success" onClick={handleAddToCart}>
+                Thêm vào giỏ hàng
+              </button>
             </div>
             <hr />
           </div>

@@ -1,13 +1,17 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import logo from "../../assets/images/AniCart.png";
 import "./Navbar.css";
-import { Dropdown, Button } from "antd";
+import { Dropdown, Button, Badge } from "antd";
 import {
   UserOutlined,
   ShoppingCartOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import { axiosApi } from "../../services/UserService";
+import { setCartQuantity } from "../../redux/slices/cartSlice";
+import { cookies } from "../../helpers/cookies";
 
 const items = [
   {
@@ -45,6 +49,8 @@ const items = [
 function Navbar() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
+  const cartQuantity = useSelector((state) => state.cart.quantity);
+  const dispatch = useDispatch();
 
   const handleSearch = () => {
     if (searchKeyword.trim()) {
@@ -63,6 +69,18 @@ function Navbar() {
     e.preventDefault();
     window.location.href = "/";
   };
+
+  useEffect(() => {
+    axiosApi
+      .get("api/v1/cart/" + cookies().cartId)
+      .then((res) => {
+        const quantity = res.data.data.length;
+        dispatch(setCartQuantity(quantity));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [dispatch]);
 
   return (
     <nav className="navbar">
@@ -91,7 +109,9 @@ function Navbar() {
         <div className="right">
           {/* Liên kết tới trang giỏ hàng */}
           <Link to="/cart" className="icon">
-            <ShoppingCartOutlined />
+            <Badge count={cartQuantity} showZero size="small">
+              <ShoppingCartOutlined className="icon" />
+            </Badge>
           </Link>
           {/* Menu người dùng */}
           <Dropdown menu={{ items }} trigger={["click"]}>

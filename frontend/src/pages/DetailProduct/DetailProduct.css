@@ -35,6 +35,17 @@
     color: gray;
 }
 
+.inner-rating {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.divider {
+  border: 1px solid #ddd;
+  height: 20px;
+}
+
 .discount {
     display: inline-block;
     background-color: #f8d7da;
