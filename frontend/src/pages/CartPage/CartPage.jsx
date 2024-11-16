@@ -185,7 +185,7 @@ const CartPage = () => {
             <button
               className="btn btn-success mt-3"
               onClick={() => {
-                navigate("/checkout");
+                navigate("/checkout", { state: { cartList: cartList } });
               }}
             >
               Mua Hàng
