@@ -35,7 +35,7 @@
   font-weight: 500;
   color: #333;
   margin-bottom: 5px;
-  height: 40px;
+  height: 35px;
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -45,7 +45,7 @@
 }
 
 .product-price {
-  font-size: 1em;
+  font-size: 1.1em;
   font-weight: bold;
   color: #ff4d4f;
   margin-bottom: 5px;

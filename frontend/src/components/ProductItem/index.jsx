@@ -2,7 +2,7 @@ import { memo } from "react";
 import React from "react";
 import { Button, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
+import Rating from "react-rating";
 import "./ProductItem.css";
 
 function ProductItem({ product }) {
@@ -22,12 +22,23 @@ function ProductItem({ product }) {
         <Card.Title>{product.name}</Card.Title>
         <Card.Text>
           <span className="product-price">
-            {product.price.toLocaleString()} VNĐ
+            {(
+              product.original_price *
+              (1 - product.discount_rate / 100)
+            ).toLocaleString()}
+            <sup>đ</sup>
           </span>
         </Card.Text>
         <Card.Text className="product-info">
           <span>
-            {product.rating_average || "0"} <FaStar color="#ffab00" />
+            {product.rating_average || "0"}{" "}
+            <Rating
+              emptySymbol="fa-regular fa-star"
+              fullSymbol="fa-solid fa-star"
+              initialRating={product.rating_average}
+              readonly
+              style={{ color: "#dfdf29"}}
+            />
           </span>{" "}
           | Đã bán: {product.quantity_sold?.value || 0}
         </Card.Text>

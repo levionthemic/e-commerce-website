@@ -138,9 +138,16 @@ const DetailProduct = () => {
             <hr />
 
             <div className="prices mt-2">
-              <span className="new-price h4">{product.price} VNĐ</span>
+              <span className="new-price h4">
+                {(
+                  product.original_price *
+                  (1 - product.discount_rate / 100)
+                ).toLocaleString()}
+                <sup>đ</sup>
+              </span>
               <span className="old-price text-muted ml-2">
-                {product.original_price} VNĐ
+                {product.original_price.toLocaleString()}
+                <sup>đ</sup>
               </span>
             </div>
 

@@ -7,11 +7,12 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import { Button, Col } from "react-bootstrap";
-import Carousel from "react-multi-carousel";
+
 import "react-multi-carousel/lib/styles.css";
 import { useNavigate } from "react-router-dom";
 import { axiosApi } from "../../services/UserService";
 import ProductItem from "../../components/ProductItem";
+import { CustomCarousel } from "./style";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const Home = () => {
   // Lọc và sắp xếp sản phẩm bán chạy
   const [bestSellingProducts, setBestSellingProducts] = useState([]);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
-  const [productsDisplayed, setProductsDisplayed] = useState(12);
+  const [productsDisplayed, setProductsDisplayed] = useState(15);
 
   let isLogin = false;
   const arr = document.cookie.split("; ");
@@ -92,25 +93,6 @@ const Home = () => {
     setProductsDisplayed((prev) => prev + 12); // Tăng số lượng sản phẩm hiển thị lên 10
   };
 
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 5,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
-
   return (
     <div className="home-container">
       <header className="home-header">
@@ -142,23 +124,23 @@ const Home = () => {
         <section className="home-products">
           <h2>Sản phẩm bán chạy</h2>
           <section className="best-selling-products">
-            <Carousel responsive={responsive}>
+            <CustomCarousel>
               {bestSellingProducts.length > 0 ? (
                 bestSellingProducts.map((product) => (
-                  <Col key={product.id}>
-                    <ProductItem product={product} />
-                  </Col>
+                  
+                    <ProductItem product={product} key={product.id}/>
+               
                 ))
               ) : (
                 <p>Đang tải sản phẩm...</p>
               )}
-            </Carousel>
+            </CustomCarousel>
           </section>
 
           <h2>Sản phẩm đề xuất</h2>
           <div className="product-grid-container">
             {recommendedProducts.slice(0, productsDisplayed).map((product) => (
-              <Col key={product.id}>
+              <Col key={product.id} className="d-flex justify-content-center">
                 <ProductItem product={product} />
               </Col>
             ))}
