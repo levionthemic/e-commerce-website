@@ -42,6 +42,10 @@ function Checkout() {
     setShow(!isShow);
   };
 
+  const handleCheckout = () => {
+    
+  }
+
   useEffect(() => {
     axiosApi
       .get("/api/v1/user/" + cookies().token)
@@ -52,6 +56,7 @@ function Checkout() {
         console.log(error);
       });
   }, []);
+
   return (
     <>
       <div className="container">
@@ -226,7 +231,7 @@ function Checkout() {
                 </p>
               </div>
               <div className="inner-order-button">
-                <button type="button" className="btn">
+                <button type="button" className="btn" onClick={handleCheckout}>
                   Đặt hàng
                 </button>
               </div>
