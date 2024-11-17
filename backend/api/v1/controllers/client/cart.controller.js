@@ -84,7 +84,7 @@ module.exports.add = async (req, res) => {
   });
 };
 
-// [DELETE] /cart/delete
+// [POST] /cart/delete
 module.exports.delete = async (req, res) => {
   const cartId = req.body.cartId;
   const productId = req.body.productId;

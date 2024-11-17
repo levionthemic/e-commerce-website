@@ -8,7 +8,7 @@ routes.get("/:cartId", controller.index);
 
 routes.post("/add", controller.add);
 
-routes.delete("/delete", controller.delete);
+routes.post("/delete", controller.delete);
 
 routes.patch("/update", controller.update);
 

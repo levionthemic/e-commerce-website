@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import "./CartPage.css";
 import { axiosApi } from "../../services/UserService";
 import { cookies } from "../../helpers/cookies";
 import { useNavigate } from "react-router-dom";
 import { Table } from "antd";
+import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { decreaseCartQuantity } from "../../redux/slices/cartSlice";
 
 const CartPage = () => {
   const [cartList, setCartList] = useState([]);
   const [quantities, setQuantities] = useState([]);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const cartQuantity = useSelector((state) => state.cart.quantity);
 
   const handleIncreaseQuantity = (e) => {
     const indexRow =
@@ -32,6 +36,47 @@ const CartPage = () => {
     setQuantities(temp);
   };
 
+  const handleDelete = (e) => {
+    Swal.fire({
+      icon: "warning",
+      showCancelButton: true,
+      showConfirmButton: true,
+      title: "Cảnh báo!",
+      text: "Bạn có chắc chắn muốn cập nhật?",
+      confirmButtonText: "Cập nhật",
+      cancelButtonText: "Hủy",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        const indexRow =
+          e.target.parentElement.parentElement.getAttribute("data-row-key");
+        axiosApi
+          .post("/api/v1/cart/delete", {
+            cartId: cookies().cartId,
+            productId: cartList[indexRow].id,
+          })
+          .then(() => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "success",
+              title: "Xóa sản phẩm khỏi giỏ hàng thành công!",
+            });
+            dispatch(decreaseCartQuantity(1));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
+  };
+
   const totalPrice = cartList.reduce(
     (sum, item, index) =>
       sum +
@@ -49,7 +94,7 @@ const CartPage = () => {
       .catch((error) => {
         console.log(error.response);
       });
-  }, []);
+  }, [cartQuantity]);
 
   const columns = [
     {
@@ -103,13 +148,15 @@ const CartPage = () => {
             alignItems: "center",
             gap: "15px",
             justifyContent: "center",
+            border: "1px solid #ddd",
+            borderRadius: "5px",
           }}
         >
           <button
             style={{
-              border: "1px solid #ddd",
+              border: "none",
+              borderRight: "1px solid #ddd",
               background: "none",
-              borderRadius: "5px",
               textAlign: "center",
               fontSize: "18px",
               padding: "0px 7px",
@@ -121,9 +168,9 @@ const CartPage = () => {
           <div>{quantity}</div>
           <button
             style={{
-              border: "1px solid #ddd",
+              border: "none",
+              borderLeft: "1px solid #ddd",
               background: "none",
-              borderRadius: "5px",
               textAlign: "center",
               fontSize: "18px",
               padding: "0px 5px",
@@ -140,7 +187,14 @@ const CartPage = () => {
       key: "total_price",
       dataIndex: "total_price",
       render: (total_price) => (
-        <div style={{ fontSize: "18px", color: "red", fontWeight: 500 }}>
+        <div
+          style={{
+            fontSize: "18px",
+            color: "red",
+            fontWeight: 500,
+            width: "110px",
+          }}
+        >
           {total_price.toLocaleString()}
           <sup>đ</sup>
         </div>
@@ -150,7 +204,11 @@ const CartPage = () => {
       title: "",
       key: "actions",
       dataIndex: "actions",
-      render: () => <button className="btn btn-danger">Xóa</button>,
+      render: () => (
+        <button className="btn btn-danger" onClick={handleDelete}>
+          Xóa
+        </button>
+      ),
     },
   ];
 
