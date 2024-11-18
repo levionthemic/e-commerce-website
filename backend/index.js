@@ -23,6 +23,7 @@ app.use(cors());
 database.connect();
 
 // Routes
+
 adminRoutes(app);
 clientRoutes(app);
 

@@ -5,6 +5,7 @@ import icon1 from "../../assets/images/arrow-icon.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cookies } from "../../helpers/cookies";
 import { axiosApi } from "../../services/UserService";
+import Swal from "sweetalert2";
 
 function Checkout() {
   const navigate = useNavigate();
@@ -43,8 +44,25 @@ function Checkout() {
   };
 
   const handleCheckout = () => {
-    
-  }
+    axiosApi
+      .post("/api/v1/checkout/order", {
+        cartId: cookies().cartId,
+      })
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Đặt hàng thành công!",
+          text: "Vui lòng kiểm tra hóa đơn điện tử trong email của bạn",
+          didClose: () => {
+            navigate("/");
+            window.location.reload();
+          },
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     axiosApi

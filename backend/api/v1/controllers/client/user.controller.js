@@ -221,16 +221,23 @@ module.exports.resetPassword = async (req, res) => {
 };
 
 // [GET] /api/v1/user/order
-module.exports.order = async (req, res) => {
-  const { status } = req.body;
+module.exports.getOrder = async (req, res) => {
+  const status = req.query.status;
   const token = req.headers.authorization.split(" ")[1];
 
   const user = await User.findOne({ token: token });
 
-  const orders = await Order.find({
-    userId: user.id,
-    status: status,
-  });
+  let orders = null;
+  if (status === "all") {
+    orders = await Order.find({
+      userId: user._id,
+    });
+  } else {
+    orders = await Order.find({
+      userId: user.id,
+      status: status,
+    });
+  }
 
   res.status(200).json({
     message: "Success",

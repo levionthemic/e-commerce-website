@@ -1,15 +1,14 @@
 const mongoose = require("mongoose");
+const { generateOrderId } = require("../../../helpers/generate");
 
 const orderSchema = new mongoose.Schema({
   userId: String,
-  orderId: String,
+  orderId: {
+    type: String,
+    default: generateOrderId(15),
+  },
   status: String,
-  products: [
-    {
-      productId: String,
-      quantity: Number,
-    },
-  ],
+  products: Array,
   sellerId: String,
 });
 

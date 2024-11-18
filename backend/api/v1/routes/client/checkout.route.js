@@ -6,6 +6,4 @@ const routes = express.Router();
 
 routes.post("/order", controller.order);
 
-routes.get("/success/:orderId", controller.success);
-
 module.exports = routes;

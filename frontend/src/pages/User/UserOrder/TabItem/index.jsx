@@ -1,14 +1,46 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import { Table, Tag } from "antd";
-import img from "../../../../assets/images/image-login.jpg";
+import { axiosApi } from "../../../../services/UserService";
 
-function TabItem() {
+function TabItem({ status }) {
+  const [orderList, setOrderList] = useState([]);
+
+  useEffect(() => {
+    axiosApi
+      .get(`/api/v1/user/order`, { params: { status: status } })
+      .then((res) => {
+        setOrderList(res.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [status]);
+
+  const getStatus = (status) => {
+    switch (status) {
+      case "confirming":
+        return "Chờ xác nhận";
+      case "pending":
+        return "Đang xử lý";
+      case "delivering":
+        return "Đang vận chuyển";
+      case "delivered":
+        return "Đã giao";
+      case "discarded":
+        return "Đã hủy";
+      default:
+        return "";
+    }
+  };
+
   const columns = [
     {
       title: "Ảnh sản phẩm",
       dataIndex: "product_image",
       key: "product_image",
-      render: (thumbnail_url) => <img src={thumbnail_url} alt="" height={"100px"} width={"100px"} />,
+      render: (thumbnail_url) => (
+        <img src={thumbnail_url} alt="" height={"100px"} width={"100px"} />
+      ),
     },
     {
       title: "Tên sản phẩm",
@@ -29,28 +61,48 @@ function TabItem() {
       title: "Thành tiền",
       key: "total_price",
       dataIndex: "total_price",
+      render: (total_price) => (
+        <>
+          {total_price.toLocaleString()}
+          <sup>đ</sup>
+        </>
+      ),
     },
     {
       title: "Trạng thái",
       key: "status",
       dataIndex: "status",
-      render: (status) => <Tag color="volcano">{status}</Tag>
+      render: (status) => <Tag color="volcano">{status}</Tag>,
     },
   ];
-  const data = [
-    {
-      product_image: img,
-      product_name: "Nước hoa Gucci siêu thơm phức nức lòng người",
-      order_id: "14621421312374",
-      quantity: 3,
-      total_price: `1.234.567đ`,
-      status: "Chờ xác nhận"
-    }
-  ];
+
+  let data = [];
+  if (orderList.length) {
+    orderList.forEach((order) => {
+      order.products.forEach((product) => {
+        data.push({
+          product_image: product.thumbnail_url,
+          product_name: product.name,
+          order_id: order.orderId,
+          quantity: product.quantity,
+          total_price: parseInt(
+            product.original_price *
+              (1 - product.discount_rate / 100) *
+              product.quantity
+          ),
+          status: getStatus(order.status),
+        });
+      });
+    });
+  }
 
   return (
     <>
-      <Table columns={columns} dataSource={data} style={{borderRadius: "10px", overflow: "hidden"}}/>
+      <Table
+        columns={columns}
+        dataSource={data}
+        style={{ borderRadius: "10px", overflow: "hidden" }}
+      />
     </>
   );
 }

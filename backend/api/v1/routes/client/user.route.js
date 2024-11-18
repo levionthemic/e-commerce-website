@@ -5,6 +5,8 @@ const { requireAuth } = require("../../middlewares/client/auth.middleware");
 
 const routes = express.Router();
 
+routes.get("/order", requireAuth, controller.getOrder);
+
 routes.post("/signup", controller.signup);
 routes.post("/login", controller.login);
 routes.post("/otp-request", controller.otpRequest);
@@ -16,5 +18,4 @@ routes.get("/:token", controller.getUser);
 
 routes.patch("/update", controller.update);
 
-routes.get("/order", controller.order);
 module.exports = routes;

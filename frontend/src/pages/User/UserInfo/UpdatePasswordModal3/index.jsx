@@ -9,7 +9,6 @@ import img from "../../../../assets/images/lock-icon.svg";
 import img2 from "../../../../assets/images/goback-icon.svg";
 import "./UpdatePasswordModal3.scss";
 import Swal from "sweetalert2";
-import { cookies } from "../../../../helpers/cookies";
 import { axiosApi } from "../../../../services/UserService";
 
 function UpdatePasswordModal3() {
