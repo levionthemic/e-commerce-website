@@ -5,7 +5,6 @@ import { axiosApi } from "../../services/UserService";
 import ProductItem from "../../components/ProductItem";
 import { useNavigate } from "react-router-dom";
 import { animateScroll } from "react-scroll";
-import { Skeleton } from "antd";
 
 const SearchPage = () => {
   const [minPrice, setMinPrice] = useState("");

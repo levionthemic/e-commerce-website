@@ -3,7 +3,8 @@ import "./CartPage.css";
 import { axiosApi } from "../../services/UserService";
 import { cookies } from "../../helpers/cookies";
 import { useNavigate } from "react-router-dom";
-import { Table } from "antd";
+import { Table, Skeleton } from "antd";
+import { DeleteOutlined, DiffOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { decreaseCartQuantity } from "../../redux/slices/cartSlice";
@@ -11,11 +12,23 @@ import { decreaseCartQuantity } from "../../redux/slices/cartSlice";
 const CartPage = () => {
   const [cartList, setCartList] = useState([]);
   const [quantities, setQuantities] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartQuantity = useSelector((state) => state.cart.quantity);
 
+  const showUpdateButton = (e, temp, indexRow) => {
+    const updateButton =
+      e.target.parentElement.parentElement.nextSibling.nextSibling.querySelector(
+        ".delete-btn:nth-child(2)"
+      );
+    if (temp[indexRow] !== cartList[indexRow].quantity) {
+      updateButton.classList.remove("d-none");
+    } else {
+      updateButton.classList.add("d-none");
+    }
+  };
   const handleIncreaseQuantity = (e) => {
     const indexRow =
       e.target.parentElement.parentElement.parentElement.getAttribute(
@@ -23,6 +36,7 @@ const CartPage = () => {
       );
     let temp = [...quantities];
     temp[indexRow]++;
+    showUpdateButton(e, temp, indexRow);
     setQuantities(temp);
   };
 
@@ -33,6 +47,7 @@ const CartPage = () => {
       );
     let temp = [...quantities];
     temp[indexRow] = Math.max(temp[indexRow] - 1, 1);
+    showUpdateButton(e, temp, indexRow);
     setQuantities(temp);
   };
 
@@ -48,7 +63,9 @@ const CartPage = () => {
     }).then((res) => {
       if (res.isConfirmed) {
         const indexRow =
-          e.target.parentElement.parentElement.getAttribute("data-row-key");
+          e.currentTarget.parentElement.parentElement.getAttribute(
+            "data-row-key"
+          );
         axiosApi
           .post("/api/v1/cart/delete", {
             cartId: cookies().cartId,
@@ -77,6 +94,57 @@ const CartPage = () => {
     });
   };
 
+  const handleUpdateQuantity = (e) => {
+    const indexRow =
+      e.currentTarget.parentElement.parentElement.parentElement.getAttribute(
+        "data-row-key"
+      );
+    const cartId = cookies().cartId;
+    const productId = cartList[indexRow].id;
+    const quantity = parseInt(
+      e.currentTarget.parentElement.parentElement.previousSibling
+        .previousSibling.firstChild.firstChild.nextSibling.innerText
+    );
+    Swal.fire({
+      icon: "warning",
+      showCancelButton: true,
+      showConfirmButton: true,
+      title: "Cảnh báo!",
+      text: "Bạn có chắc chắn muốn cập nhật?",
+      confirmButtonText: "Cập nhật",
+      cancelButtonText: "Hủy",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axiosApi
+          .patch("/api/v1/cart/update", {
+            cartId: cartId,
+            productId: productId,
+            quantity: quantity,
+          })
+          .then(() => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "success",
+              title: "Cập nhật số lượng thành công!",
+            });
+            const updateButton = document.querySelector(".delete-btn:last-child");
+            updateButton.classList.add("d-none");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
+  };
+
   const totalPrice = cartList.reduce(
     (sum, item, index) =>
       sum +
@@ -90,9 +158,11 @@ const CartPage = () => {
       .then((res) => {
         setCartList(res.data.data);
         setQuantities(res.data.data.map((item) => item.quantity));
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error.response);
+        setLoading(false);
       });
   }, [cartQuantity]);
 
@@ -205,9 +275,14 @@ const CartPage = () => {
       key: "actions",
       dataIndex: "actions",
       render: () => (
-        <button className="btn btn-danger" onClick={handleDelete}>
-          Xóa
-        </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <button className="delete-btn" onClick={handleDelete}>
+            <DeleteOutlined />
+          </button>
+          <button className="delete-btn d-none" onClick={handleUpdateQuantity}>
+            <DiffOutlined />
+          </button>
+        </div>
       ),
     },
   ];
@@ -229,27 +304,37 @@ const CartPage = () => {
   return (
     <div className="container my-5 cart-page">
       <h3 className="mb-4">Giỏ Hàng Của Bạn</h3>
-      {cartList.length === 0 ? (
-        <p>Giỏ hàng của bạn đang trống.</p>
-      ) : (
-        <div className="position-relative">
-          <Table dataSource={data} columns={columns} />
-
-          <div className="summary-section text-end">
-            <h5>
-              Tổng cộng: {totalPrice.toLocaleString()}
-              <sup>đ</sup>
-            </h5>
-            <button
-              className="btn btn-success mt-3"
-              onClick={() => {
-                navigate("/checkout", { state: { cartList: cartList } });
-              }}
-            >
-              Mua Hàng
-            </button>
+      {loading ? (
+        <>
+          <div className="position-relative">
+            <Skeleton active paragraph={{ rows: 6 }} />
           </div>
-        </div>
+        </>
+      ) : (
+        <>
+          {cartList.length === 0 ? (
+            <p>Giỏ hàng của bạn đang trống.</p>
+          ) : (
+            <div className="position-relative">
+              <Table dataSource={data} columns={columns} />
+
+              <div className="summary-section text-end">
+                <h5>
+                  Tổng cộng: {totalPrice.toLocaleString()}
+                  <sup>đ</sup>
+                </h5>
+                <button
+                  className="btn btn-success mt-3"
+                  onClick={() => {
+                    navigate("/checkout", { state: { cartList: cartList } });
+                  }}
+                >
+                  Mua Hàng
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

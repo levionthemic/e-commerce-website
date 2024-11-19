@@ -18,18 +18,28 @@
   color: #333;
 }
 
-.btn {
-  transition: all 0.3s ease;
-  font-weight: bold;
+.delete-btn {
+  transition: all 0.3s linear;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: transparent;
+  padding: 2px 6px;
+  font-size: 18px;
 }
 
-.btn-danger {
-  background-color: #ff4d4f;
-  border: none;
+.delete-btn:last-child {
+  border-color: rgb(255, 141, 141);
+  color: red;
 }
 
-.btn-danger:hover {
-  background-color: #911717;
+
+.delete-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: all 0.3s linear;
+}
+
+.delete-btn:last-child:hover {
+  background-color: rgba(255, 0, 0, 0.1);
 }
 
 .btn-success {
