@@ -1,8 +1,8 @@
 h5 {
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 22px;
-  color: rgba(0, 0, 0, 0.6);
+  font-weight: 500 !important;
+  font-size: 18px !important;
+  line-height: 22px !important;
+  color: rgba(0, 0, 0, 0.6) !important;
 }
 
 input,
@@ -35,16 +35,24 @@ select {
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
+        // position: relative;
 
         &:hover {
           cursor: pointer;
         }
 
-        img:nth-child(2) {
-          position: absolute;
-          right: 25px;
-          top: 0;
+        .inner-placeholder-avatar {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+
+          img:last-child {
+            position: absolute;
+            right: 0;
+            top: 0;
+          }
         }
       }
       .inner-info {
@@ -111,7 +119,7 @@ select {
 
   .inner-right-content {
     width: 45%;
-    padding: 0 10px;
+    padding: 15px 10px;
     border-left: 1px solid #ddd;
 
     .section-1,

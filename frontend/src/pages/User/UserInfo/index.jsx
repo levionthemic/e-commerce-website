@@ -1,5 +1,13 @@
 import { memo, useEffect, useState } from "react";
-import { DatePicker, Radio } from "antd";
+import {
+  Avatar,
+  DatePicker,
+  Radio,
+  Spin,
+  Tooltip,
+  Upload,
+  message,
+} from "antd";
 import {
   LockOutlined,
   MailOutlined,
@@ -23,7 +31,26 @@ import UpdateEmailModal2 from "./UpdateEmailModal2";
 import { cookies } from "../../../helpers/cookies";
 import { axiosApi } from "../../../services/UserService";
 
+const getBase64 = (img, callback) => {
+  const reader = new FileReader();
+  reader.addEventListener("load", () => callback(reader.result));
+  reader.readAsDataURL(img);
+};
+
+const beforeUpload = (file) => {
+  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+  if (!isJpgOrPng) {
+    message.error("You can only upload JPG/PNG file!");
+  }
+  const isLt2M = file.size / 1024 / 1024 < 2;
+  if (!isLt2M) {
+    message.error("Image must smaller than 2MB!");
+  }
+  return isJpgOrPng && isLt2M;
+};
+
 function UserInfo() {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const [user, setUser] = useState({
@@ -34,27 +61,10 @@ function UserInfo() {
     nationality: "",
   });
   const [nations, setNations] = useState([]);
-  // const [imageUrl, setImageUrl] = useState("");
-  // const [image, setImage] = useState("");
-
-  const uploadImage = () => {
-    // const data = new FormData();
-    // data.append("file", image);
-    // data.append("upload_preset", process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-    // data.append("cloud_name", process.env.REACT_APP_CLOUDINARY_NAME);
-    // fetch(
-    //   `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/image/upload`,
-    //   {
-    //     method: "post",
-    //     body: data,
-    //   }
-    // )
-    //   .then((resp) => resp.json())
-    //   .then((data) => {
-    //     setImageUrl(data.url);
-    //   })
-    //   .catch((err) => console.log(err));
-  };
+  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState();
+  const [isUploadImage, setIsUploadImage] = useState(false);
+  const [hasUpdated, setHasUpdated] = useState(false);
 
   useEffect(() => {
     axiosApi.get("/api/v1/user/nations").then((res) => {
@@ -66,12 +76,37 @@ function UserInfo() {
     const token = cookies().token;
     axiosApi.get(`/api/v1/user/${token}`).then((res) => {
       setUser(res.data.user);
+      setImageUrl(res.data.user.avatar);
     });
   }, []);
 
+  const uploadImage = async () => {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append(
+      "upload_preset",
+      process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_NAME);
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/upload`,
+        {
+          method: "post",
+          body: formData,
+        }
+      );
+      const data = await res.json();
+      message.success("Upload successful");
+      return data.secure_url;
+    } catch (error) {
+      message.error("Upload failed. Please try again.");
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
     Swal.fire({
       icon: "warning",
       showCancelButton: true,
@@ -80,11 +115,20 @@ function UserInfo() {
       text: "Bạn có chắc chắn muốn cập nhật?",
       confirmButtonText: "Cập nhật",
       cancelButtonText: "Hủy",
-    }).then((res) => {
+    }).then(async (res) => {
       if (res.isConfirmed) {
+        setLoading(true);
+
+        let bodyApi = { ...user };
+        if (isUploadImage) {
+          const imgUrl = await uploadImage();
+          bodyApi.avatar = imgUrl;
+        }
+
         axiosApi
-          .patch("/api/v1/user/update", { ...user })
+          .patch("/api/v1/user/update", bodyApi)
           .then((res) => {
+            setLoading(false);
             Swal.fire({
               icon: "success",
               title: "Thành công!",
@@ -95,6 +139,7 @@ function UserInfo() {
             });
           })
           .catch((error) => {
+            setLoading(false);
             Swal.fire({
               icon: "error",
               title: "Lỗi!",
@@ -231,6 +276,15 @@ function UserInfo() {
     });
   };
 
+  const handleUpload = (file) => {
+    setImageFile(file);
+    setIsUploadImage(true);
+    setHasUpdated(true);
+    getBase64(file, (url) => {
+      setImageUrl(url);
+    });
+  };
+
   return (
     <>
       <div className="container">
@@ -243,115 +297,144 @@ function UserInfo() {
           <div className="col-12">
             <div className="inner-wrap-user-info">
               <div className="inner-left-content">
-                <h5 className="mb-4">Thông tin cá nhân</h5>
-                <form action="#" onSubmit={handleSubmit}>
-                  <div className="form-section-1">
-                    <div className="inner-avatar" onClick={uploadImage}>
-                      <img src={avatar} alt="" />
-                      <img src={icon} alt="" />
+                <Spin spinning={loading} tip="Đang cập nhật...">
+                  <h5 className="mb-4">Thông tin cá nhân</h5>
+                  <form action="#" onSubmit={handleSubmit}>
+                    <div className="form-section-1">
+                      <div className="inner-avatar">
+                        <Tooltip title="Click để upload ảnh" placement="rightTop">
+                          <Upload
+                            showUploadList={false}
+                            customRequest={({ file }) => handleUpload(file)}
+                            beforeUpload={beforeUpload}
+                          >
+                            {imageUrl ? (
+                              <Avatar
+                                size={130}
+                                src={imageUrl}
+                                style={{ border: "1px solid #ddd" }}
+                              />
+                            ) : (
+                              <div className="inner-placeholder-avatar">
+                                <img src={avatar} alt="" />
+                                <img src={icon} alt="" />
+                              </div>
+                            )}
+                          </Upload>
+                        </Tooltip>
+                      </div>
+                      <div className="inner-info">
+                        <div className="form-group">
+                          <label htmlFor="fullname">Họ và tên</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            value={user.fullname}
+                            id="fullname"
+                            onChange={(e) => {
+                              const newUser = { ...user };
+                              newUser.fullname = e.target.value;
+                              setUser(newUser);
+                              setHasUpdated(true);
+                            }}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="nickname">Biệt danh</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder={"Thêm biệt danh"}
+                            id="nickname"
+                            value={user.nickname}
+                            onChange={(e) => {
+                              const newUser = { ...user };
+                              newUser.nickname = e.target.value;
+                              setUser(newUser);
+                              setHasUpdated(true);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="inner-info">
+
+                    <div className="form-section-2">
                       <div className="form-group">
-                        <label htmlFor="fullname">Họ và tên</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={user.fullname}
-                          id="fullname"
+                        <label htmlFor="birthday">Ngày sinh</label>
+                        <DatePicker
+                          picker="date"
+                          format="DD/MM/YYYY"
+                          value={dayjs(user.birthday)}
                           onChange={(e) => {
                             const newUser = { ...user };
-                            newUser.fullname = e.target.value;
+                            newUser.birthday = e.format("MM/DD/YYYY");
                             setUser(newUser);
+                            setHasUpdated(true);
                           }}
                         />
                       </div>
                       <div className="form-group">
-                        <label htmlFor="nickname">Biệt danh</label>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder={"Thêm biệt danh"}
-                          id="nickname"
-                          value={user.nickname}
+                        <label htmlFor="sex">Giới tính</label>
+                        <Radio.Group
+                          value={user.sex}
                           onChange={(e) => {
                             const newUser = { ...user };
-                            newUser.nickname = e.target.value;
+                            newUser.sex = e.target.value;
                             setUser(newUser);
+                            setHasUpdated(true);
                           }}
-                        />
+                        >
+                          <Radio value={"male"}>Nam</Radio>
+                          <Radio value={"female"}>Nữ</Radio>
+                          <Radio value={"other"}>Khác</Radio>
+                        </Radio.Group>
+                      </div>
+                      <div className="form-group">
+                        <label htmlFor="nationality">Quốc tịch</label>
+                        <select
+                          className="form-select"
+                          id="nationality"
+                          value={user.nationality}
+                          onChange={(e) => {
+                            const newUser = { ...user };
+                            newUser.nationality = e.target.value;
+                            setUser(newUser);
+                            setHasUpdated(true);
+                          }}
+                        >
+                          <option selected disabled>
+                            -- Chọn quốc tịch --
+                          </option>
+                          {nations.length ? (
+                            <>
+                              {nations.map((item) => (
+                                <option
+                                  value={item.num_code}
+                                  key={item.num_code}
+                                  selected={item.num_code === user.nationality}
+                                >
+                                  {item.en_short_name}
+                                </option>
+                              ))}
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </select>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="form-section-2">
                     <div className="form-group">
-                      <label htmlFor="birthday">Ngày sinh</label>
-                      <DatePicker
-                        picker="date"
-                        format="DD/MM/YYYY"
-                        value={dayjs(user.birthday)}
-                        onChange={(e) => {
-                          const newUser = { ...user };
-                          newUser.birthday = e.format("DD/MM/YYYY");
-                          setUser(newUser);
-                        }}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label htmlFor="sex">Giới tính</label>
-                      <Radio.Group
-                        value={user.sex}
-                        onChange={(e) => {
-                          const newUser = { ...user };
-                          newUser.sex = e.target.value;
-                          setUser(newUser);
-                        }}
+                      <button
+                        type="submit"
+                        className="btn"
+                        disabled={!hasUpdated}
                       >
-                        <Radio value={"male"}>Nam</Radio>
-                        <Radio value={"female"}>Nữ</Radio>
-                        <Radio value={"other"}>Khác</Radio>
-                      </Radio.Group>
+                        Cập nhật thay đổi
+                      </button>
                     </div>
-                    <div className="form-group">
-                      <label htmlFor="nationality">Quốc tịch</label>
-                      <select
-                        className="form-select"
-                        id="nationality"
-                        value={user.nationality}
-                        onChange={(e) => {
-                          const newUser = { ...user };
-                          newUser.nationality = e.target.value;
-                          setUser(newUser);
-                        }}
-                      >
-                        <option selected disabled>
-                          -- Chọn quốc tịch --
-                        </option>
-                        {nations.length ? (
-                          <>
-                            {nations.map((item) => (
-                              <option
-                                value={item.num_code}
-                                key={item.num_code}
-                                selected={item.num_code === user.nationality}
-                              >
-                                {item.en_short_name}
-                              </option>
-                            ))}
-                          </>
-                        ) : (
-                          <></>
-                        )}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <button type="submit" className="btn">
-                      Cập nhật thay đổi
-                    </button>
-                  </div>
-                </form>
+                  </form>
+                </Spin>
               </div>
 
               <div className="inner-right-content">
