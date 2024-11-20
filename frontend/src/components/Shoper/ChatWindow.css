@@ -1,0 +1,34 @@
+.chat-window {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.chat-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.chat-messages {
+  margin-bottom: 10px;
+}
+
+.message {
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.customer-message {
+  background-color: #f0f0f0;
+  text-align: left;
+}
+
+.shop-message {
+  background-color: #007bff;
+  color: white;
+  text-align: right;
+}

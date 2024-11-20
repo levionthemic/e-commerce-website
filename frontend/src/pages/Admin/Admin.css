@@ -1,0 +1,66 @@
+/* src/pages/Admin/Admin.css */
+
+/* Sidebar styles */
+.sidebar {
+    background-color: #343a40;
+    color: white;
+}
+
+.sidebar .nav-link {
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #007bff;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff;
+}
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-item {
+    cursor: pointer;
+}
+
+/* Content area styles */
+.content {
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+
+/* Card style for overview stats */
+.card {
+    border-radius: 10px;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+/* Navbar-like styles for active tab */
+.nav-item.active {
+    background-color: #007bff;
+}
+
+/* Responsive layout: make sure the sidebar is collapsible on small screens */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: fixed;
+        z-index: 999;
+        height: 100vh;
+        top: 0;
+    }
+
+    .content {
+        margin-left: 0;
+        margin-top: 80px;
+        /* Make space for the fixed sidebar */
+    }
+}
