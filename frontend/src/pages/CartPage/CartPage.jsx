@@ -137,6 +137,8 @@ const CartPage = () => {
             });
             const updateButton = document.querySelector(".delete-btn:last-child");
             updateButton.classList.add("d-none");
+            cartList[indexRow].quantity = quantity;
+            setCartList(cartList);
           })
           .catch((error) => {
             console.log(error);
@@ -216,10 +218,11 @@ const CartPage = () => {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "15px",
             justifyContent: "center",
+            gap: "15px",
             border: "1px solid #ddd",
             borderRadius: "5px",
+            width: "fit-content"
           }}
         >
           <button
