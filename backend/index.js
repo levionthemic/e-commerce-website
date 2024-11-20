@@ -10,6 +10,7 @@ const database = require("./config/database");
 
 const adminRoutes = require("./api/v1/routes/admin/index.route");
 const clientRoutes = require("./api/v1/routes/client/index.route");
+const sellerRoutes = require("./api/v1/routes/seller/index.route");
 
 const app = express();
 const port = process.env.PORT;
@@ -25,6 +26,7 @@ database.connect();
 // Routes
 adminRoutes(app);
 clientRoutes(app);
+sellerRoutes(app);
 
 // Listen
 app.listen(port, () => {
