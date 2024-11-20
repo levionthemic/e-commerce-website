@@ -34,6 +34,27 @@ function UserInfo() {
     nationality: "",
   });
   const [nations, setNations] = useState([]);
+  // const [imageUrl, setImageUrl] = useState("");
+  // const [image, setImage] = useState("");
+
+  const uploadImage = () => {
+    // const data = new FormData();
+    // data.append("file", image);
+    // data.append("upload_preset", process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
+    // data.append("cloud_name", process.env.REACT_APP_CLOUDINARY_NAME);
+    // fetch(
+    //   `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/image/upload`,
+    //   {
+    //     method: "post",
+    //     body: data,
+    //   }
+    // )
+    //   .then((resp) => resp.json())
+    //   .then((data) => {
+    //     setImageUrl(data.url);
+    //   })
+    //   .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
     axiosApi.get("/api/v1/user/nations").then((res) => {
@@ -225,7 +246,7 @@ function UserInfo() {
                 <h5 className="mb-4">Thông tin cá nhân</h5>
                 <form action="#" onSubmit={handleSubmit}>
                   <div className="form-section-1">
-                    <div className="inner-avatar">
+                    <div className="inner-avatar" onClick={uploadImage}>
                       <img src={avatar} alt="" />
                       <img src={icon} alt="" />
                     </div>
