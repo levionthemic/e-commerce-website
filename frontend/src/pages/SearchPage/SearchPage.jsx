@@ -43,6 +43,14 @@ const SearchPage = () => {
     // fetchProducts();
   };
 
+  window.onload = () => {
+    animateScroll.scrollToTop({
+      duration: 800,
+      smooth: true,
+      offset: -70,
+    });
+  }
+
   useEffect(() => {
     try {
       axiosApi("/api/v1/products/search", {
@@ -270,26 +278,6 @@ const SearchPage = () => {
                       ))}
                     </>
                   )}
-                </>
-              )}
-            </Row>
-
-            <Row xs={1} md={4} className="g-3">
-              {products && (
-                <>
-                  {products.map((product) => (
-                    <Col
-                      key={product.id}
-                      style={{
-                        padding: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <ProductItem product={product} />
-                    </Col>
-                  ))}
                 </>
               )}
             </Row>
