@@ -1,50 +1,101 @@
 import React, { useState } from "react";
-import { Tabs, Table, Tag, Button, Input, DatePicker } from "antd";
+import { Tabs, Table, Tag, Button, Input, DatePicker, Space } from "antd";
 import "./ManageOrders.css";
 
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 
-
-
-
 const OrderManagement = () => {
   const [searchValue, setSearchValue] = useState("");
-  const [ setDateRange] = useState(null);
-
-  const data = [
+  const [dateRange, setDateRange] = useState(null);
+  const [orders, setOrders] = useState([
     {
       key: "1",
-      product: "Bộ Khay Mứt Tết Cành Đào Gốm Sứ Tráng Men Bát Tràng | Khay Bánh Kẹo",
-      type: "HOA ĐÀO XANH",
+      product: "Bánh chưng ngày tết trung thu",
+      type: "Thực phẩm",
       total: "537,700",
-      status: "Chờ lấy hàng",
+      status: "Chờ xác nhận",
       shipping: "Nhanh",
       orderId: "211222S6KHSTX3",
-      action: "Chuẩn bị hàng",
+      orderDate: "06-11-2024",
     },
     {
       key: "2",
-      product: "Bộ Khay Mứt Tết Cành Đào Gốm Sứ Tráng Men Bát Tràng | Khay Bánh Kẹo",
-      type: "HOA ĐÀO HỒNG",
+      product: "Cành đào mừng lễ giáng sinh",
+      type: "Trang trí",
       total: "537,700",
       status: "Đã hủy",
       shipping: "Nhanh",
       orderId: "211222RY7904A9",
-      action: "Xem chi tiết",
+      orderDate: "20-11-2024",
     },
     {
       key: "3",
-      product: "Giá Úp Cốc Mạ Vàng Sang Chảnh Mới Nhất 2021 Hàng Cao Cấp",
-      type: "HƯƠU",
+      product: "Giá Úp Cốc Mạ Vàng Sang Chảnh Mới Nhất 2024",
+      type: "Vật dụng",
       total: "183,000",
-      status: "Đã giao cho DVVC",
+      status: "Đang giao",
       shipping: "Nhanh",
       orderId: "211222RGQHWRS4",
-      action: "Xem chi tiết",
+      orderDate: "09-10-2024",
     },
-  ];
+  ]);
+
+  const handleConfirmOrder = (orderId) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.orderId === orderId ? { ...order, status: "Chờ lấy hàng" } : order
+      )
+    );
+  };
+
+  const handleRejectOrder = (orderId) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.orderId === orderId ? { ...order, status: "Đã hủy" } : order
+      )
+    );
+  };
+
+  const getFilteredData = (status) => {
+    return orders.filter((order) => {
+      // Kiểm tra trạng thái đơn hàng
+      const matchesStatus = status ? order.status === status : true;
+  
+      // Kiểm tra giá trị tìm kiếm (tìm theo tên sản phẩm hoặc mã đơn hàng)
+      const matchesSearch =
+        searchValue === "" ||
+        order.product.toLowerCase().includes(searchValue.toLowerCase()) ||
+        order.orderId.toLowerCase().includes(searchValue.toLowerCase());
+  
+      // Kiểm tra ngày đặt hàng
+      const matchesDate =
+      !dateRange ||
+      (dateRange[0] &&
+        dateRange[1] &&
+        (() => {
+          const [startDay, startMonth, startYear] = dateRange[0]
+            .format("DD-MM-YYYY")
+            .split("-");
+          const [endDay, endMonth, endYear] = dateRange[1]
+            .format("DD-MM-YYYY")
+            .split("-");
+          const [orderDay, orderMonth, orderYear] = order.orderDate.split("-");
+
+          const startDate = new Date(startYear, startMonth - 1, startDay);
+          const endDate = new Date(endYear, endMonth - 1, endDay);
+          const orderDate = new Date(orderYear, orderMonth - 1, orderDay);
+
+          return orderDate >= startDate && orderDate <= endDate;
+        })());
+  
+      return matchesStatus && matchesSearch && matchesDate;
+    });
+  };
+  
+  
+  
 
   const columns = [
     {
@@ -58,7 +109,7 @@ const OrderManagement = () => {
       key: "type",
     },
     {
-      title: "Tổng đơn hàng",
+      title: "Thành tiền",
       dataIndex: "total",
       key: "total",
     },
@@ -69,7 +120,8 @@ const OrderManagement = () => {
       render: (status) => {
         let color = "blue";
         if (status === "Đã hủy") color = "red";
-        if (status === "Đã giao cho DVVC") color = "green";
+        if (status === "Đang giao") color = "green";
+        if (status === "Chờ lấy hàng") color = "orange";
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -79,15 +131,26 @@ const OrderManagement = () => {
       key: "shipping",
     },
     {
-      title: "ID Đơn hàng",
+      title: "Mã đơn hàng",
       dataIndex: "orderId",
       key: "orderId",
     },
     {
+      title: "Ngày đặt",
+      dataIndex: "orderDate",
+      key: "orderDate",
+    },
+    {
       title: "Thao tác",
-      dataIndex: "action",
       key: "action",
-      render: (text) => <Button type="link">{text}</Button>,
+      render: (_, record) =>
+        record.status === "Chờ xác nhận" ? (
+          <Space className="action">
+            
+            <button class="btn btn-success " onClick={() => handleConfirmOrder(record.orderId)}>Xác nhận</button>
+            <button class="btn btn-danger " onClick={() => handleRejectOrder(record.orderId)}>Hủy</button>
+          </Space>
+        ) : null,
     },
   ];
 
@@ -97,32 +160,32 @@ const OrderManagement = () => {
         <TabPane tab="Tất cả" key="1">
           <div style={{ marginBottom: 16, display: "flex", gap: "10px" }}>
             <Input
-              placeholder="Mã đơn hàng"
+              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng hoặc Tên sản phẩm"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-            <RangePicker onChange={(dates) => setDateRange(dates)} />
-            <Button type="primary">Tìm kiếm</Button>
+            <RangePicker format="DD-MM-YYYY"onChange={(dates) => setDateRange(dates)}/>
+
+            <Button type="primary" onClick={() => setSearchValue("")}>
+              Reset
+            </Button>
           </div>
-          <Table columns={columns} dataSource={data} />
+          <Table columns={columns} dataSource={getFilteredData()} />
         </TabPane>
         <TabPane tab="Chờ xác nhận" key="2">
-          <p>Không có dữ liệu.</p>
+          <Table columns={columns} dataSource={getFilteredData("Chờ xác nhận")} />
         </TabPane>
         <TabPane tab="Chờ lấy hàng" key="3">
-          <p>Không có dữ liệu.</p>
+          <Table columns={columns} dataSource={getFilteredData("Chờ lấy hàng")} />
         </TabPane>
-        <TabPane tab="Đang giao" key="4">
-          <p>Không có dữ liệu.</p>
+        <TabPane tab="Đang vận chuyển" key="4">
+          <Table columns={columns} dataSource={getFilteredData("Đang giao")} />
         </TabPane>
         <TabPane tab="Đã giao" key="5">
-          <p>Không có dữ liệu.</p>
+          <Table columns={columns} dataSource={getFilteredData("Đã giao")} />
         </TabPane>
         <TabPane tab="Đơn hủy" key="6">
-          <p>Không có dữ liệu.</p>
-        </TabPane>
-        <TabPane tab="Trả hàng/Hoàn tiền" key="7">
-          <p>Không có dữ liệu.</p>
+          <Table columns={columns} dataSource={getFilteredData("Đã hủy")} />
         </TabPane>
       </Tabs>
     </div>
