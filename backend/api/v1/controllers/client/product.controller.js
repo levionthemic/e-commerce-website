@@ -15,7 +15,6 @@ module.exports.index = async (req, res) => {
 
   let limit = limitQuantity || 100;
 
-
   const data = await Product.find(findObj).limit(limit);
 
   if (data) {
@@ -59,14 +58,18 @@ module.exports.search = async (req, res) => {
       sort[req.query.sortKey] = req.query.sortValue;
     }
 
-    console.log(sort);
-
     const products = await Product.find({
       $or: [{ name: regex }, { slug: regexSlug }],
     })
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(limit);
+
+    const categories = new Set();
+    for (const product of products) {
+      const parentCategory = product.primary_category_path.split("/")[2];
+      categories.add(parentCategory);
+    }
 
     if (products) {
       res.status(200).json({
@@ -75,6 +78,7 @@ module.exports.search = async (req, res) => {
         length: products.length,
         limit: limit,
         totalPages: totalPages,
+        listParentCategories: [...categories],
       });
     } else {
       res.status(400).json({

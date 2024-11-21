@@ -5,12 +5,17 @@ import { axiosApi } from "../../services/UserService";
 import ProductItem from "../../components/ProductItem";
 import { useNavigate } from "react-router-dom";
 import { animateScroll } from "react-scroll";
+import Sider from "./Sider";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { Spin } from "antd";
 
 const SearchPage = () => {
   const [sortOption, setSortOption] = useState(0);
   const [products, setProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [parentCategories, setParentCategories] = useState([]);
 
   const url = new URL(window.location.href);
   const keyword = url.searchParams.get("keyword").toLowerCase() || "";
@@ -85,6 +90,7 @@ const SearchPage = () => {
           setTotalPages(data.data.totalPages);
         }
         setProducts(data.data.data);
+        setParentCategories(data.data.listParentCategories);
         setLoading(false);
       });
     } catch (error) {
@@ -97,10 +103,18 @@ const SearchPage = () => {
       <div className="search-page container">
         <Row>
           <Col md={3}>
-            <div className="filters-section">
-              <h5>Danh mục sản phẩm</h5>
-              
-            </div>
+            <Spin spinning={loading} tip="Đang tải...">
+              <div className="filters-section">
+                <h5>Danh mục liên quan</h5>
+                {parentCategories?.map((parentCategory) => (
+                  <Sider
+                    parentCategory={parentCategory}
+                    loading={true}
+                    key={parseInt(parentCategory)}
+                  />
+                ))}
+              </div>
+            </Spin>
           </Col>
 
           <Col md={9}>
