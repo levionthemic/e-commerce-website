@@ -13,6 +13,7 @@ export const StyledMenu = styled(Menu)`
   }
   .ant-menu-submenu-title {
     padding-left: 10px !important;
+    height: 30px !important;
   }
 
   .ant-menu-item-only-child {

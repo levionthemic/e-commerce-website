@@ -6,8 +6,6 @@ import ProductItem from "../../components/ProductItem";
 import { useNavigate } from "react-router-dom";
 import { animateScroll } from "react-scroll";
 import Sider from "./Sider";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { Spin } from "antd";
 
 const SearchPage = () => {
@@ -103,9 +101,9 @@ const SearchPage = () => {
       <div className="search-page container">
         <Row>
           <Col md={3}>
-            <Spin spinning={loading} tip="Đang tải...">
-              <div className="filters-section">
-                <h5>Danh mục liên quan</h5>
+            <div className="filters-section">
+              <h5>Danh mục liên quan</h5>
+              <Spin spinning={loading} tip="Đang tải...">
                 {parentCategories?.map((parentCategory) => (
                   <Sider
                     parentCategory={parentCategory}
@@ -113,8 +111,8 @@ const SearchPage = () => {
                     key={parseInt(parentCategory)}
                   />
                 ))}
-              </div>
-            </Spin>
+              </Spin>
+            </div>
           </Col>
 
           <Col md={9}>
