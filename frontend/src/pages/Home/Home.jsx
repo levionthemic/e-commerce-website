@@ -204,7 +204,7 @@ const Home = () => {
 
       <div className="row my-3">
         <div className="col-12">
-          <div className="inner-button">
+          <div className="inner-more">
             <button
               type="button"
               className="btn btn-secondary"

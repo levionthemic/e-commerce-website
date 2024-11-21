@@ -60,7 +60,7 @@ const DetailProduct = () => {
         productId: productId,
         quantity: quantity,
       })
-      .then(() => {
+      .then((res) => {
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -74,7 +74,8 @@ const DetailProduct = () => {
           icon: "success",
           title: "Thêm vào giỏ hàng thành công!",
         });
-        dispatch(increaseCartQuantity(1));
+        if (res.data.hasQuantityUpdated)
+          dispatch(increaseCartQuantity(1));
       })
       .catch(() => {
         Swal.fire({
@@ -211,22 +212,7 @@ const DetailProduct = () => {
                     min="1"
                     max={product?.stock_item.qty || 1000}
                     onChange={(e) => {
-                      const value =
-                        e.target.value === ""
-                          ? ""
-                          : Math.max(
-                              1,
-                              Math.min(
-                                product?.stock_item.qty || 1000,
-                                parseInt(e.target.value) || 1
-                              )
-                            );
-                      setQuantity(value);
-                    }}
-                    onBlur={() => {
-                      if (quantity === "") {
-                        setQuantity(1); // Đặt lại thành 1 nếu ô nhập trống
-                      }
+                      setQuantity(e.target.value);
                     }}
                     style={{
                       width: "60px",

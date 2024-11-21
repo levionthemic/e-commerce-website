@@ -15,7 +15,7 @@ module.exports.index = async (req, res) => {
     )
       .then((products) => {
         const result = products.map((product) => {
-          let temp = {...product}._doc;
+          let temp = { ...product }._doc;
           const quantity = cart.products.find(
             (item) => item.productId === product.id
           ).quantity;
@@ -42,7 +42,7 @@ module.exports.index = async (req, res) => {
 // [POST] /cart/add
 module.exports.add = async (req, res) => {
   const cartId = req.body.cartId;
-  const productId = req.body.productId;
+  const productId = parseInt(req.body.productId);
   const quantity = parseInt(req.body.quantity);
 
   const cart = await Cart.findOne({
@@ -78,9 +78,9 @@ module.exports.add = async (req, res) => {
       }
     );
   }
-  res.json({
-    code: 200,
+  res.status(200).json({
     message: "Success",
+    hasQuantityUpdated: existProductInCart ? false : true,
   });
 };
 

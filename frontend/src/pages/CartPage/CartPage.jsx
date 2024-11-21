@@ -34,6 +34,7 @@ const CartPage = () => {
       e.target.parentElement.parentElement.parentElement.getAttribute(
         "data-row-key"
       );
+    console.log(e.target.parentElement.parentElement.parentElement);
     let temp = [...quantities];
     temp[indexRow]++;
     showUpdateButton(e, temp, indexRow);
@@ -52,20 +53,18 @@ const CartPage = () => {
   };
 
   const handleDelete = (e) => {
+    const indexRow =
+      e.currentTarget.parentElement.parentElement.parentElement.getAttribute("data-row-key");
     Swal.fire({
       icon: "warning",
       showCancelButton: true,
       showConfirmButton: true,
       title: "Cảnh báo!",
-      text: "Bạn có chắc chắn muốn cập nhật?",
-      confirmButtonText: "Cập nhật",
+      text: "Bạn có chắc chắn muốn xóa?",
+      confirmButtonText: "Xóa",
       cancelButtonText: "Hủy",
     }).then((res) => {
       if (res.isConfirmed) {
-        const indexRow =
-          e.currentTarget.parentElement.parentElement.getAttribute(
-            "data-row-key"
-          );
         axiosApi
           .post("/api/v1/cart/delete", {
             cartId: cookies().cartId,
@@ -157,6 +156,7 @@ const CartPage = () => {
   );
 
   useEffect(() => {
+    setLoading(true);
     axiosApi
       .get("/api/v1/cart/" + cookies().cartId)
       .then((res) => {
@@ -165,6 +165,7 @@ const CartPage = () => {
         setLoading(false);
       })
       .catch((error) => {
+        setCartList([]);
         console.log(error.response);
         setLoading(false);
       });
@@ -300,7 +301,7 @@ const CartPage = () => {
   ];
 
   const data = cartList.map((item, index) => ({
-    key: item.id,
+    key: index,
     selected: false,
     thumbnail: item.thumbnail_url,
     info: [item.name, item.categories.name, item.id],

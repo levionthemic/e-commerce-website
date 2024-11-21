@@ -55,7 +55,6 @@ function Navbar() {
   const handleSearch = () => {
     if (searchKeyword.trim()) {
       navigate(`/search?keyword=${searchKeyword.trim()}&page=1`);
-      window.location.reload();
     }
   };
 
