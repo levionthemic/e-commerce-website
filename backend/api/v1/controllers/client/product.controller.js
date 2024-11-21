@@ -38,6 +38,7 @@ module.exports.search = async (req, res) => {
   const limitQuantity = parseInt(req.query.limitQuantity);
   const keyword = req.query.keyword;
   const page = parseInt(req.query.page);
+  const categoryId = req.query.categoryId;
 
   if (keyword) {
     const regex = new RegExp(keyword, "i");
@@ -45,28 +46,36 @@ module.exports.search = async (req, res) => {
     const slug = unidecode(keyword).trim().replace(/\s+/g, "-");
     const regexSlug = new RegExp(slug, "i");
 
+    const regexCategory = new RegExp(`/${categoryId}`, "i");
+
     let limit = limitQuantity || 40;
-
-    const totalProducts = await Product.countDocuments({
-      $or: [{ name: regex }, { slug: regexSlug }],
-    });
-
-    const totalPages = Math.ceil(totalProducts / limit);
 
     let sort = {};
     if (req.query.sortKey && req.query.sortValue) {
       sort[req.query.sortKey] = req.query.sortValue;
     }
 
-    const products = await Product.find({
+    let objFind = {
       $or: [{ name: regex }, { slug: regexSlug }],
-    })
+    };
+
+    const productsTemp = await Product.find(objFind);
+
+    if (categoryId) {
+      objFind.primary_category_path = regexCategory;
+    }
+
+    const totalProducts = await Product.countDocuments(objFind);
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const products = await Product.find(objFind)
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(limit);
 
     const categories = new Set();
-    for (const product of products) {
+    for (const product of productsTemp) {
       const parentCategory = product.primary_category_path.split("/")[2];
       categories.add(parentCategory);
     }

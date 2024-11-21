@@ -19,7 +19,7 @@ const getLevelKeys = (items1) => {
   return key;
 };
 
-function Sider({ parentCategory }) {
+function Sider({ parentCategory, onUpdateCategoryId }) {
   const [categories, setCategories] = useState([]);
   const title = useRef();
   const levelKeys = getLevelKeys(categories);
@@ -65,6 +65,10 @@ function Sider({ parentCategory }) {
     });
   }, [parentCategory]);
 
+  const handleClick = (e) => {
+    onUpdateCategoryId(parseInt(e.key));
+  }
+
   return (
     <div className="sider-category">
       <h6 className="title">{title.current}</h6>
@@ -79,7 +83,7 @@ function Sider({ parentCategory }) {
           borderRight: 0,
         }}
         items={categories}
-        // onClick={handleClick}
+        onClick={handleClick}
       />
     </div>
   );

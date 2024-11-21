@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { animateScroll } from "react-scroll";
 import Sider from "./Sider";
 import { Spin } from "antd";
+import Swal from "sweetalert2";
 
 const SearchPage = () => {
   const [sortOption, setSortOption] = useState(0);
@@ -14,6 +15,7 @@ const SearchPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [parentCategories, setParentCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState(null);
 
   const url = new URL(window.location.href);
   const keyword = url.searchParams.get("keyword").toLowerCase() || "";
@@ -72,7 +74,18 @@ const SearchPage = () => {
     return { sortKey, sortValue };
   };
 
+  const updateCategoryId = (categoryId) => {
+    setCategoryId(categoryId);
+  };
+
   useEffect(() => {
+    setCategoryId(null);
+    setSortOption(0);
+    url.searchParams.set("page", "1");
+  }, [keyword, url.searchParams])
+
+  useEffect(() => {
+    url.searchParams.set("page", "1");
     const { sortKey, sortValue } = defineSort(sortOption);
     try {
       setLoading(true);
@@ -82,19 +95,37 @@ const SearchPage = () => {
           page: page,
           sortKey: sortKey,
           sortValue: sortValue,
+          categoryId: categoryId,
         },
       }).then((data) => {
         if (data.data.totalPages !== totalPages) {
           setTotalPages(data.data.totalPages);
         }
-        setProducts(data.data.data);
+        if (data.data.data.length) {
+          setProducts(data.data.data);
+        } else {
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+            icon: "info",
+            title: "Không có sản phẩm!",
+          });
+        }
+
         setParentCategories(data.data.listParentCategories);
         setLoading(false);
       });
     } catch (error) {
       console.error("Error fetching products:", error);
     }
-  }, [page, keyword, totalPages, sortOption]);
+  }, [page, keyword, totalPages, sortOption, categoryId]);
 
   return (
     <>
@@ -107,8 +138,8 @@ const SearchPage = () => {
                 {parentCategories?.map((parentCategory) => (
                   <Sider
                     parentCategory={parentCategory}
-                    loading={true}
                     key={parseInt(parentCategory)}
+                    onUpdateCategoryId={updateCategoryId}
                   />
                 ))}
               </Spin>
