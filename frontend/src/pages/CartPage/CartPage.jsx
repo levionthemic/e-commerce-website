@@ -135,7 +135,9 @@ const CartPage = () => {
               icon: "success",
               title: "Cập nhật số lượng thành công!",
             });
-            const updateButton = document.querySelector(".delete-btn:last-child");
+            const updateButton = document.querySelector(
+              ".delete-btn:last-child"
+            );
             updateButton.classList.add("d-none");
             cartList[indexRow].quantity = quantity;
             setCartList(cartList);
@@ -189,9 +191,16 @@ const CartPage = () => {
       title: "Thông tin sản phẩm",
       key: "info",
       dataIndex: "info",
-      render: ([name, category]) => (
+      render: ([name, category, id]) => (
         <div>
-          <h6>{name}</h6>
+          <h6
+            className="inner-name"
+            onClick={() => {
+              navigate(`/detailproduct/${id}`);
+            }}
+          >
+            {name}
+          </h6>
           <p>
             Phân loại: <i>{category}</i>
           </p>
@@ -222,7 +231,7 @@ const CartPage = () => {
             gap: "15px",
             border: "1px solid #ddd",
             borderRadius: "5px",
-            width: "fit-content"
+            width: "fit-content",
           }}
         >
           <button
@@ -291,10 +300,10 @@ const CartPage = () => {
   ];
 
   const data = cartList.map((item, index) => ({
-    key: index,
+    key: item.id,
     selected: false,
     thumbnail: item.thumbnail_url,
-    info: [item.name, item.categories.name],
+    info: [item.name, item.categories.name, item.id],
     price: (
       item.original_price *
       (1 - item.discount_rate / 100)

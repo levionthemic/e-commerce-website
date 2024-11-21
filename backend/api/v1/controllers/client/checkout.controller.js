@@ -30,7 +30,7 @@ module.exports.order = async (req, res) => {
     .then(() => {
       const newOrder = new Order({
         userId: user.id,
-        status: "Pending",
+        status: "pending",
         products: productsList,
       });
       Promise.all([

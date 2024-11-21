@@ -2,6 +2,10 @@
   padding: 20px;
 }
 
+.inner-name:hover {
+  cursor: pointer;
+}
+
 .summary-section {
   background-color: #fff;
   border-radius: 8px;

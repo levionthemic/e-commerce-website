@@ -15,6 +15,7 @@ module.exports.index = async (req, res) => {
 
   let limit = limitQuantity || 100;
 
+
   const data = await Product.find(findObj).limit(limit);
 
   if (data) {
@@ -38,7 +39,7 @@ module.exports.search = async (req, res) => {
   const limitQuantity = parseInt(req.query.limitQuantity);
   const keyword = req.query.keyword;
   const page = parseInt(req.query.page);
- 
+
   if (keyword) {
     const regex = new RegExp(keyword, "i");
 
@@ -53,24 +54,30 @@ module.exports.search = async (req, res) => {
 
     const totalPages = Math.ceil(totalProducts / limit);
 
+    let sort = {};
+    if (req.query.sortKey && req.query.sortValue) {
+      sort[req.query.sortKey] = req.query.sortValue;
+    }
+
+    console.log(sort);
+
     const products = await Product.find({
       $or: [{ name: regex }, { slug: regexSlug }],
     })
+      .sort(sort)
       .skip((page - 1) * limit)
       .limit(limit);
 
     if (products) {
-      res.json({
-        code: 200,
+      res.status(200).json({
         message: "Success",
         data: products,
         length: products.length,
         limit: limit,
-        totalPages: totalPages
+        totalPages: totalPages,
       });
     } else {
-      res.json({
-        code: 400,
+      res.status(400).json({
         message: "Error",
       });
     }

@@ -63,7 +63,7 @@ function ProductItem({ product, loading }) {
                     fullSymbol="fa-solid fa-star"
                     initialRating={product.rating_average}
                     readonly
-                    style={{ color: "#dfdf29" }}
+                    style={{ color: "#FBCA04" }}
                   />
                 </span>{" "}
                 | Đã bán: {product.quantity_sold?.value || 0}

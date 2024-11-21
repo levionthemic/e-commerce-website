@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import "./Home.scss";
 import banner from "../../assets/images/banner.png";
 import {
@@ -7,7 +7,7 @@ import {
   CustomerServiceFilled,
   StarOutlined,
 } from "@ant-design/icons";
-import { Button, Col } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 
 import "react-multi-carousel/lib/styles.css";
 import { useNavigate } from "react-router-dom";
@@ -220,4 +220,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default memo(Home);
