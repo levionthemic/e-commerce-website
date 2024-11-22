@@ -1,52 +1,9 @@
 .cart-page {
-  background-color: #f9f9f9;
   padding: 20px;
-  border-radius: 8px;
 }
 
-.cart-store-section {
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.cart-item {
-  padding: 15px;
-  transition: background-color 0.3s ease;
-}
-
-.cart-item:hover {
-  background-color: #f1f1f1;
-}
-
-.cart-item img {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.voucher-section {
-  background-color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  max-width: 300px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.voucher-section h5 {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.voucher-section input {
-  border-radius: 8px;
-  padding: 10px;
+.inner-name:hover {
+  cursor: pointer;
 }
 
 .summary-section {
@@ -54,8 +11,10 @@
   border-radius: 8px;
   padding: 15px;
   border: 1px solid #e0e0e0;
-  max-width: 300px;
+  width: fit-content;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  left: 85%;
 }
 
 .summary-section h5 {
@@ -63,18 +22,29 @@
   color: #333;
 }
 
-.btn {
-  transition: all 0.3s ease;
-  font-weight: bold;
+.delete-btn {
+  transition: all 0.3s linear;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: transparent;
+  padding: 2px 6px;
+  font-size: 18px;
+  width: fit-content;
 }
 
-.btn-danger {
-  background-color: #ff4d4f;
-  border: none;
+.delete-btn:last-child {
+  border-color: rgb(255, 141, 141);
+  color: red;
 }
 
-.btn-danger:hover {
-  background-color: #911717;
+
+.delete-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: all 0.3s linear;
+}
+
+.delete-btn:last-child:hover {
+  background-color: rgba(255, 0, 0, 0.1);
 }
 
 .btn-success {

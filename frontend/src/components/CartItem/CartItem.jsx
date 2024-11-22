@@ -40,7 +40,11 @@ const CartItem = ({ item, onToggleSelect }) => {
         </p>
       </div>
       <div className="col-md-2 text-center">
-        <span>{item.price.toLocaleString()} VNĐ</span>
+        <span>
+          {item.original_price *
+            (1 - item.discount_rate / 100).toLocaleString()}
+          <sup>đ</sup>
+        </span>
       </div>
       <div className="col-md-2 d-flex align-items-center justify-content-center">
         <button

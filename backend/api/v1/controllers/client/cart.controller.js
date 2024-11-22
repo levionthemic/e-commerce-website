@@ -1,30 +1,39 @@
 const Product = require("../../models/product.model");
 const Cart = require("../../models/cart.model");
 
-// [GET] /cart
+// [GET] /cart/:cartId
 module.exports.index = async (req, res) => {
-  const cartId = req.body.cartId;
+  const cartId = req.params.cartId;
 
   const cart = await Cart.findOne({ _id: cartId });
 
   if (cart.products.length) {
-    Promise.all(cart.products.map((item) => Product.findOne({ _id: item.id })))
+    Promise.all(
+      cart.products.map((item) =>
+        Product.findOne({ id: item.productId }).select("-_id")
+      )
+    )
       .then((products) => {
+        const result = products.map((product) => {
+          let temp = { ...product }._doc;
+          const quantity = cart.products.find(
+            (item) => item.productId === product.id
+          ).quantity;
+          temp.quantity = quantity;
+          return temp;
+        });
         res.json({
-          code: 200,
           message: "Success",
-          data: products,
+          data: result,
         });
       })
       .catch((error) =>
-        res.json({
-          code: 400,
-          message: error,
+        res.status(400).json({
+          message: "Không thể lấy danh sách giỏ hàng!",
         })
       );
   } else {
-    res.json({
-      code: 400,
+    res.status(400).json({
       message: "Error: Cart Empty",
     });
   }
@@ -33,7 +42,7 @@ module.exports.index = async (req, res) => {
 // [POST] /cart/add
 module.exports.add = async (req, res) => {
   const cartId = req.body.cartId;
-  const productId = req.body.productId;
+  const productId = parseInt(req.body.productId);
   const quantity = parseInt(req.body.quantity);
 
   const cart = await Cart.findOne({
@@ -69,13 +78,13 @@ module.exports.add = async (req, res) => {
       }
     );
   }
-  res.json({
-    code: 200,
+  res.status(200).json({
     message: "Success",
+    hasQuantityUpdated: existProductInCart ? false : true,
   });
 };
 
-// [DELETE] /cart/delete
+// [POST] /cart/delete
 module.exports.delete = async (req, res) => {
   const cartId = req.body.cartId;
   const productId = req.body.productId;

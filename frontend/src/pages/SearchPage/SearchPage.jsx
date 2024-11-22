@@ -1,298 +1,345 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Button,
-  Card,
-  Row,
-  Col,
-  Dropdown,
-  Pagination,
-} from "react-bootstrap";
+import { Row, Col, Pagination } from "react-bootstrap";
 import "./SearchPage.css";
-import { useLocation, Link } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
 import { axiosApi } from "../../services/UserService";
+import ProductItem from "../../components/ProductItem";
+import { useNavigate } from "react-router-dom";
+import { animateScroll } from "react-scroll";
+import Sider from "./Sider";
+import { Spin } from "antd";
+import Swal from "sweetalert2";
 
 const SearchPage = () => {
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState(1000000);
-  // const [sortBy, _] = useState("Liên Quan");
+  const [sortOption, setSortOption] = useState(0);
   const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  // const [storeType, setStoreType] = useState([]);
-  // const [productCondition, setProductCondition] = useState([]);
-  // const [brand, setBrand] = useState([]);
-  const [ratingFilter, setRatingFilter] = useState(null);
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const keyword = params.get("keyword")?.toLowerCase() || "";
-  const [promotions, setPromotions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingProduct, setLoadingProduct] = useState(false);
+  const [parentCategories, setParentCategories] = useState([]);
+  const [categoryId, setCategoryId] = useState(null);
 
-  const togglePromotion = (promo) => {
-    setPromotions((prev) =>
-      prev.includes(promo) ? prev.filter((p) => p !== promo) : [...prev, promo]
-    );
+  const url = new URL(window.location.href);
+  const keyword = url.searchParams.get("keyword").toLowerCase() || "";
+  const page = parseInt(url.searchParams.get("page")) || 1;
+
+  const navigate = useNavigate();
+
+  window.onload = () => {
+    animateScroll.scrollToTop({
+      duration: 800,
+      smooth: true,
+      offset: -70,
+    });
   };
 
-  const handleResetFilters = () => {
-    // setMinPrice("");
-    // setMaxPrice(1000000);
-    // setStoreType([]);
-    // setProductCondition([]);
-    // setBrand([]);
-    // setRatingFilter(null);
-    // setPromotions([]);
-    // fetchProducts();
+  const defineSort = (sortOption) => {
+    let sortKey = "",
+      sortValue = "";
+    switch (sortOption) {
+      case 1:
+        sortKey = "slug";
+        sortValue = "asc";
+        break;
+      case 2:
+        sortKey = "slug";
+        sortValue = "desc";
+        break;
+      case 3:
+        sortKey = "original_price";
+        sortValue = "asc";
+        break;
+      case 4:
+        sortKey = "original_price";
+        sortValue = "desc";
+        break;
+      case 5:
+        sortKey = "quantity_sold.value";
+        sortValue = "desc";
+        break;
+      case 6:
+        sortKey = "quantity_sold.value";
+        sortValue = "asc";
+        break;
+      case 7:
+        sortKey = "rating_average";
+        sortValue = "desc";
+        break;
+      case 8:
+        sortKey = "rating_average";
+        sortValue = "asc";
+        break;
+
+      default:
+        break;
+    }
+    return { sortKey, sortValue };
+  };
+
+  const updateCategoryId = (categoryId) => {
+    setCategoryId(categoryId);
   };
 
   useEffect(() => {
+    navigate(`/search?keyword=${keyword}&page=1`);
+    animateScroll.scrollToTop({
+      duration: 800,
+      smooth: true,
+      offset: -70,
+    });
+  }, [categoryId]);
+
+  useEffect(() => {
+    const { sortKey, sortValue } = defineSort(sortOption);
     try {
-     
-      console.log(keyword);
+      setLoadingProduct(true);
       axiosApi("/api/v1/products/search", {
         params: {
           keyword: keyword,
+          page: page,
+          sortKey: sortKey,
+          sortValue: sortValue,
+          categoryId: categoryId,
         },
       }).then((data) => {
-        console.log(data);
         setProducts(data.data.data);
-        setTotalPages(data.data.totalPages);
+        setTotalPages(data.data.totalPages || 1);
+        setLoadingProduct(false);
+      });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }, [page, sortOption, categoryId]);
+
+  useEffect(() => {
+    try {
+      setLoading(true);
+      axiosApi("/api/v1/products/search", {
+        params: {
+          keyword: keyword,
+          page: 1,
+        },
+      }).then((data) => {
+        setCategoryId(null);
+        setSortOption(0);
+        setProducts(data.data.data);
+        setParentCategories(data.data.listParentCategories);
+        setTotalPages(data.data.totalPages || 1);
+        setLoading(false);
       });
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   }, [keyword]);
 
-  const handleApplyFilters = () => {
-    // setPage(1);
-    // fetchProducts();
-  };
-
-  const handleSortChange = (sortOption) => {
-    // setSortBy(sortOption);
-    // setPage(1); // Đảm bảo về trang đầu
-    // fetchProducts();
-  };
-
-  const toggleStoreType = (type) => {
-    // setStoreType((prev) =>
-    //   prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    // );
-  };
-
-  const toggleProductCondition = (condition) => {
-    // setProductCondition((prev) =>
-    //   prev.includes(condition)
-    //     ? prev.filter((c) => c !== condition)
-    //     : [...prev, condition]
-    // );
-  };
-
-  // const toggleBrand = (brandName) => {
-  //   setBrand((prev) =>
-  //     prev.includes(brandName)
-  //       ? prev.filter((b) => b !== brandName)
-  //       : [...prev, brandName]
-  //   );
-  // };
-
   return (
-    <div className="search-page container">
-      <Row>
-        {/* Bộ lọc tìm kiếm */}
-        <Col md={3} className="filters-section">
-          <h5>Bộ Lọc Tìm Kiếm</h5>
-          <Form>
-            <Form.Group controlId="priceRange" className="mb-4">
-              <Form.Label>Khoảng Giá</Form.Label>
-              <div className="d-flex align-items-center mb-2">
-                <Form.Control
-                  type="number"
-                  placeholder="Từ"
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="me-2"
-                  style={{ width: "45%" }}
+    <>
+      <div className="search-page container">
+        <Row>
+          <Col md={3}>
+            <div className="filters-section">
+              <Spin spinning={loading} tip="Đang tải...">
+                <Sider
+                  parentCategories={parentCategories}
+                  onUpdateCategoryId={updateCategoryId}
                 />
-                <Form.Control
-                  type="number"
-                  placeholder="Đến"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  style={{ width: "45%" }}
-                />
-              </div>
-              <Button
-                variant="danger"
-                className="mt-2 w-100"
-                onClick={handleApplyFilters}
-              >
-                Áp Dụng
-              </Button>
-            </Form.Group>
+              </Spin>
+            </div>
+          </Col>
 
-            <Form.Group controlId="storeType" className="mb-4">
-              <Form.Label>Loại Shop</Form.Label>
-              <Form.Check
-                type="checkbox"
-                label="Shopee Mall"
-                onChange={() => toggleStoreType("Shopee Mall")}
-                // checked={storeType.includes("Shopee Mall")}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Shop Yêu Thích"
-                onChange={() => toggleStoreType("Shop Yêu Thích")}
-                // checked={storeType.includes("Shop Yêu Thích")}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Xử lý đơn hàng bởi Shopee"
-                onChange={() => toggleStoreType("Shopee")}
-                // checked={storeType.includes("Shopee")}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="productCondition" className="mb-4">
-              <Form.Label>Tình Trạng</Form.Label>
-              <Form.Check
-                type="checkbox"
-                label="Đã sử dụng"
-                onChange={() => toggleProductCondition("Đã sử dụng")}
-                // checked={productCondition.includes("Đã sử dụng")}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Mới"
-                onChange={() => toggleProductCondition("Mới")}
-                // checked={productCondition.includes("Mới")}
-              />
-            </Form.Group>
-
-            <Form.Group controlId="rating" className="mb-4">
-              <Form.Label>Đánh Giá</Form.Label>
-              {[5, 4, 3].map((star) => (
-                <Form.Check
-                  key={star}
-                  type="checkbox"
-                  label={`${"⭐️".repeat(star)} trở lên`}
-                  onChange={() => setRatingFilter(star)}
-                  checked={ratingFilter === star}
-                />
-              ))}
-            </Form.Group>
-
-            <Form.Group controlId="promotion" className="mb-4">
-              <Form.Label>Dịch Vụ & Khuyến Mãi</Form.Label>
-              <Form.Check
-                type="checkbox"
-                label="Voucher Xtra"
-                onChange={() => togglePromotion("Voucher Xtra")}
-                checked={promotions.includes("Voucher Xtra")}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Đang giảm giá"
-                onChange={() => togglePromotion("Đang giảm giá")}
-                checked={promotions.includes("Đang giảm giá")}
-              />
-              <Form.Check
-                type="checkbox"
-                label="Hàng có sẵn"
-                onChange={() => togglePromotion("Hàng có sẵn")}
-                checked={promotions.includes("Hàng có sẵn")}
-              />
-            </Form.Group>
-
-            <Button
-              variant="secondary"
-              className="mt-3 w-100"
-              onClick={handleResetFilters}
-            >
-              Xóa Tất Cả
-            </Button>
-          </Form>
-        </Col>
-
-        {/* Kết quả tìm kiếm */}
-        <Col md={9}>
-          <Row className="align-items-center justify-content-between mb-3">
+          <Col md={9}>
             <h5>Kết quả tìm kiếm cho "{keyword}"</h5>
-            <Dropdown onSelect={(e) => handleSortChange(e)}>
-              <Dropdown.Toggle variant="outline-primary">
-                {/* {sortBy} */}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item eventKey="Liên Quan">Liên Quan</Dropdown.Item>
-                <Dropdown.Item eventKey="Giá: Từ Thấp đến Cao">
-                  Giá: Từ Thấp đến Cao
-                </Dropdown.Item>
-                <Dropdown.Item eventKey="Giá: Từ Cao đến Thấp">
-                  Giá: Từ Cao đến Thấp
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </Row>
 
-          {/* Danh sách sản phẩm */}
-          <Row xs={1} md={5} className="g-3">
-            {products.map((product) => (
-              <Col key={product.id}>
-                <Card className="product-card">
-                  <Card.Img
-                    variant="top"
-                    src={
-                      product.thumbnail_url ||
-                      "/images/default/default-product.png"
-                    }
-                  />
-                  <Card.Body>
-                    <Card.Title>{product.name}</Card.Title>
-                    <Card.Text>
-                      <span className="product-price">
-                        {product.price.toLocaleString()} VNĐ
-                      </span>
-                    </Card.Text>
-                    <Card.Text className="product-info">
-                      <span>
-                        {product.rating_average || "0"}{" "}
-                        <FaStar color="#ffab00" />
-                      </span>{" "}
-                      | Đã bán: {product.quantity_sold?.value || 0}
-                    </Card.Text>
-                    <Link to={`/detailproduct/${product.id}`}>
-                      <Button variant="primary" className="w-100">
-                        Xem Chi Tiết
-                      </Button>
-                    </Link>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+            <div className="row">
+              <div className="col-12">
+                <div className="inner-service">
+                  <div className="inner-page">
+                    <span>Trang {page}</span>
+                  </div>
+                  <div className="inner-action">
+                    <div className="inner-sort">
+                      <span>Sắp xếp: </span>
+                      <select
+                        className="form-select"
+                        id="sort"
+                        defaultValue={sortOption}
+                        onChange={(e) => {
+                          setSortOption(parseInt(e.target.value));
+                        }}
+                      >
+                        <option value={0}>Mặc định</option>
+                        <option value={1}>Từ A - Z</option>
+                        <option value={2}>Từ Z - A</option>
+                        <option value={3}>Giá tăng dần</option>
+                        <option value={4}>Giá giảm dần</option>
+                        <option value={5}>Lượt bán giảm dần</option>
+                        <option value={6}>Lượt bán tăng dần</option>
+                        <option value={7}>Số sao giảm dần</option>
+                        <option value={8}>Số sao tăng dần</option>
+                      </select>
+                    </div>
+                  </div>
+                  <Pagination className="justify-content-end">
+                    <Pagination.Prev
+                      onClick={() => {
+                        animateScroll.scrollToTop({
+                          duration: 800,
+                          smooth: true,
+                          offset: -70,
+                        });
+                        setTimeout(() => {
+                          url.searchParams.set("page", Math.max(page - 1, 1));
+                          navigate(url.pathname + url.search);
+                        }, 800);
+                      }}
+                    />
+                    {[...Array(totalPages)].map((_, index) => (
+                      <Pagination.Item
+                        key={index}
+                        active={index + 1 === page}
+                        onClick={() => {
+                          animateScroll.scrollToTop({
+                            duration: 800,
+                            smooth: true,
+                            offset: -70,
+                          });
+                          setTimeout(() => {
+                            url.searchParams.set("page", index + 1);
+                            navigate(url.pathname + url.search);
+                          }, 800);
+                        }}
+                      >
+                        {index + 1}
+                      </Pagination.Item>
+                    ))}
+                    <Pagination.Next
+                      onClick={() => {
+                        animateScroll.scrollToTop({
+                          duration: 800,
+                          smooth: true,
+                          offset: -70,
+                        });
+                        setTimeout(() => {
+                          url.searchParams.set(
+                            "page",
+                            Math.min(page + 1, totalPages)
+                          );
+                          navigate(url.pathname + url.search);
+                        }, 800);
+                      }}
+                    />
+                  </Pagination>
+                </div>
+              </div>
+            </div>
 
-          {/* Phân trang */}
-          <Pagination className="mt-4 justify-content-center">
-            <Pagination.Prev
-              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            />
-            {[...Array(totalPages)].map((_, index) => (
-              <Pagination.Item
-                key={index}
-                active={index + 1 === page}
-                onClick={() => setPage(index + 1)}
-              >
-                {index + 1}
-              </Pagination.Item>
-            ))}
-            <Pagination.Next
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-            />
-          </Pagination>
-        </Col>
-      </Row>
-    </div>
+            <Row xs={1} md={4} className="g-3">
+              {loadingProduct ? (
+                <>
+                  {Array.from({ length: 40 }).map((_, index) => (
+                    <Col
+                      key={index}
+                      style={{
+                        padding: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ProductItem product={null} loading={true} />
+                    </Col>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {!products.length ? (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        marginTop: "80px",
+                        color: "#555",
+                        width: "100%",
+                      }}
+                    >
+                      <h2>Không tìm thấy sản phẩm</h2>
+                      <p>Hãy thử tìm kiếm với từ khóa khác.</p>
+                    </div>
+                  ) : (
+                    <>
+                      {products.map((product) => (
+                        <Col
+                          key={product._id}
+                          style={{
+                            padding: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <ProductItem product={product} loading={false} />
+                        </Col>
+                      ))}
+                    </>
+                  )}
+                </>
+              )}
+            </Row>
+
+            {/* Phân trang */}
+            <Pagination className="mt-4 mb-3 justify-content-center">
+              <Pagination.Prev
+                onClick={() => {
+                  animateScroll.scrollToTop({
+                    duration: 800,
+                    smooth: true,
+                    offset: -70,
+                  });
+                  setTimeout(() => {
+                    url.searchParams.set("page", Math.max(page - 1, 1));
+                    navigate(url.pathname + url.search);
+                  }, 800);
+                }}
+              />
+              {[...Array(totalPages)].map((_, index) => (
+                <Pagination.Item
+                  key={index}
+                  active={index + 1 === page}
+                  onClick={() => {
+                    animateScroll.scrollToTop({
+                      duration: 800,
+                      smooth: true,
+                      offset: -70,
+                    });
+                    setTimeout(() => {
+                      url.searchParams.set("page", index + 1);
+                      navigate(url.pathname + url.search);
+                    }, 800);
+                  }}
+                >
+                  {index + 1}
+                </Pagination.Item>
+              ))}
+              <Pagination.Next
+                onClick={() => {
+                  animateScroll.scrollToTop({
+                    duration: 800,
+                    smooth: true,
+                    offset: -70,
+                  });
+                  setTimeout(() => {
+                    url.searchParams.set(
+                      "page",
+                      Math.min(page + 1, totalPages)
+                    );
+                    navigate(url.pathname + url.search);
+                  }, 800);
+                }}
+              />
+            </Pagination>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 };
 

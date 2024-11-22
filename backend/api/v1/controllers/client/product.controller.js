@@ -37,6 +37,8 @@ module.exports.index = async (req, res) => {
 module.exports.search = async (req, res) => {
   const limitQuantity = parseInt(req.query.limitQuantity);
   const keyword = req.query.keyword;
+  const page = parseInt(req.query.page);
+  const categoryId = req.query.categoryId;
 
   if (keyword) {
     const regex = new RegExp(keyword, "i");
@@ -44,23 +46,51 @@ module.exports.search = async (req, res) => {
     const slug = unidecode(keyword).trim().replace(/\s+/g, "-");
     const regexSlug = new RegExp(slug, "i");
 
-    let limit = limitQuantity || 100;
+    const regexCategory = new RegExp(`/${categoryId}`, "i");
 
-    const products = await Product.find({
+    let limit = limitQuantity || 40;
+
+    let sort = {};
+    if (req.query.sortKey && req.query.sortValue) {
+      sort[req.query.sortKey] = req.query.sortValue;
+    }
+
+    let objFind = {
       $or: [{ name: regex }, { slug: regexSlug }],
-    }).limit(limit);
+    };
+
+    const productsTemp = await Product.find(objFind);
+
+    if (categoryId) {
+      objFind.primary_category_path = regexCategory;
+    }
+
+    const totalProducts = await Product.countDocuments(objFind);
+
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const products = await Product.find(objFind)
+      .sort(sort)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    const categories = new Set();
+    for (const product of productsTemp) {
+      const parentCategory = product.primary_category_path.split("/")[2];
+      categories.add(parentCategory);
+    }
 
     if (products) {
-      res.json({
-        code: 200,
+      res.status(200).json({
         message: "Success",
         data: products,
         length: products.length,
         limit: limit,
+        totalPages: totalPages,
+        listParentCategories: [...categories],
       });
     } else {
-      res.json({
-        code: 400,
+      res.status(400).json({
         message: "Error",
       });
     }

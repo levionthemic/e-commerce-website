@@ -211,7 +211,9 @@
   .inner-quantity {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 30px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
 
     span:first-child {
       font-weight: 500;
@@ -219,37 +221,76 @@
       color: rgba(0, 0, 0, 0.4);
     }
 
-    span:last-child {
+    div:last-child {
       font-weight: 400;
       font-size: 15px;
       color: #2368c3;
-    }
-  }
-
-  .inner-products {
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    margin: 10px 0;
-    padding-bottom: 10px;
-
-    .inner-product {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      font-size: 14px;
-      padding: 10px 0;
+      gap: 10px;
 
-      div:last-child {
-        font-weight: bold;
-        color: #f90606;
-        opacity: 0.6;
+      img {
+        transform: rotate(0deg);
+        transition: transform 0.3s ease-in-out;
+      }
+      img.show {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      &:hover {
+        cursor: pointer;
       }
     }
   }
 
+  .inner-products {
+    display: block;
+    overflow: hidden;
+    max-height: 0px;
+    transition: max-height 0.5s ease-in-out;
+
+    .inner-products-list {
+      border-bottom: 1px solid #ddd;
+      padding: 7px 0;
+      max-height: 178px;
+      height: fit-content;
+      overflow: scroll;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+
+      .inner-product {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 14px;
+        padding: 10px 0;
+
+        div:nth-child(2) {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        div:last-child {
+          font-weight: bold;
+          color: #f90606;
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+  .inner-products.show {
+    max-height: 178px;
+    display: block;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+  }
+
   .inner-info-prices {
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
 
     .inner-price {
       display: flex;

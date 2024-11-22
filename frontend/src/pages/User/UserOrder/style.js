@@ -6,32 +6,32 @@ const items = [
   {
     key: '1',
     label: 'Tất cả đơn',
-    children: <TabItem />,
+    children: <TabItem status={"all"}/>,
   },
   {
     key: '2',
     label: 'Chờ xác nhận',
-    children: 'Content of Tab Pane 2',
+    children: <TabItem status={"confirming"}/>,
   },
   {
     key: '3',
     label: 'Đang xử lý',
-    children: 'Content of Tab Pane 3',
+    children: <TabItem status={"pending"}/>,
   },
   {
     key: '4',
     label: 'Đang vận chuyển',
-    children: 'Content of Tab Pane 3',
+    children: <TabItem status={"delivering"}/>,
   },
   {
     key: '5',
     label: 'Đã giao',
-    children: 'Content of Tab Pane 3',
+    children: <TabItem status={"delivered"}/>,
   },
   {
     key: '6',
     label: 'Đã hủy',
-    children: 'Content of Tab Pane 3',
+    children: <TabItem status={"discarded"}/>,
   },
 ];
 

@@ -4,11 +4,11 @@ const controller = require("../../controllers/client/cart.controller");
 
 const routes = express.Router();
 
-routes.get("/", controller.index);
+routes.get("/:cartId", controller.index);
 
 routes.post("/add", controller.add);
 
-routes.delete("/delete", controller.delete);
+routes.post("/delete", controller.delete);
 
 routes.patch("/update", controller.update);
 
