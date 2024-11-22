@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { Row, Col, Pagination } from "react-bootstrap";
 import "./SearchPage.css";
@@ -14,6 +15,7 @@ const SearchPage = () => {
   const [products, setProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [loadingProduct, setLoadingProduct] = useState(false);
   const [parentCategories, setParentCategories] = useState([]);
   const [categoryId, setCategoryId] = useState(null);
 
@@ -36,11 +38,11 @@ const SearchPage = () => {
       sortValue = "";
     switch (sortOption) {
       case 1:
-        sortKey = "name";
+        sortKey = "slug";
         sortValue = "asc";
         break;
       case 2:
-        sortKey = "name";
+        sortKey = "slug";
         sortValue = "desc";
         break;
       case 3:
@@ -79,16 +81,18 @@ const SearchPage = () => {
   };
 
   useEffect(() => {
-    setCategoryId(null);
-    setSortOption(0);
-    url.searchParams.set("page", "1");
-  }, [keyword, url.searchParams])
+    navigate(`/search?keyword=${keyword}&page=1`);
+    animateScroll.scrollToTop({
+      duration: 800,
+      smooth: true,
+      offset: -70,
+    });
+  }, [categoryId]);
 
   useEffect(() => {
-    url.searchParams.set("page", "1");
     const { sortKey, sortValue } = defineSort(sortOption);
     try {
-      setLoading(true);
+      setLoadingProduct(true);
       axiosApi("/api/v1/products/search", {
         params: {
           keyword: keyword,
@@ -98,34 +102,35 @@ const SearchPage = () => {
           categoryId: categoryId,
         },
       }).then((data) => {
-        if (data.data.totalPages !== totalPages) {
-          setTotalPages(data.data.totalPages);
-        }
-        if (data.data.data.length) {
-          setProducts(data.data.data);
-        } else {
-          Swal.fire({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1500,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-            icon: "info",
-            title: "Không có sản phẩm!",
-          });
-        }
+        setProducts(data.data.data);
+        setTotalPages(data.data.totalPages || 1);
+        setLoadingProduct(false);
+      });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }, [page, sortOption, categoryId]);
 
+  useEffect(() => {
+    try {
+      setLoading(true);
+      axiosApi("/api/v1/products/search", {
+        params: {
+          keyword: keyword,
+          page: 1,
+        },
+      }).then((data) => {
+        setCategoryId(null);
+        setSortOption(0);
+        setProducts(data.data.data);
         setParentCategories(data.data.listParentCategories);
+        setTotalPages(data.data.totalPages || 1);
         setLoading(false);
       });
     } catch (error) {
       console.error("Error fetching products:", error);
     }
-  }, [page, keyword, totalPages, sortOption, categoryId]);
+  }, [keyword]);
 
   return (
     <>
@@ -133,15 +138,11 @@ const SearchPage = () => {
         <Row>
           <Col md={3}>
             <div className="filters-section">
-              <h5>Danh mục liên quan</h5>
               <Spin spinning={loading} tip="Đang tải...">
-                {parentCategories?.map((parentCategory) => (
-                  <Sider
-                    parentCategory={parentCategory}
-                    key={parseInt(parentCategory)}
-                    onUpdateCategoryId={updateCategoryId}
-                  />
-                ))}
+                <Sider
+                  parentCategories={parentCategories}
+                  onUpdateCategoryId={updateCategoryId}
+                />
               </Spin>
             </div>
           </Col>
@@ -233,7 +234,7 @@ const SearchPage = () => {
             </div>
 
             <Row xs={1} md={4} className="g-3">
-              {loading ? (
+              {loadingProduct ? (
                 <>
                   {Array.from({ length: 40 }).map((_, index) => (
                     <Col
@@ -251,11 +252,23 @@ const SearchPage = () => {
                 </>
               ) : (
                 <>
-                  {products && (
+                  {!products.length ? (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        marginTop: "80px",
+                        color: "#555",
+                        width: "100%",
+                      }}
+                    >
+                      <h2>Không tìm thấy sản phẩm</h2>
+                      <p>Hãy thử tìm kiếm với từ khóa khác.</p>
+                    </div>
+                  ) : (
                     <>
                       {products.map((product) => (
                         <Col
-                          key={product.id}
+                          key={product._id}
                           style={{
                             padding: 0,
                             display: "flex",

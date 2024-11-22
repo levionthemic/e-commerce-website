@@ -19,9 +19,8 @@ const getLevelKeys = (items1) => {
   return key;
 };
 
-function Sider({ parentCategory, onUpdateCategoryId }) {
+function Sider({ parentCategories, onUpdateCategoryId }) {
   const [categories, setCategories] = useState([]);
-  const title = useRef();
   const levelKeys = getLevelKeys(categories);
 
   const [stateOpenKeys, setStateOpenKeys] = useState([""]);
@@ -58,24 +57,31 @@ function Sider({ parentCategory, onUpdateCategoryId }) {
   };
 
   useEffect(() => {
-    const categoryId = parseInt(parentCategory);
-    axiosApi(`/api/v1/category/${categoryId}`).then((res) => {
-      title.current = res.data.data.title;
-      setCategories(res.data.data.data);
+    const categoriesId = parentCategories.map((parentCategory) =>
+      parseInt(parentCategory)
+    );
+    let categories_temp = [];
+    Promise.all(
+      categoriesId.map((categoryId) =>
+        axiosApi(`/api/v1/category/${categoryId}`)
+      )
+    ).then((responses) => {
+      categories_temp = responses.map((res) => res.data.data);
+      setCategories(categories_temp);
     });
-  }, [parentCategory]);
+  }, [parentCategories]);
 
   const handleClick = (e) => {
     onUpdateCategoryId(parseInt(e.key));
-  }
+  };
 
   return (
     <div className="sider-category">
-      <h6 className="title">{title.current}</h6>
+      <h6 className="title">Danh mục liên quan</h6>
       <StyledMenu
         mode="inline"
-        defaultOpenKeys={categories.length ? [categories[0].key] : [""]}
-        openKeys={stateOpenKeys}
+        // defaultOpenKeys={categories.length ? [categories[0].key] : [""]}
+        // openKeys={stateOpenKeys}
         onOpenChange={onOpenChange}
         style={{
           width: "100%",

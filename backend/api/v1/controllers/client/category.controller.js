@@ -2,61 +2,59 @@ const Category = require("../../models/category.model");
 
 // [GET] /api/v1/category
 module.exports.index = async (req, res) => {
-  const categories = await Category.find({}).select("text icon_url id").limit(10);
+  const categories = await Category.find({})
+    .select("text icon_url id")
+    .limit(10);
 
   res.status(200).json({
     message: "Success",
-    data: categories
-  })
-}
+    data: categories,
+  });
+};
 
 // [GET] /api/v1/category/:categoryId
 module.exports.getCategoryByID = async (req, res) => {
   const categoryId = parseInt(req.params.categoryId);
-  let title = "";
   try {
-    const categories = await Category.find({});
-    const getListChildCategories = (categories) => {
-      if (!categories) {
-        return null;
-      }
-      for (const category of categories) {
-        if (parseInt(category.id) == categoryId) {
-          title = category.text || category.name;
-          return Array(category.children);
+    const category = await Category.findOne({
+      id: categoryId,
+    });
+    const result = JSON.parse(JSON.stringify(category));
+
+    const getResult = (children) => {
+      return children.map((item) => {
+        if (!item.children || !item.children.length) {
+          return {
+            key: `${item.id}`,
+            label: item.name,
+          };
+        } else {
+          return {
+            key: `${item.id}`,
+            label: item.name,
+            children: getResult(item.children),
+          };
         }
-        const result = getListChildCategories(category.children);
-        if (result) return result;
-      }
+      });
     };
-  
-    const result = JSON.parse(
-      JSON.stringify(getListChildCategories(categories))
-    )[0];
-  
+
     let data = null;
     if (result) {
-      data = result.map((item) => ({
-        key: `${item.id}`,
-        label: item.name,
-        thumbnail: item.thumbnail_url,
-        children: item.children
-          ? item.children.map((i) => ({ key: `${i.id}`, label: i.name }))
-          : null,
-      }));
-    };
-  
+      data = {
+        key: `${result.id}`,
+        label: result.text,
+        children: getResult(result.children),
+      };
+    }
+
     res.status(200).json({
       message: "Success",
-      data: {
-        title: title,
-        data: data,
-      },
-    })
+      data: data,
+    });
   } catch (error) {
+    console.log(error);
     res.status(400).json({
-      message: error
-    })
+      message: error,
+    });
   }
-  
-}
+};

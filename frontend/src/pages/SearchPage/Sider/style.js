@@ -12,17 +12,20 @@ export const StyledMenu = styled(Menu)`
     }
   }
   .ant-menu-submenu-title {
-    padding-left: 10px !important;
     height: 30px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ant-menu-item-only-child {
-    padding-left: 20px !important;
-    margin: 0;
     height: fit-content;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     .ant-menu-title-content {
       height: 30px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 `;
