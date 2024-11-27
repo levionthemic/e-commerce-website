@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import ShopOverview from "../../components/Shoper/ShopOverview"; //giu nguyen directory cu
-import AddProduct from "../../components/Shoper/AddProduct"; // Import file Thêm Sản Phẩm
-import ManageProducts from "../../components/ManageProducts/ManageProducts";
-import ManageOrders from "../../components/Shoper/ManageOrders";
-import ChatWithCustomers from "../../components/Shoper/ChatWithCustomers";
-import ShopProfile from "../../components/Shoper/ShopProfile";
+import ShopOverview from "./ShopOverview"; //giu nguyen directory cu
+import AddProduct from "./AddProduct"; // Import file Thêm Sản Phẩm
+import ManageProducts from ".//ManageProducts/ManageProducts";
+import ManageOrders from "./ManageOrders";
+import ChatWithCustomers from "./ChatWithCustomers";
+import ShopProfile from "./ShopProfile";
 import "./Shoper.css";
 import {
   FaHome,
