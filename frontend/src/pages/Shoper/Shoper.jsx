@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ShopOverview from "./ShopOverview"; //giu nguyen directory cu
 import AddProduct from "./AddProduct"; // Import file Thêm Sản Phẩm
 import ManageProducts from ".//ManageProducts/ManageProducts";
-import ManageOrders from "./ManageOrders";
+import ManageOrders from "./ManageOrders/ManageOrders";
 import ChatWithCustomers from "./ChatWithCustomers";
 import ShopProfile from "./ShopProfile";
 import "./Shoper.css";
