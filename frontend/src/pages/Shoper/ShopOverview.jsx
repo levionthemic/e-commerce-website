@@ -14,7 +14,6 @@ const ShopOverview = () => {
   return (
     <div className="shop-overview">
       <div className="overview-header">
-        <h2>Tổng Quan Cửa Hàng</h2>
         <p>Hiển thị các thông tin quan trọng về cửa hàng của bạn</p>
       </div>
       <div className="overview-cards">

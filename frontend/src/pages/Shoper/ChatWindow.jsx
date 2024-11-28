@@ -24,9 +24,7 @@ const ChatWindow = () => {
 
   return (
     <div className="chat-window">
-      <div className="chat-header">
-        <h2>Chat với khách hàng</h2>
-      </div>
+      <div className="chat-header"></div>
       <div className="chat-messages">
         {messages.map((message) => (
           <div
