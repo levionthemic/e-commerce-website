@@ -1,3 +1,36 @@
+.table th, .table td {
+    text-align: center; /* Căn giữa nội dung */
+    white-space: nowrap; /* Không cho phép nội dung bị gói xuống dòng */
+    overflow: hidden; /* Ẩn nội dung vượt quá chiều rộng của ô */
+    text-overflow: ellipsis; /* Thêm dấu ba chấm "..." nếu nội dung bị cắt */
+  }
+  
+  /* Giới hạn chiều rộng của các cột */
+  .table td img {
+    width: 80px; /* Cố định chiều rộng hình ảnh */
+    height: auto;
+  }
+  
+  .table td, .table th {
+    padding: 8px;
+  }
+  
+  .table .product-name {
+    max-width: 250px; /* Giới hạn chiều rộng cột tên sản phẩm */
+  }
+  
+  .table .price {
+    max-width: 150px; /* Giới hạn chiều rộng cột giá */
+  }
+  
+  .table .qty, .table .sold-quantity {
+    max-width: 120px; /* Giới hạn chiều rộng cột số lượng */
+  }
+  
+  .table .category {
+    max-width: 150px; /* Giới hạn chiều rộng cột loại sản phẩm */
+  }
+
 button {
     margin-right: 8px;
 }
