@@ -1,0 +1,211 @@
+/* Tổng thể */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f4f6f8;
+  margin: 0;
+  padding: 0;
+}
+
+.shop-profile {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+/* Banner */
+.banner-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.banner-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+  background-color: #eaeaea;
+}
+
+.change-banner {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.change-banner:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+}
+
+/* Avatar */
+.avatar-container {
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.avatar-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  object-fit: cover;
+  background-color: #eaeaea;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.change-avatar {
+  margin-top: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.change-avatar:hover {
+  background-color: #0056b3;
+  transform: translateY(-3px);
+}
+
+/* Tên cửa hàng */
+.shop-name {
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 30px;
+}
+
+.shop-name h2 {
+  font-size: 28px;
+  color: #333;
+  margin: 10px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.shop-name p {
+  font-size: 16px;
+  color: #555;
+  font-style: italic;
+}
+
+/* Thông tin shop */
+.shop-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border-left: 4px solid #007bff;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.card h5 {
+  font-size: 16px;
+  color: #007bff;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+}
+
+/* Nút chỉnh sửa */
+.text-center {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn {
+  display: inline-block;
+  font-size: 16px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Icon */
+.icon {
+  color: #007bff;
+  font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    flex: 1 1 100%;
+  }
+
+  .banner-img {
+    height: 200px;
+  }
+
+  .avatar-img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .change-avatar {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+/* Kiểu font và hiệu ứng cho văn bản */
+.shop-title {
+  font-size: 16px; /* Kích thước chữ */
+  font-weight: bold; /* Làm đậm chữ */
+  color: #007bff; /* Màu xanh giống ví dụ */
+  text-decoration: none; /* Không gạch dưới */
+  transition: color 0.3s ease; /* Hiệu ứng chuyển màu khi hover */
+}
