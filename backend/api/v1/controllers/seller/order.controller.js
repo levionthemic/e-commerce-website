@@ -5,18 +5,14 @@ const Category = require("../../models/category.model");
 module.exports.index = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    // console.log(token);
     const seller = await User.findOne({token : token});
-    // console.log(seller.id);
     const category = await Category.findOne({seller_id : seller.id});
-    // console.log(category.id);
     const category_id = String(category.id);
     console.log(category_id);
     // Truy vấn tất cả đơn hàng từ MongoDB
     const orders = await Order.find({})
       .select("-_id userId orderId status products");
-    let products = [];
-    // console.log(orders);
+    let products = [];;
     Promise.all(
       orders.map((order) => User.findOne({_id : order.userId}))
     ).then (users => {
