@@ -6,11 +6,12 @@ const orderSchema = new mongoose.Schema({
   status: String,
   products: [
     {
-      productId: String,
       quantity: Number,
+      price: Number,
     },
   ],
   sellerId: String,
+
 });
 
 const Order = mongoose.model("Order", orderSchema, "orders");

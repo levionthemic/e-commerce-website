@@ -1,7 +1,7 @@
 const Product = require("../../models/product.model");
 const unidecode = require("unidecode");
 
-// [GET] /api/v1/seller/product
+// [GET]/api/v1/seller/product
 module.exports.index = async (req, res) => {
   try {
     const products = await Product.find({})
