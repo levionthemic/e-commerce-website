@@ -27,7 +27,9 @@ function UpdateEmailModal1() {
 
     axiosApi.get("/api/v1/user/" + token).then((res) => {
       const userPassword = res.data.user.password;
-      if (userPassword !== CryptoJS.SHA256(password).toString()) {
+      const bytes = CryptoJS.AES.decrypt(userPassword, "secretkey");
+      const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+      if (decryptedPassword !== password) {
         Swal.fire({
           toast: true,
           position: "top-end",

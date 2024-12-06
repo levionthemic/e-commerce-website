@@ -54,8 +54,7 @@ function ProductItem({ product, loading }) {
                 <sup>đ</sup>
               </span>
             </Card.Text>
-            <Card.Text>
-              <div className="product-info">
+              <div className="product-info mb-3">
                 <span>
                   {product.rating_average || "0"}{" "}
                   <Rating
@@ -68,7 +67,6 @@ function ProductItem({ product, loading }) {
                 </span>{" "}
                 | Đã bán: {product.quantity_sold?.value || 0}
               </div>
-            </Card.Text>
             <Link to={`/detailproduct/${product.id}`}>
               <Button variant="primary" className="w-100">
                 Xem Chi Tiết

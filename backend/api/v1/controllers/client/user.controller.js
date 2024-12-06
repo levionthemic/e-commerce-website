@@ -23,7 +23,7 @@ module.exports.signup = async (req, res) => {
 
   const user = new User({
     username: username,
-    password: CryptoJS.SHA256(password).toString(),
+    password: CryptoJS.AES.encrypt(password, "secretkey").toString(),
     email: email,
     role: role,
   });
@@ -49,7 +49,9 @@ module.exports.login = async (req, res) => {
     return;
   }
 
-  if (CryptoJS.SHA256(password).toString() !== user.password) {
+  const bytes = CryptoJS.AES.decrypt(user.password, "secretkey");
+  const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+  if (password !== decryptedPassword) {
     res.status(400).json({
       message: "Mật khẩu không đúng!",
     });
@@ -186,7 +188,9 @@ module.exports.resetPassword = async (req, res) => {
 
   if (currentPassword) {
     const user = await User.findOne({ token: token });
-    if (CryptoJS.SHA256(currentPassword).toString() !== user.password) {
+    const bytes = CryptoJS.AES.decrypt(user.password, "secretkey");
+    const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+    if (currentPassword !== decryptedPassword) {
       res.status(400).json({
         message: "Mật khẩu hiện tại không trùng khớp!",
       });
@@ -204,7 +208,7 @@ module.exports.resetPassword = async (req, res) => {
       {
         token: token,
       },
-      { password: CryptoJS.SHA256(password).toString() }
+      { password: CryptoJS.AES.encrypt(password, "secretkey").toString() }
     );
     res.status(200).json({
       message: currentPassword
