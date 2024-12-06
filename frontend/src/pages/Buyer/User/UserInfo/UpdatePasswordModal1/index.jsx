@@ -2,27 +2,29 @@ import { memo, useState } from "react";
 import { CustomModal } from "../style";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  closeModal3,
+  closeModal1,
   openModal2,
-} from "../../../../redux/slices/UpdatePasswordModalSlice";
-import img from "../../../../assets/images/lock-icon.svg";
-import img2 from "../../../../assets/images/goback-icon.svg";
-import "./UpdatePasswordModal3.scss";
+} from "../../../../../redux/slices/UpdatePasswordModalSlice";
+import img from "../../../../../assets/images/lock-icon.svg";
+import "./UpdatePasswordModal1.scss";
 import Swal from "sweetalert2";
-import { axiosApi } from "../../../../services/UserService";
+import { cookies } from "../../../../../helpers/cookies";
+import { axiosApi } from "../../../../../services/UserService";
 
-function UpdatePasswordModal3() {
+function UpdatePasswordModal1() {
   const updatePasswordModal = useSelector(
-    (state) => state.updatePasswordModal.modal3
+    (state) => state.updatePasswordModal.modal1
   );
   const dispatch = useDispatch();
 
-  const [password, setPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+
+    if (newPassword !== confirmPassword) {
       Swal.fire({
         toast: true,
         position: "top-end",
@@ -34,16 +36,18 @@ function UpdatePasswordModal3() {
           toast.onmouseleave = Swal.resumeTimer;
         },
         icon: "error",
-        title: "Mật khẩu xác nhận không trùng khớp",
+        title: "Mật khẩu xác nhận không trùng khớp!",
       });
       return;
     }
 
     axiosApi
       .post("/api/v1/user/reset-password", {
-        password: password,
+        currentPassword: currentPassword,
+        password: newPassword,
       })
       .then(() => {
+        dispatch(closeModal1());
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -71,31 +75,58 @@ function UpdatePasswordModal3() {
             toast.onmouseleave = Swal.resumeTimer;
           },
           icon: "error",
-          title: "Lỗi!",
+          title: "Cập nhật mật khẩu thất bại!",
           text: error.response.data.message,
         });
       });
   };
+
+  const handleOption = (e) => {
+    const token = cookies().token;
+    let email = "";
+    axiosApi
+      .get(`/api/v1/user/${token}`)
+      .then((res) => {
+        email = res.data.user.email;
+      })
+      .then(() => {
+        axiosApi
+          .post("/api/v1/user/otp-request", {
+            email: email,
+          })
+          .then(() => {
+            dispatch(closeModal1());
+            dispatch(openModal2());
+          })
+          .catch(() => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "error",
+              title: "Không gửi được OTP!",
+            });
+          });
+      });
+  };
+
   return (
     <>
       <CustomModal
         open={updatePasswordModal}
-        onOk={() => dispatch(closeModal3())}
-        onCancel={() => dispatch(closeModal3())}
+        onOk={() => dispatch(closeModal1())}
+        onCancel={() => dispatch(closeModal1())}
         width={400}
         footer={null}
         closeIcon={null}
       >
-        <div className="inner-wrap-modal-3">
-          <div
-            className="inner-goback"
-            onClick={() => {
-              dispatch(closeModal3());
-              dispatch(openModal2());
-            }}
-          >
-            <img src={img2} alt="" />
-          </div>
+        <div className="inner-wrap-modal-1">
           <div className="inner-title">
             <h4>Cập nhật mật khẩu</h4>
             <img src={img} alt="" />
@@ -105,26 +136,37 @@ function UpdatePasswordModal3() {
               <input
                 type="password"
                 className="form-control"
-                placeholder="Nhập mật khẩu mới"
+                placeholder="Nhập mật khẩu hiện tại"
                 required
                 onChange={(e) => {
-                  setPassword(e.target.value);
+                  setCurrentPassword(e.target.value);
                 }}
               />
               <input
                 type="password"
                 className="form-control"
-                placeholder="Xác nhận mật khẩu"
+                placeholder="Nhập mật khẩu mới"
+                required
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                }}
+              />
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Xác thực mật khẩu"
                 required
                 onChange={(e) => {
                   setConfirmPassword(e.target.value);
                 }}
               />
-
               <button type="submit" className="btn">
                 Xác nhận
               </button>
             </form>
+          </div>
+          <div className="inner-option">
+            <span onClick={handleOption}>Cập nhật qua Email</span>
           </div>
         </div>
       </CustomModal>
@@ -132,4 +174,4 @@ function UpdatePasswordModal3() {
   );
 }
 
-export default memo(UpdatePasswordModal3);
+export default memo(UpdatePasswordModal1);

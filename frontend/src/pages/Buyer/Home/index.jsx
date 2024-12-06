@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import "./Home.scss";
-import banner from "../../assets/images/banner.png";
+import banner from "../../../assets/images/banner.png";
 import {
   TruckFilled,
   ReloadOutlined,
@@ -11,8 +11,8 @@ import { Col } from "react-bootstrap";
 
 import "react-multi-carousel/lib/styles.css";
 import { useNavigate } from "react-router-dom";
-import { axiosApi } from "../../services/UserService";
-import ProductItem from "../../components/ProductItem";
+import { axiosApi } from "../../../services/UserService";
+import ProductItem from "../../../components/ProductItem";
 import { CustomCarousel } from "./style";
 import { animateScroll } from "react-scroll";
 

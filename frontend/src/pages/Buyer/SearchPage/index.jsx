@@ -2,13 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Pagination } from "react-bootstrap";
 import "./SearchPage.css";
-import { axiosApi } from "../../services/UserService";
-import ProductItem from "../../components/ProductItem";
+import { axiosApi } from "../../../services/UserService";
+import ProductItem from "../../../components/ProductItem";
 import { useNavigate } from "react-router-dom";
 import { animateScroll } from "react-scroll";
 import Sider from "./Sider";
 import { Spin } from "antd";
-import Swal from "sweetalert2";
 
 const SearchPage = () => {
   const [sortOption, setSortOption] = useState(0);

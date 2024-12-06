@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { StyledTabs } from "./style";
 import "./UserOrder.scss";
-import iconSearch from "../../../assets/images/icon-search.svg";
+import iconSearch from "../../../../assets/images/icon-search.svg";
 
 function UserOrder() {
   return (

@@ -1,16 +1,16 @@
 import { memo, useState } from "react";
 import { CustomModal } from "../style";
 import { useSelector, useDispatch } from "react-redux";
-import img from "../../../../assets/images/email-icon.svg";
-import img2 from "../../../../assets/images/goback-icon.svg";
+import img from "../../../../../assets/images/email-icon.svg";
+import img2 from "../../../../../assets/images/goback-icon.svg";
 import "./UpdateEmailModal3.scss";
 import Swal from "sweetalert2";
 import {
   closeEmailModal3,
   openEmailModal2,
-} from "../../../../redux/slices/UpdateEmailModalSlice";
-import { cookies } from "../../../../helpers/cookies";
-import { axiosApi } from "../../../../services/UserService";
+} from "../../../../../redux/slices/UpdateEmailModalSlice";
+import { cookies } from "../../../../../helpers/cookies";
+import { axiosApi } from "../../../../../services/UserService";
 
 function UpdateEmailModal3() {
   const updateEmailModal = useSelector(

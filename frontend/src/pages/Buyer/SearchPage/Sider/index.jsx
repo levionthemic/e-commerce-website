@@ -1,5 +1,5 @@
-import { memo, useEffect, useRef, useState } from "react";
-import { axiosApi } from "../../../services/UserService";
+import { memo, useEffect, useState } from "react";
+import { axiosApi } from "../../../../services/UserService";
 import { StyledMenu } from "./style";
 import "./Sider.scss";
 

@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { PlusOutlined, MinusOutlined, EditFilled } from "@ant-design/icons";
 import { useParams } from "react-router-dom"; // Import useParams để lấy params từ URL
 import "./DetailProduct.css";
-import { axiosApi } from "../../services/UserService";
+import { axiosApi } from "../../../services/UserService";
 import Rating from "react-rating";
-import { cookies } from "../../helpers/cookies";
+import { cookies } from "../../../helpers/cookies";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
-import { increaseCartQuantity } from "../../redux/slices/cartSlice";
+import { increaseCartQuantity } from "../../../redux/slices/cartSlice";
 import { Spin } from "antd";
 
 const DetailProduct = () => {

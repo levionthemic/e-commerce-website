@@ -1,10 +1,10 @@
 import { memo, useEffect, useState } from "react";
 import "./Checkout.scss";
-import icon from "../../assets/images/money-icon.svg";
-import icon1 from "../../assets/images/arrow-icon.svg";
+import icon from "../../../assets/images/money-icon.svg";
+import icon1 from "../../../assets/images/arrow-icon.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { cookies } from "../../helpers/cookies";
-import { axiosApi } from "../../services/UserService";
+import { cookies } from "../../../helpers/cookies";
+import { axiosApi } from "../../../services/UserService";
 import Swal from "sweetalert2";
 
 function Checkout() {

@@ -1,15 +1,15 @@
-import Home from "../pages/Home/Home";
+import Home from "../pages/Buyer/Home";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
-import SearchPage from "../pages/SearchPage/SearchPage";
-import UserInfo from "../pages/User/UserInfo";
+import SearchPage from "../pages/Buyer/SearchPage";
+import UserInfo from "../pages/Buyer/User/UserInfo";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import OTPConfirm from "../pages/Auth/OTPConfirm";
 import ResetPassword from "../pages/Auth/ResetPassword";
-import CartPage from "../pages/CartPage/CartPage";
-import DetailProduct from "../pages/DetailProduct/DetailProduct";
-import UserOrder from "../pages/User/UserOrder";
-import Checkout from "../pages/Checkout";
+import CartPage from "../pages/Buyer/CartPage";
+import DetailProduct from "../pages/Buyer/DetailProduct";
+import UserOrder from "../pages/Buyer/User/UserOrder";
+import Checkout from "../pages/Buyer/Checkout";
 
 export const routes = [
   {

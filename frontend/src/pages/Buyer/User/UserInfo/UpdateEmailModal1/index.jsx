@@ -1,37 +1,33 @@
 import { memo, useState } from "react";
 import { CustomModal } from "../style";
 import { useSelector, useDispatch } from "react-redux";
-import img from "../../../../assets/images/email-icon.svg";
-import img2 from "../../../../assets/images/goback-icon.svg";
-import "./UpdateEmailModal2.scss";
+import img from "../../../../../assets/images/email-icon.svg";
+import "./UpdateEmailModal1.scss";
 import Swal from "sweetalert2";
 import {
-  closeEmailModal2,
-  openEmailModal1,
-  openEmailModal3,
-} from "../../../../redux/slices/UpdateEmailModalSlice";
-import { axiosApi } from "../../../../services/UserService";
+  closeEmailModal1,
+  openEmailModal2,
+} from "../../../../../redux/slices/UpdateEmailModalSlice";
+import CryptoJS from "crypto-js";
+import { cookies } from "../../../../../helpers/cookies";
+import { axiosApi } from "../../../../../services/UserService";
 
-function UpdateEmailModal2() {
+function UpdateEmailModal1() {
   const updateEmailModal = useSelector(
-    (state) => state.updateEmailModal.modal2
+    (state) => state.updateEmailModal.modal1
   );
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axiosApi
-      .post("/api/v1/user/otp-request", {
-        newEmail: email,
-      })
-      .then(() => {
-        dispatch(closeEmailModal2());
-        dispatch(openEmailModal3(email));
-      })
-      .catch(() => {
+    const token = cookies().token;
+
+    axiosApi.get("/api/v1/user/" + token).then((res) => {
+      const userPassword = res.data.user.password;
+      if (userPassword !== CryptoJS.SHA256(password).toString()) {
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -43,47 +39,42 @@ function UpdateEmailModal2() {
             toast.onmouseleave = Swal.resumeTimer;
           },
           icon: "error",
-          title: "Không gửi được OTP!",
+          title: "Sai mật khẩu!",
         });
-      });
+      } else {
+        dispatch(closeEmailModal1());
+        dispatch(openEmailModal2());
+      }
+    });
   };
 
   return (
     <>
       <CustomModal
         open={updateEmailModal}
-        onOk={() => dispatch(closeEmailModal2())}
-        onCancel={() => dispatch(closeEmailModal2())}
+        onOk={() => dispatch(closeEmailModal1())}
+        onCancel={() => dispatch(closeEmailModal1())}
         width={400}
         footer={null}
         closeIcon={null}
       >
-        <div className="inner-wrap-modal-2">
-          <div
-            className="inner-goback"
-            onClick={() => {
-              dispatch(closeEmailModal2());
-              dispatch(openEmailModal1());
-            }}
-          >
-            <img src={img2} alt="" />
-          </div>
+        <div className="inner-wrap-modal-1">
           <div className="inner-title">
             <h4>Cập nhật Email</h4>
             <img src={img} alt="" />
           </div>
           <div className="inner-desc">
-            <p>Vui lòng nhập Email mới</p>
+            <p>Vui lòng nhập mật khẩu để thay đổi Email</p>
           </div>
           <div className="inner-form">
             <form action="" onSubmit={handleSubmit}>
               <input
-                type="email"
+                type="password"
                 className="form-control"
-                placeholder="Nhập Email mới"
+                placeholder="Nhập mật khẩu"
                 required
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setPassword(e.target.value);
                 }}
               />
               <button type="submit" className="btn">
@@ -97,4 +88,4 @@ function UpdateEmailModal2() {
   );
 }
 
-export default memo(UpdateEmailModal2);
+export default memo(UpdateEmailModal1);

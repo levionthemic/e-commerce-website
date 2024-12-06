@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./CartPage.css";
-import { axiosApi } from "../../services/UserService";
-import { cookies } from "../../helpers/cookies";
+import { axiosApi } from "../../../services/UserService";
+import { cookies } from "../../../helpers/cookies";
 import { useNavigate } from "react-router-dom";
 import { Table, Skeleton } from "antd";
 import { DeleteOutlined, DiffOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { decreaseCartQuantity } from "../../redux/slices/cartSlice";
+import { decreaseCartQuantity } from "../../../redux/slices/cartSlice";
 
 const CartPage = () => {
   const [cartList, setCartList] = useState([]);

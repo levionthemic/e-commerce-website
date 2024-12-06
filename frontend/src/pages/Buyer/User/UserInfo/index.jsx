@@ -15,21 +15,21 @@ import {
   RestOutlined,
 } from "@ant-design/icons";
 import "./UserInfo.scss";
-import avatar from "../../../assets/images/avatar.svg";
-import icon from "../../../assets/images/icon.svg";
+import avatar from "../../../../assets/images/avatar.svg";
+import icon from "../../../../assets/images/icon.svg";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
 import { useDispatch } from "react-redux";
-import { openModal1 } from "../../../redux/slices/UpdatePasswordModalSlice";
-import { openEmailModal1 } from "../../../redux/slices/UpdateEmailModalSlice";
+import { openModal1 } from "../../../../redux/slices/UpdatePasswordModalSlice";
+import { openEmailModal1 } from "../../../../redux/slices/UpdateEmailModalSlice";
 import UpdatePasswordModal1 from "./UpdatePasswordModal1";
 import UpdatePasswordModal2 from "./UpdatePasswordModal2";
 import UpdatePasswordModal3 from "./UpdatePasswordModal3";
 import UpdateEmailModal1 from "./UpdateEmailModal1";
 import UpdateEmailModal3 from "./UpdateEmailModal3";
 import UpdateEmailModal2 from "./UpdateEmailModal2";
-import { cookies } from "../../../helpers/cookies";
-import { axiosApi } from "../../../services/UserService";
+import { cookies } from "../../../../helpers/cookies";
+import { axiosApi } from "../../../../services/UserService";
 
 const getBase64 = (img, callback) => {
   const reader = new FileReader();

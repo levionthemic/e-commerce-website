@@ -5,13 +5,13 @@ import {
   closeModal2,
   openModal1,
   openModal3,
-} from "../../../../redux/slices/UpdatePasswordModalSlice";
-import img from "../../../../assets/images/lock-icon.svg";
-import img2 from "../../../../assets/images/goback-icon.svg";
+} from "../../../../../redux/slices/UpdatePasswordModalSlice";
+import img from "../../../../../assets/images/lock-icon.svg";
+import img2 from "../../../../../assets/images/goback-icon.svg";
 import "./UpdatePasswordModal2.scss";
 import Swal from "sweetalert2";
-import { cookies } from "../../../../helpers/cookies";
-import { axiosApi } from "../../../../services/UserService";
+import { cookies } from "../../../../../helpers/cookies";
+import { axiosApi } from "../../../../../services/UserService";
 
 function UpdatePasswordModal2() {
   const updatePasswordModal = useSelector(

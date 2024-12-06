@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from "react";
 import { Table, Tag } from "antd";
-import { axiosApi } from "../../../../services/UserService";
+import { axiosApi } from "../../../../../services/UserService";
 
 function TabItem({ status }) {
   const [orderList, setOrderList] = useState([]);
