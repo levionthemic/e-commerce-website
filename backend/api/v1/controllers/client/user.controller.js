@@ -77,6 +77,7 @@ module.exports.login = async (req, res) => {
     message: "Login Success",
     token: user.token,
     cartId: cart.id,
+    role: role
   });
 };
 

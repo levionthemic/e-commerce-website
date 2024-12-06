@@ -28,66 +28,79 @@ export const routes = [
     path: "/",
     page: Home,
     isShowHeader: true,
+    isAuthorized: true,
   },
   {
     path: "/auth/login",
     page: Login,
     isShowHeader: false,
+    isAuthorized: false,
   },
   {
     path: "/auth/signup",
     page: Signup,
     isShowHeader: false,
+    isAuthorized: false,
   },
   {
     path: "/auth/forgot-password",
     page: ForgotPassword,
     isShowHeader: false,
+    isAuthorized: false,
   },
   {
     path: "/auth/otp-confirm",
     page: OTPConfirm,
     isShowHeader: false,
+    isAuthorized: false,
   },
   {
     path: "/auth/reset-password",
     page: ResetPassword,
     isShowHeader: false,
+    isAuthorized: false,
   },
   {
     path: "/cart",
     page: CartPage,
     isShowHeader: true,
+    isAuthorized: true,
   },
   {
     path: "/search",
     page: SearchPage,
     isShowHeader: true,
+    isAuthorized: true,
   },
   {
     path: "/user/info",
     page: UserInfo,
     isShowHeader: true,
+    isAuthorized: true,
   },
   {
     path: "/detailproduct/:productId",
     page: DetailProduct,
     isShowHeader: true,
+    isAuthorized: true,
   },
   {
     path: "/user/order",
     page: UserOrder,
     isShowHeader: true,
+    isAuthorized: true,
   },
   {
     path: "/checkout",
     page: Checkout,
     isShowHeader: true,
+    isAuthorized: true,
   },
   {
     path: "/admin",
     page: Admin,
     isShowHeader: false,
+    isAuthorized: true,
   },
 
   // Các route dành cho người bán (không hiển thị header khách hàng)
@@ -95,6 +108,7 @@ export const routes = [
     path: "/shoper",
     page: Shoper,
     isShowHeader: false,
+    isAuthorized: true,
   },
   // {
   //   path: "/shoper/overview",

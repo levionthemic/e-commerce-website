@@ -50,18 +50,21 @@ function Login() {
       : "admin";
 
     axiosApi
-      .post(
-        "/api/v1/user/login",
-        {
-          username: username,
-          password: password,
-          role: role,
-        },
-      )
+      .post("/api/v1/user/login", {
+        username: username,
+        password: password,
+        role: role,
+      })
       .then((res) => {
         setCookie("token", res.data.token, 1);
         setCookie("cartId", res.data.cartId, 1);
-        navigate("/");
+        if (role === "buyer") {
+          navigate("/");
+        } else if (role === "seller") {
+          navigate("/shoper");
+        } else {
+          navigate("/admin/dashboard");
+        }
       })
       .catch((error) => {
         Swal.fire({

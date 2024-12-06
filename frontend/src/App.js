@@ -12,13 +12,13 @@ function App() {
         <Routes>
           {routes.map((route) => {
             const Page = route.page;
-            const Layout = route.isShowHeader ? (
+            const Layout = route.isAuthorized ? (
               <Route
                 key={route.path}
                 path={route.path}
                 element={
                   <PrivateRoute>
-                    <DefaultComponent>
+                    <DefaultComponent isShowHeader={route.isShowHeader}>
                       <Page />
                     </DefaultComponent>
                   </PrivateRoute>
