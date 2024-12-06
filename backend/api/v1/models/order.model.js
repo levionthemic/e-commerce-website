@@ -10,6 +10,7 @@ const orderSchema = new mongoose.Schema({
   status: String,
   products: Array,
   sellerId: String,
+
 });
 
 const Order = mongoose.model("Order", orderSchema, "orders");
