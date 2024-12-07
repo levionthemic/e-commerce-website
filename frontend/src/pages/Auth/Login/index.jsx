@@ -61,7 +61,7 @@ function Login() {
         if (role === "buyer") {
           navigate("/");
         } else if (role === "seller") {
-          navigate("/shoper");
+          navigate("/shop/overview");
         } else {
           navigate("/admin/dashboard");
         }

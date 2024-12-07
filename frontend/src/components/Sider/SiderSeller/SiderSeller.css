@@ -12,6 +12,8 @@
   transition: all 0.3s ease-in-out; /* Hiệu ứng smooth */
   padding-top: 24px;
    
+  position: fixed;
+  width: 17%;
 }
 
 .sidebar h2 {
@@ -61,7 +63,7 @@
   
 }
 
-Active state .custom-nav-link.custom-active {
+.custom-nav-link.custom-active {
   background: linear-gradient(90deg, #2563eb, #1e40af); /* Gradient active */
   color: white;
   box-shadow: 0 6px 15px rgba(37, 99, 235, 0.8); /* Bóng mờ khi active */

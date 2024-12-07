@@ -18,7 +18,7 @@ function App() {
                 path={route.path}
                 element={
                   <PrivateRoute>
-                    <DefaultComponent isShowHeader={route.isShowHeader}>
+                    <DefaultComponent isShowHeader={route.isShowHeader} role={route.role}>
                       <Page />
                     </DefaultComponent>
                   </PrivateRoute>

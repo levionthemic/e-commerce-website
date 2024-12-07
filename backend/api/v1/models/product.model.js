@@ -16,8 +16,19 @@ const productSchema = new mongoose.Schema(
     primary_category_path: String,
     thumbnail_url: String,
     description: String,
-    stock_item: Object,
-    quantity_sold: Object,
+    stock_item: {
+      qty : Number,
+    },
+    quantity_sold: {
+      text: {
+        type : String,
+        default: "Đã bán 0"
+      },
+      value: {
+        type: Number,
+        default: 0
+      }
+    },
     categories: Object,
   },
   {

@@ -11,16 +11,15 @@ import DetailProduct from "../pages/Buyer/DetailProduct";
 import UserOrder from "../pages/Buyer/User/UserOrder";
 import Checkout from "../pages/Buyer/Checkout";
 import Admin from "../pages/Admin/Admin";
-import Shoper from "../pages/Shoper/Shoper";
-// import ShopOverview from "../pages/Shoper/ShopOverview";
-// import AddProduct from "../pages/Shoper/AddProduct";
-// import ManageProducts from "../pages/Shoper/ManageProducts";
-// import EditProduct from "../pages/Shoper/EditProduct";
-// import ManageOrders from "../pages/Shoper/ManageOrders";
-// import ChatWithCustomers from "../pages/Shoper/ChatWithCustomers";
-// import ShopProfile from "../pages/Shoper/ShopProfile";
-// // Import route mới
-// import ShopStatistics from "../pages/Shoper/ShopStatistics";
+
+import ShopOverview from "../pages/Shoper/ShopOverview";
+import ShopProfle from "../pages/Shoper/ShopProfile";
+import ManageOrders from "../pages/Shoper/ManageOrders";
+import ManageProducts from "../pages/Shoper/ManageProducts";
+import AddProduct from "../pages/Shoper/ManageProducts/AddProduct";
+import EditProduct from "../pages/Shoper/ManageProducts/EditProduct";
+
+
 
 export const routes = [
   // Các route dành cho khách hàng
@@ -103,56 +102,48 @@ export const routes = [
     isAuthorized: true,
   },
 
-  // Các route dành cho người bán (không hiển thị header khách hàng)
+  // Các route dành cho người bán 
   {
-    path: "/shoper",
-    page: Shoper,
+    path: "/shop/overview",
+    page: ShopOverview,
     isShowHeader: false,
     isAuthorized: true,
+    role: "seller"
   },
-  // {
-  //   path: "/shoper/overview",
-  //   page: ShopOverview,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/add-product",
-  //   page: AddProduct,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/manage-products",
-  //   page: ManageProducts,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/edit-product/:productId",
-  //   page: EditProduct,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/manage-orders",
-  //   page: ManageOrders,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/chat",
-  //   page: ChatWithCustomers,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/profile",
-  //   page: ShopProfile,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/product/:productId",
-  //   page: DetailProduct,
-  //   isShowHeader: false,
-  // },
-  // {
-  //   path: "/shoper/statistics",
-  //   page: ShopStatistics,
-  //   isShowHeader: false,
-  // },
+  {
+    path: "/shop/products/add",
+    page: AddProduct,
+    isShowHeader: false,
+    isAuthorized: true,
+    role: "seller"
+  },
+  {
+    path: "/shop/products",
+    page: ManageProducts,
+    isShowHeader: false,
+    isAuthorized: true,
+    role: "seller"
+  },
+  {
+    path: "/shop/orders",
+    page: ManageOrders,
+    isShowHeader: false,
+    isAuthorized: true,
+    role: "seller"
+  },
+  {
+    path: "/shop/profile",
+    page: ShopProfle,
+    isShowHeader: false,
+    isAuthorized: true,
+    role: "seller"
+  },
+  {
+    path: "/shop/products/edit",
+    page: EditProduct,
+    isShowHeader: false,
+    isAuthorized: true,
+    role: "seller"
+  },
+  
 ];

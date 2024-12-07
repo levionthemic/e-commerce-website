@@ -72,6 +72,7 @@ const AddProduct = () => {
 
   return (
     <div className="add-product-container">
+      <h2 className="mb-3">Thêm sản phẩm</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Tên sản phẩm *</label>

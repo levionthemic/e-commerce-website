@@ -119,6 +119,7 @@ const ShopProfile = () => {
 
   return (
     <div className="shop-profile">
+      <h2>Thông tin cửa hàng</h2>
       {/* Phần chỉnh sửa ảnh */}
       {editMode && imageToEdit && (
         <div className="editor-overlay">

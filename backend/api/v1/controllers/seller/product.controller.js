@@ -7,8 +7,8 @@ const unidecode = require("unidecode");
 module.exports.index = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const seller = await User.findOne({token : token});
-    const category = await Category.findOne({seller_id : seller.id});
+    const seller = await User.findOne({ token: token });
+    const category = await Category.findOne({ seller_id: seller.id });
     const regex = new RegExp(`^\\d+/\\d+/${category.id}/`);
 
     const products = await Product.find({
@@ -16,7 +16,7 @@ module.exports.index = async (req, res) => {
     })
       .limit(100)
       .select(
-        "-_id thumbnail_url name price stock_item quantity_sold categories"
+        "_id id thumbnail_url name price stock_item quantity_sold categories"
       );
     res.status(200).json({
       message: "Success",
@@ -60,5 +60,56 @@ module.exports.search = async (req, res) => {
         message: "Error",
       });
     }
+  }
+};
+
+//[POST]/api/v1/seller/product/add
+module.exports.add = async (req, res) => {
+  try {
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+    res.status(200).json({
+      message: "Tạo sản phẩm mới thành công",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Lỗi không tạo được sản phẩm mới",
+    });
+  }
+};
+
+//[PATCH]/api/v1/seller/product/edit
+module.exports.edit = async (req, res) => {
+  try {
+    const productId = req.body.id;
+    const nameProduct = req.body.name;
+    const priceProduct = req.body.price;
+    const description = req.body.description;
+    const quantity = req.body.stockQty;
+    const discount = req.body.discountRate;
+    const thumbnail = req.body.thumbnailUrl;
+
+    await Product.updateOne(
+      {
+        id: productId,
+      },
+      {
+        $set: {
+          "stock_item.$.qty": quantity,
+          name: nameProduct,
+          discount_rate: discount,
+          price: priceProduct,
+          description: description,
+          thumbnail_url: thumbnail,
+        },
+      }
+    );
+    res.status(200).json({
+      message: "Cập nhật sản phẩm thành công",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Lỗi không cập nhật được sản phẩm",
+    });
   }
 };

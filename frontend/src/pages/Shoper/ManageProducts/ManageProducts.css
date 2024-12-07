@@ -1,78 +1,82 @@
-.table th, .table td {
-    text-align: center; /* Căn giữa nội dung */
-    white-space: nowrap; /* Không cho phép nội dung bị gói xuống dòng */
-    overflow: hidden; /* Ẩn nội dung vượt quá chiều rộng của ô */
-    text-overflow: ellipsis; /* Thêm dấu ba chấm "..." nếu nội dung bị cắt */
-  }
-  
-  /* Giới hạn chiều rộng của các cột */
-  .table td img {
-    width: 80px; /* Cố định chiều rộng hình ảnh */
-    height: auto;
-  }
-  
-  .table td, .table th {
-    padding: 8px;
-  }
-  
-  .table .product-name {
-    max-width: 250px; /* Giới hạn chiều rộng cột tên sản phẩm */
-  }
-  
-  .table .price {
-    max-width: 150px; /* Giới hạn chiều rộng cột giá */
-  }
-  
-  .table .qty, .table .sold-quantity {
-    max-width: 120px; /* Giới hạn chiều rộng cột số lượng */
-  }
-  
-  .table .category {
-    max-width: 150px; /* Giới hạn chiều rộng cột loại sản phẩm */
-  }
+.table th,
+.table td {
+  text-align: center; /* Căn giữa nội dung */
+  white-space: nowrap; /* Không cho phép nội dung bị gói xuống dòng */
+  overflow: hidden; /* Ẩn nội dung vượt quá chiều rộng của ô */
+  text-overflow: ellipsis; /* Thêm dấu ba chấm "..." nếu nội dung bị cắt */
+}
+
+/* Giới hạn chiều rộng của các cột */
+.table td img {
+  width: 80px; /* Cố định chiều rộng hình ảnh */
+  height: auto;
+}
+
+.table td,
+.table th {
+  padding: 8px;
+}
+
+.table .product-name {
+  max-width: 250px; /* Giới hạn chiều rộng cột tên sản phẩm */
+}
+
+.table .price {
+  max-width: 150px; /* Giới hạn chiều rộng cột giá */
+}
+
+.table .qty,
+.table .sold-quantity {
+  max-width: 120px; /* Giới hạn chiều rộng cột số lượng */
+}
+
+.table .category {
+  max-width: 150px; /* Giới hạn chiều rộng cột loại sản phẩm */
+}
 
 button {
-    margin-right: 8px;
+  margin-right: 8px;
 }
 
 button i,
 .btn svg {
-    color: white;
+  color: white;
 }
 
 .btn-warning {
-    background-color: #f39c12;
-    border-color: #f39c12;
+  background-color: #f39c12;
+  border-color: #f39c12;
 }
 
 .btn-danger {
-    background-color: #e74c3c;
-    border-color: #e74c3c;
+  background-color: #e74c3c;
+  border-color: #e74c3c;
 }
 
-.btn-warning, .btn-danger {
-    margin: 5px;
+.btn-warning,
+.btn-danger {
+  margin: 5px;
 }
 
 .delete-confirm {
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .delete-confirm p {
-    color: white;
-    font-size: 18px;
+  color: white;
+  font-size: 18px;
 }
 
 .delete-confirm button {
-    margin-top: 10px;
+  margin-top: 10px;
 }

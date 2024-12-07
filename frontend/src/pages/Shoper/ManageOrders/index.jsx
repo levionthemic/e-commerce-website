@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { Tabs, Table, Tag, Button, Input, DatePicker, Space} from "antd";
+import { Tabs, Table, Tag, Button, Input, DatePicker, Space } from "antd";
 import "./ManageOrders.scss";
-import { StyledTabs, StyledInput, StyledCheckSquare,StyledCloseSquare} from "./Style";
 import {
-  CloseSquareFilled,
-  CheckSquareFilled
-} from "@ant-design/icons";
+  StyledTabs,
+  StyledInput,
+  StyledCheckSquare,
+  StyledCloseSquare,
+} from "./Style";
+import { CloseSquareFilled, CheckSquareFilled } from "@ant-design/icons";
 const { TabPane } = StyledTabs;
 const { RangePicker } = DatePicker;
 
@@ -160,17 +162,12 @@ const OrderManagement = () => {
         record.status === "Chờ xác nhận" ? (
           <Space className="action">
             <StyledCheckSquare
-          
               onClick={() => handleConfirmOrder(record.orderId)}
-            >
-            </StyledCheckSquare>
-            <div classname ="deny">
-            <StyledCloseSquare
-              
-              onClick={() => handleRejectOrder(record.orderId)}
-            >
-          
-            </StyledCloseSquare>
+            ></StyledCheckSquare>
+            <div classname="deny">
+              <StyledCloseSquare
+                onClick={() => handleRejectOrder(record.orderId)}
+              ></StyledCloseSquare>
             </div>
           </Space>
         ) : null,
@@ -179,6 +176,7 @@ const OrderManagement = () => {
 
   return (
     <div className="inner-wrap-order-management">
+      <h2 className="mb-3">Quản lý đơn hàng</h2>
       <StyledTabs defaultActiveKey="1">
         <TabPane tab="Tất cả" key="1">
           <div
