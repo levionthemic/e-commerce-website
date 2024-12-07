@@ -1,17 +1,26 @@
-import Home from "../pages/Buyer/Home";
 import Login from "../pages/Auth/Login";
 import Signup from "../pages/Auth/Signup";
-import SearchPage from "../pages/Buyer/SearchPage";
-import UserInfo from "../pages/Buyer/User/UserInfo";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import OTPConfirm from "../pages/Auth/OTPConfirm";
 import ResetPassword from "../pages/Auth/ResetPassword";
+
+import Home from "../pages/Buyer/Home";
+import SearchPage from "../pages/Buyer/SearchPage";
+import UserInfo from "../pages/Buyer/User/UserInfo";
 import CartPage from "../pages/Buyer/CartPage";
 import DetailProduct from "../pages/Buyer/DetailProduct";
 import UserOrder from "../pages/Buyer/User/UserOrder";
 import Checkout from "../pages/Buyer/Checkout";
-import Admin from "../pages/Admin/Admin";
+
 import Shoper from "../pages/Shoper/Shoper";
+
+import Account from "../pages/Admin/Account";
+import Dashboard from "../pages/Admin/Dashboard";
+import LoginLog from "../pages/Admin/LoginLog";
+import Category from "../pages/Admin/Category";
+import Product from "../pages/Admin/Product";
+import User from "../pages/Admin/User";
+import Config from "../pages/Admin/Config";
 // import ShopOverview from "../pages/Shoper/ShopOverview";
 // import AddProduct from "../pages/Shoper/AddProduct";
 // import ManageProducts from "../pages/Shoper/ManageProducts";
@@ -21,6 +30,8 @@ import Shoper from "../pages/Shoper/Shoper";
 // import ShopProfile from "../pages/Shoper/ShopProfile";
 // // Import route mới
 // import ShopStatistics from "../pages/Shoper/ShopStatistics";
+
+import { prefixAdmin } from "../config/system";
 
 export const routes = [
   // Các route dành cho khách hàng
@@ -96,12 +107,51 @@ export const routes = [
     isShowHeader: true,
     isAuthorized: true,
   },
+
+  // Admin Routes
   {
-    path: "/admin",
-    page: Admin,
-    isShowHeader: false,
+    path: `${prefixAdmin}/account`,
+    page: Account,
+    role: "admin",
     isAuthorized: true,
   },
+  {
+    path: `${prefixAdmin}/dashboard`,
+    page: Dashboard,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/login-log`,
+    page: LoginLog,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/category`,
+    page: Category,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/product`,
+    page: Product,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/user`,
+    page: User,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/config`,
+    page: Config,
+    role: "admin",
+    isAuthorized: true,
+  },
+  
 
   // Các route dành cho người bán (không hiển thị header khách hàng)
   {

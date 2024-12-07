@@ -9,7 +9,6 @@ import {
   openEmailModal2,
 } from "../../../../../redux/slices/UpdateEmailModalSlice";
 import CryptoJS from "crypto-js";
-import { cookies } from "../../../../../helpers/cookies";
 import { axiosApi } from "../../../../../services/UserService";
 
 function UpdateEmailModal1() {
@@ -23,7 +22,7 @@ function UpdateEmailModal1() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const token = cookies().token;
+    const token = localStorage.getItem("token");
 
     axiosApi.get("/api/v1/user/" + token).then((res) => {
       const userPassword = res.data.user.password;

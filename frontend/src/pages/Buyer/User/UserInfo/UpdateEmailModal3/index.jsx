@@ -9,7 +9,6 @@ import {
   closeEmailModal3,
   openEmailModal2,
 } from "../../../../../redux/slices/UpdateEmailModalSlice";
-import { cookies } from "../../../../../helpers/cookies";
 import { axiosApi } from "../../../../../services/UserService";
 
 function UpdateEmailModal3() {
@@ -84,7 +83,7 @@ function UpdateEmailModal3() {
   };
 
   const handleResendOTP = (e) => {
-    const token = cookies().token;
+    const token = localStorage.getItem("token");
     let email = "";
     axiosApi
       .get(`/api/v1/user/${token}`)

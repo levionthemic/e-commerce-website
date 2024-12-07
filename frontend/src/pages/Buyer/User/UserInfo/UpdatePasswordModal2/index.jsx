@@ -10,7 +10,6 @@ import img from "../../../../../assets/images/lock-icon.svg";
 import img2 from "../../../../../assets/images/goback-icon.svg";
 import "./UpdatePasswordModal2.scss";
 import Swal from "sweetalert2";
-import { cookies } from "../../../../../helpers/cookies";
 import { axiosApi } from "../../../../../services/UserService";
 
 function UpdatePasswordModal2() {
@@ -50,7 +49,7 @@ function UpdatePasswordModal2() {
   };
 
   const handleResendOTP = (e) => {
-    const token = cookies().token;
+    const token = localStorage.getItem("token");
     let email = "";
     axiosApi
       .get(`/api/v1/user/${token}`)

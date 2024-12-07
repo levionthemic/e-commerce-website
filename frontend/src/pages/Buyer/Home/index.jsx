@@ -10,45 +10,17 @@ import {
 import { Col } from "react-bootstrap";
 
 import "react-multi-carousel/lib/styles.css";
-import { useNavigate } from "react-router-dom";
 import { axiosApi } from "../../../services/UserService";
 import ProductItem from "../../../components/ProductItem";
 import { CustomCarousel } from "./style";
 import { animateScroll } from "react-scroll";
 
 const Home = () => {
-  const navigate = useNavigate();
-
   // Lọc và sắp xếp sản phẩm bán chạy
   const [bestSellingProducts, setBestSellingProducts] = useState([]);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [productsDisplayed, setProductsDisplayed] = useState(15);
   const [categories, setCategories] = useState([]);
-
-  let isLogin = false;
-  const arr = document.cookie.split("; ");
-  for (const item of arr) {
-    const [key] = item.split("=");
-    if (key === "token") {
-      isLogin = true;
-    }
-  }
-  if (!isLogin) {
-    navigate("/auth/login");
-  }
-  useEffect(() => {
-    let isLogin = false;
-    const arr = document.cookie.split("; ");
-    for (const item of arr) {
-      const [key] = item.split("=");
-      if (key === "token") {
-        isLogin = true;
-      }
-    }
-    if (!isLogin) {
-      navigate("/auth/login");
-    }
-  });
 
   useEffect(() => {
     axiosApi

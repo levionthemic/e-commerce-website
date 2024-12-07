@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom"; // Import useParams để lấy pa
 import "./DetailProduct.css";
 import { axiosApi } from "../../../services/UserService";
 import Rating from "react-rating";
-import { cookies } from "../../../helpers/cookies";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { increaseCartQuantity } from "../../../redux/slices/cartSlice";
@@ -56,7 +55,7 @@ const DetailProduct = () => {
   const handleAddToCart = () => {
     axiosApi
       .post("api/v1/cart/add", {
-        cartId: cookies().cartId,
+        cartId: localStorage.getItem("cartId"),
         productId: productId,
         quantity: quantity,
       })

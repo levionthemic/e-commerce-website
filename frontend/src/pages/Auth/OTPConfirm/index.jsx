@@ -19,7 +19,7 @@ function OTPConfirm() {
         otp: otp,
       })
       .then((res) => {
-        document.cookie = `token=${res.data.token}`;
+        localStorage.setItem("token", res.data.token);
         navigate("/auth/reset-password");
       })
       .catch((error) => {

@@ -28,7 +28,6 @@ import UpdatePasswordModal3 from "./UpdatePasswordModal3";
 import UpdateEmailModal1 from "./UpdateEmailModal1";
 import UpdateEmailModal3 from "./UpdateEmailModal3";
 import UpdateEmailModal2 from "./UpdateEmailModal2";
-import { cookies } from "../../../../helpers/cookies";
 import { axiosApi } from "../../../../services/UserService";
 
 const getBase64 = (img, callback) => {
@@ -73,7 +72,7 @@ function UserInfo() {
   }, []);
 
   useEffect(() => {
-    const token = cookies().token;
+    const token = localStorage.getItem("token");
     axiosApi.get(`/api/v1/user/${token}`).then((res) => {
       setUser(res.data.user);
       setImageUrl(res.data.user.avatar);

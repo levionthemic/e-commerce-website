@@ -6,13 +6,6 @@ import { axiosApi } from "../../../services/UserService";
 import Swal from "sweetalert2";
 import img from "../../../assets/images/image-login.jpg";
 
-function setCookie(cname, cvalue, exdays) {
-  const d = new Date();
-  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-  let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,12 +13,9 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const arr = document.cookie.split("; ");
-    for (const item of arr) {
-      const [key] = item.split("=");
-      if (key === "token") {
-        navigate("/");
-      }
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
     }
   });
 
@@ -56,9 +46,9 @@ function Login() {
         role: role,
       })
       .then((res) => {
-        setCookie("token", res.data.token, 1);
-        setCookie("cartId", res.data.cartId, 1);
+        localStorage.setItem("token", res.data.token);
         if (role === "buyer") {
+          localStorage.setItem("cartId", res.data.cartId);
           navigate("/");
         } else if (role === "seller") {
           navigate("/shoper");
