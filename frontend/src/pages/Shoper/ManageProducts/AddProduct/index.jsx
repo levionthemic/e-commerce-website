@@ -1,155 +1,214 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "./AddProduct.css";
+import { useNavigate } from "react-router-dom";
+import { Tooltip, Upload, message } from "antd";
+import { axiosApi } from "../../../../services/UserService";
+import Swal from "sweetalert2";
 
 const AddProduct = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    category: "",
-    stock: "",
-    media: null,
-  });
+  const navigate = useNavigate();
 
-  const [preview, setPreview] = useState([]); // Preview ảnh/video
+  const [name, setName] = useState();
+  const [price, setPrice] = useState();
+  const [discountRate, setDiscountRate] = useState();
+  const [description, setDescription] = useState("");
+  const [stockQty, setStockQty] = useState();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const [imageUrl, setImageUrl] = useState();
+  const [imageFile, setImageFile] = useState();
+
+  const [isUploadImage, setIsUploadImage] = useState(false);
+
+  const uploadImage = async () => {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append(
+      "upload_preset",
+      process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET
+    );
+    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_NAME);
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_NAME}/upload`,
+        {
+          method: "post",
+          body: formData,
+        }
+      );
+      const data = await res.json();
+      message.success("Upload successful");
+      return data.secure_url;
+    } catch (error) {
+      message.error("Upload failed. Please try again.");
+    }
   };
 
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData({ ...formData, media: files });
+  const handleUpload = (file) => {
+    setImageFile(file);
+    setIsUploadImage(true);
+    getBase64(file, (url) => {
+      setImageUrl(url);
+    });
+  };
 
-    // Tạo preview ảnh/video
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setPreview(previews);
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJpgOrPng) {
+      message.error("You can only upload JPG/PNG file!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("Image must smaller than 2MB!");
+    }
+    return isJpgOrPng && isLt2M;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validation dữ liệu
-    if (!formData.name || !formData.price || !formData.category) {
-      alert("Vui lòng điền đầy đủ thông tin bắt buộc!");
-      return;
+    let imgUrl = "";
+    if (isUploadImage) {
+      imgUrl = await uploadImage();
     }
 
-    // Chuẩn bị dữ liệu gửi
-    const formDataToSend = new FormData();
-    formDataToSend.append("name", formData.name);
-    formDataToSend.append("description", formData.description);
-    formDataToSend.append("price", formData.price);
-    formDataToSend.append("category", formData.category);
-    formDataToSend.append("stock", formData.stock);
-    if (formData.media) {
-      formData.media.forEach((file) => formDataToSend.append("media", file));
-    }
-
-    // Gửi dữ liệu qua API
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/products",
-        formDataToSend,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
-      alert("Sản phẩm đã được đăng thành công!");
-      setFormData({
-        name: "",
-        description: "",
-        price: "",
-        category: "",
-        stock: "",
-        media: null,
+    axiosApi
+      .patch("/api/v1/seller/product/add", {
+        name: name,
+        price: price,
+        discountRate: discountRate,
+        description: description,
+        stockQty: stockQty,
+        thumbnailUrl: imgUrl,
+      })
+      .then((res) => {
+        Swal.fire({
+          icon: "success",
+          title: "Thành công!",
+          text: res.data.message,
+          didClose: () => {
+            navigate(-1);
+          },
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi!",
+          text: error.response.data.message,
+        });
       });
-      setPreview([]);
-    } catch (error) {
-      console.error("Lỗi khi đăng sản phẩm:", error);
-      alert("Có lỗi xảy ra. Vui lòng thử lại!");
-    }
   };
 
   return (
-    <div className="add-product-container">
-      <h2 className="mb-3">Thêm sản phẩm</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Tên sản phẩm *</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Nhập tên sản phẩm"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Mô tả</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            placeholder="Nhập mô tả sản phẩm"
-          />
-        </div>
-        <div className="form-group">
-          <label>Giá *</label>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleInputChange}
-            placeholder="Nhập giá sản phẩm"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Danh mục *</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Chọn danh mục</option>
-            <option value="electronics">Điện tử</option>
-            <option value="fashion">Thời trang</option>
-            <option value="home">Đồ gia dụng</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <label>Số lượng</label>
-          <input
-            type="number"
-            name="stock"
-            value={formData.stock}
-            onChange={handleInputChange}
-            placeholder="Nhập số lượng"
-          />
-        </div>
-        <div className="form-group">
-          <label>Upload ảnh/video</label>
-          <input
-            type="file"
-            name="media"
-            multiple
-            onChange={handleFileChange}
-            accept="image/*,video/*"
-          />
-        </div>
-        {/* Preview ảnh/video */}
-        <div className="preview-container">
-          {preview.map((src, index) => (
-            <div key={index} className="preview-item">
-              <img src={src} alt="preview" className="preview-image" />
+    <div className="add-product">
+      <h3>Chỉnh sửa sản phẩm</h3>
+      <form action="" onSubmit={handleSubmit}>
+        <div className="row">
+          <div className="col-12">
+            <div className="form-group mb-4">
+              <label>Tên sản phẩm:</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Nhập tên sản phẩm"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
-          ))}
+
+            <div className="form-group mb-4">
+              <label htmlFor="description">Mô tả sản phẩm</label>
+              <textarea
+                className="form-control"
+                id="description"
+                onChange={(e) => setDescription(e.target.value)}
+              >
+                {description}
+              </textarea>
+            </div>
+
+            <div className="row">
+              <div className="col-4">
+                <div className="form-group mb-4">
+                  <label>Số lượng sản phẩm</label>
+                  <input
+                    type="number"
+                    placeholder="Nhập số lượng"
+                    className="form-control"
+                    value={stockQty}
+                    onChange={(e) => setStockQty(parseInt(e.target.value))}
+                  />
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-group mb-3">
+                  <label htmlFor="price">Giá (VND):</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Nhập đơn giá"
+                    id="price"
+                    value={price}
+                    onChange={(e) => {
+                      setPrice(parseInt(e.target.value));
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="form-group mb-3">
+                  <label htmlFor="discount">Giảm giá (%)</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="Nhập % giảm giá"
+                    id="discount"
+                    value={discountRate}
+                    onChange={(e) => setDiscountRate(parseInt(e.target.value))}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="thumbnail_url">Ảnh sản phẩm</label>
+              <Tooltip title="Click để upload ảnh" placement="rightTop">
+                <Upload
+                  showUploadList={false}
+                  customRequest={({ file }) => handleUpload(file)}
+                  beforeUpload={beforeUpload}
+                >
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="" className="product-image mx-5" />
+                  ) : (
+                    <p className="click-upload">Upload tại đây</p>
+                  )}
+                </Upload>
+              </Tooltip>
+            </div>
+
+            <div className="form-group button-action">
+              <button type="submit" className="btn btn-primary">
+                Cập nhật
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  navigate("/shop/products");
+                }}
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
         </div>
-        <button type="submit" className="btn-submit">
-          Lưu
-        </button>
       </form>
     </div>
   );

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Tabs, Table, Tag, Button, Input, DatePicker, Space } from "antd";
+import React, { memo, useEffect, useState } from "react";
+import { Table, Tag, Button, DatePicker, Space } from "antd";
 import "./ManageOrders.scss";
 import {
   StyledTabs,
@@ -7,64 +7,36 @@ import {
   StyledCheckSquare,
   StyledCloseSquare,
 } from "./Style";
-import { CloseSquareFilled, CheckSquareFilled } from "@ant-design/icons";
+import { axiosApi } from "../../../services/UserService";
+
 const { TabPane } = StyledTabs;
 const { RangePicker } = DatePicker;
 
-const OrderManagement = () => {
+const ManageOrders = () => {
   const [searchValue, setSearchValue] = useState("");
   const [dateRange, setDateRange] = useState(null);
-  const [orders, setOrders] = useState([
-    {
-      key: "1",
-      product: "Bánh chưng ngày tết trung thu",
-      quantity: "2",
-      buyer: "Khoa",
-      total: "537,700",
-      status: "Chờ xác nhận",
-      shipping: "Nhanh",
-      orderId: "211222S6KHSTX3",
-      orderDate: "06-11-2024",
-    },
-    {
-      key: "2",
-      product: "Cành đào mừng lễ giáng sinh",
-      quantity: "3",
-      buyer: "Thắng",
-      total: "537,700",
-      status: "Đã hủy",
-      shipping: "Nhanh",
-      orderId: "211222RY7904A9",
-      orderDate: "20-11-2024",
-    },
-    {
-      key: "3",
-      product: "Giá Úp Cốc Mạ Vàng Sang Chảnh Mới Nhất 2024",
-      quantity: "5",
-      buyer: "Thiện",
-      total: "183,000",
-      status: "Đang vận chuyển",
-      shipping: "Nhanh",
-      orderId: "211222RGQHWRS4",
-      orderDate: "09-10-2024",
-    },
-  ]);
+  const [orders, setOrders] = useState([]);
 
-  const handleConfirmOrder = (orderId) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.orderId === orderId ? { ...order, status: "Chờ lấy hàng" } : order
-      )
-    );
-  };
+  useEffect(() => {
+    axiosApi.get("/api/v1/seller/order").then((res) => {
+      setOrders(res.data.orders);
+    });
+  }, []);
+  // const handleConfirmOrder = (orderId) => {
+  //   setOrders((prevOrders) =>
+  //     prevOrders.map((order) =>
+  //       order.orderId === orderId ? { ...order, status: "Chờ lấy hàng" } : order
+  //     )
+  //   );
+  // };
 
-  const handleRejectOrder = (orderId) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.orderId === orderId ? { ...order, status: "Đã hủy" } : order
-      )
-    );
-  };
+  // const handleRejectOrder = (productId) => {
+  //   setOrders((prevOrders) =>
+  //     prevOrders.map((order) => 
+  //       order.productId === productId ? { ...order, status: "cancelled" } : order
+  //     )
+  //   );
+  // };
 
   const getFilteredData = (status) => {
     return orders.filter((order) => {
@@ -74,7 +46,7 @@ const OrderManagement = () => {
       // Kiểm tra giá trị tìm kiếm (tìm theo tên sản phẩm hoặc mã đơn hàng)
       const matchesSearch =
         searchValue === "" ||
-        order.product.toLowerCase().includes(searchValue.toLowerCase()) ||
+        order.orderId.toLowerCase().includes(searchValue.toLowerCase()) ||
         order.orderId.toLowerCase().includes(searchValue.toLowerCase());
 
       // Kiểm tra ngày đặt hàng
@@ -106,14 +78,14 @@ const OrderManagement = () => {
   const columns = [
     {
       title: "Sản phẩm",
-      dataIndex: "product",
-      key: "product",
+      dataIndex: "productName",
+      key: "productName",
       width: 200,
     },
     {
       title: "Người đặt",
-      dataIndex: "buyer",
-      key: "buyer",
+      dataIndex: "userName",
+      key: "userName",
     },
 
     {
@@ -123,27 +95,29 @@ const OrderManagement = () => {
     },
 
     {
-      title: "Thành tiền",
-      dataIndex: "total",
-      key: "total",
+      title: "Đơn giá",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => (
+        <>
+          {price.toLocaleString()}
+          <sup>đ</sup>
+        </>
+      ),
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        let color = "orange";
-        if (status === "Đã hủy") color = "red";
-        if (status === "Đang vận chuyển") color = "green";
-        if (status === "Chờ lấy hàng") color = "blue";
-        if (status === "Đã giao") color = "green";
-        return <Tag color={color}>{status}</Tag>;
+        if (status === "pending") return <Tag color={"red"}>Chờ xác nhận</Tag>;
+        if (status === "delivering")
+          return <Tag color={"orange"}>Chờ lấy hàng</Tag>;
+        if (status === "packaging")
+          return <Tag color={"blue"}>Đang vận chuyển</Tag>;
+        if (status === "delivered") return <Tag color={"green"}>Đã giao</Tag>;
+        return <Tag color={"gray"}>Đã hủy</Tag>;
       },
-    },
-    {
-      title: "Vận chuyển",
-      dataIndex: "shipping",
-      key: "shipping",
     },
     {
       title: "Mã đơn hàng",
@@ -159,14 +133,14 @@ const OrderManagement = () => {
       title: "Thao tác",
       key: "action",
       render: (_, record) =>
-        record.status === "Chờ xác nhận" ? (
+        record.status === "pending" ? (
           <Space className="action">
             <StyledCheckSquare
-              onClick={() => handleConfirmOrder(record.orderId)}
+              // onClick={() => handleConfirmOrder(record.orderId)}
             ></StyledCheckSquare>
             <div classname="deny">
               <StyledCloseSquare
-                onClick={() => handleRejectOrder(record.orderId)}
+                // onClick={() => handleRejectOrder(record.productId)}
               ></StyledCloseSquare>
             </div>
           </Space>
@@ -200,32 +174,23 @@ const OrderManagement = () => {
           <Table columns={columns} dataSource={getFilteredData()} />
         </TabPane>
         <TabPane tab="Chờ xác nhận" key="2">
-          <Table
-            columns={columns}
-            dataSource={getFilteredData("Chờ xác nhận")}
-          />
+          <Table columns={columns} dataSource={getFilteredData("pending")} />
         </TabPane>
         <TabPane tab="Chờ lấy hàng" key="3">
-          <Table
-            columns={columns}
-            dataSource={getFilteredData("Chờ lấy hàng")}
-          />
+          <Table columns={columns} dataSource={getFilteredData("packaging")} />
         </TabPane>
         <TabPane tab="Đang vận chuyển" key="4">
-          <Table
-            columns={columns}
-            dataSource={getFilteredData("Đang vận chuyển")}
-          />
+          <Table columns={columns} dataSource={getFilteredData("delivering")} />
         </TabPane>
         <TabPane tab="Đã giao" key="5">
-          <Table columns={columns} dataSource={getFilteredData("Đã giao")} />
+          <Table columns={columns} dataSource={getFilteredData("delivered")} />
         </TabPane>
         <TabPane tab="Đã hủy" key="6">
-          <Table columns={columns} dataSource={getFilteredData("Đã hủy")} />
+          <Table columns={columns} dataSource={getFilteredData("cancelled")} />
         </TabPane>
       </StyledTabs>
     </div>
   );
 };
 
-export default OrderManagement;
+export default memo(ManageOrders);

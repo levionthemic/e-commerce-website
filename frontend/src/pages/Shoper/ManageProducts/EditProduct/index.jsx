@@ -86,7 +86,7 @@ const EditProduct = () => {
         discountRate: discountRate,
         description: description,
         stockQty: stockQty,
-        thumbnailUrl: imgUrl,
+        thumbnailUrl: imgUrl || product?.thumbnail_url,
       })
       .then((res) => {
         Swal.fire({

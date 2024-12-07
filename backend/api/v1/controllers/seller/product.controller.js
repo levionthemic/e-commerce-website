@@ -3,7 +3,7 @@ const User = require("../../models/user.model");
 const Category = require("../../models/category.model");
 const unidecode = require("unidecode");
 
-// [GET]/api/v1/seller/product
+// [GET] /api/v1/seller/product
 module.exports.index = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];

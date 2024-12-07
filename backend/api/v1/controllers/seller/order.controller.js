@@ -1,34 +1,39 @@
 const Order = require("../../models/order.model");
 const User = require("../../models/user.model");
 const Category = require("../../models/category.model");
-// [GET]/api/v1/seller/order
+
+// [GET] /api/v1/seller/order
 module.exports.index = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    const seller = await User.findOne({token : token});
-    const category = await Category.findOne({seller_id : seller.id});
+    const seller = await User.findOne({ token: token });
+    const category = await Category.findOne({ seller_id: seller.id });
     const category_id = String(category.id);
-    console.log(category_id);
+   
     // Truy vấn tất cả đơn hàng từ MongoDB
-    const orders = await Order.find({})
-      .select("-_id userId orderId status products");
-    let products = [];;
+    const orders = await Order.find({}).select(
+      "-_id userId orderId status products"
+    );
+
+    let products = [];
     Promise.all(
-      orders.map((order) => User.findOne({_id : order.userId}))
-    ).then (users => {
+      orders.map((order) => User.findOne({ _id: order.userId }))
+    ).then((users) => {
       orders.forEach((order) => {
         // console.log(user);
-        order.products.forEach(productInOrder => {
-          const pathSegments = productInOrder._doc.primary_category_path.split("/");
+        order.products.forEach((productInOrder) => {
+          const pathSegments =
+            productInOrder.primary_category_path.split("/");
           if (pathSegments[2] === category_id) {
-            const user = users.find(user => user.id === order.userId);
+            const user = users.find((user) => user.id === order.userId);
             products.push({
-              productName: productInOrder._doc.name,
-              userName: user.fullname,
-              quantity: productInOrder._doc.quantity,
-              price: productInOrder._doc.price,
-              status: order.status,
-              orderId: order.orderId,
+              productId: productInOrder.id,
+              productName: productInOrder.name,
+              userName: user?.fullname,
+              quantity: productInOrder.quantity,
+              price: productInOrder.price,
+              status: order?.status,
+              orderId: order?.orderId,
             });
           }
         });
@@ -37,7 +42,7 @@ module.exports.index = async (req, res) => {
         message: "Success",
         orders: products,
       });
-    })
+    });
   } catch (error) {
     res.status(400).json({
       message: error,

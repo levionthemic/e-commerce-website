@@ -32,8 +32,7 @@ function SiderSeller() {
         navigate("/shop/profile");
         break;
       case "logout":
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-        document.cookie = "cartId=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        localStorage.removeItem("token");
         window.location.reload();
         break;
       default:

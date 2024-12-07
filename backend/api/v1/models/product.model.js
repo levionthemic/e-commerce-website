@@ -1,8 +1,13 @@
 const mongoose = require("mongoose");
+const { generateOTP } = require("../../../helpers/generate");
 
 const productSchema = new mongoose.Schema(
   {
-    id: Number,
+    id: {
+      type: Number,
+      unique: true,
+      default: parseInt(generateOTP(9))
+    },
     name: String,
     slug: {
       type: String,

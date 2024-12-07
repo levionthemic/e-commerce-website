@@ -10,6 +10,18 @@ const ManageProducts = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchAllProducts = async () => {
+      try {
+        const response = await axiosApi.get("/api/v1/seller/product");
+        setProducts(response.data.products || []);
+      } catch (error) {
+        console.error("Error fetching all products:", error);
+      }
+    };
+    fetchAllProducts();
+  }, []);
+  
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axiosApi.get(
@@ -23,16 +35,6 @@ const ManageProducts = () => {
 
     if (searchTerm) {
       fetchProducts();
-    } else {
-      const fetchAllProducts = async () => {
-        try {
-          const response = await axiosApi.get("/api/v1/seller/product");
-          setProducts(response.data.products || []);
-        } catch (error) {
-          console.error("Error fetching all products:", error);
-        }
-      };
-      fetchAllProducts();
     }
   }, [searchTerm]);
 
