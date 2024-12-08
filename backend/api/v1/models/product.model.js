@@ -19,6 +19,10 @@ const productSchema = new mongoose.Schema(
     stock_item: Object,
     quantity_sold: Object,
     categories: Object,
+    deleted: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,

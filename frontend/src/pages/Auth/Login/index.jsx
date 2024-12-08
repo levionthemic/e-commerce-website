@@ -55,6 +55,7 @@ function Login() {
         } else {
           navigate("/admin/dashboard");
         }
+        window.location.reload();
       })
       .catch((error) => {
         Swal.fire({
