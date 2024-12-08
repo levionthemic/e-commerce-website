@@ -33,6 +33,7 @@ function SiderSeller() {
         break;
       case "logout":
         localStorage.removeItem("token");
+        localStorage.removeItem("role");
         window.location.reload();
         break;
       default:

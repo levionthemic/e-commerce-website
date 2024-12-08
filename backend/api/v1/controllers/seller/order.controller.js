@@ -9,7 +9,7 @@ module.exports.index = async (req, res) => {
     const seller = await User.findOne({ token: token });
     const category = await Category.findOne({ seller_id: seller.id });
     const category_id = String(category.id);
-   
+
     // Truy vấn tất cả đơn hàng từ MongoDB
     const orders = await Order.find({}).select(
       "-_id userId orderId status products"
@@ -21,9 +21,8 @@ module.exports.index = async (req, res) => {
     ).then((users) => {
       orders.forEach((order) => {
         // console.log(user);
-        order.products.forEach((productInOrder) => {
-          const pathSegments =
-            productInOrder.primary_category_path.split("/");
+        order.products.forEach((productInOrder, index) => {
+          const pathSegments = productInOrder.primary_category_path.split("/");
           if (pathSegments[2] === category_id) {
             const user = users.find((user) => user.id === order.userId);
             products.push({
@@ -32,7 +31,7 @@ module.exports.index = async (req, res) => {
               userName: user?.fullname,
               quantity: productInOrder.quantity,
               price: productInOrder.price,
-              status: order?.status,
+              status: order?.status[index],
               orderId: order?.orderId,
             });
           }
@@ -46,6 +45,83 @@ module.exports.index = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: error,
+    });
+  }
+};
+
+// [PATCH] /api/v1/seller/order/changeStatus
+module.exports.changeStatus = async (req, res) => {
+  try {
+    const { orderId, productId } = req.body;
+    let newStatus = [];
+
+    const order = await Order.findOne({ orderId: orderId });
+    for (let i = 0; i < order.products.length; i++) {
+      let temp = order.status[i];
+
+      if (order.products[i].id == productId) {
+        if (order.status[i] == "pending") {
+          temp = "packaging";
+        } else if (order.status[i] == "packaging") {
+          temp = "delivering";
+        } else if (order.status[i] == "delivering") {
+          temp = "delivered";
+        }
+      }
+      newStatus.push(temp);
+    }
+    await Order.updateOne(
+      {
+        orderId: orderId,
+      },
+      {
+        $set: {
+          status: newStatus,
+        },
+      }
+    );
+    res.status(200).json({
+      message: "Success",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "fail",
+    });
+  }
+};
+
+// [PATCH] /api/v1/seller/order/cancel
+module.exports.cancel = async (req, res) => {
+  try {
+    const { orderId, productId } = req.body;
+    let newStatus = [];
+
+    const order = await Order.findOne({ orderId: orderId });
+    for (let i = 0; i < order.products.length; i++) {
+      let temp = order.status[i];
+
+      if (order.products[i].id == productId) {
+        temp = "cancelled";
+      }
+      newStatus.push(temp);
+    }
+    // console.log(newStatus);
+    await Order.updateOne(
+      {
+        orderId: orderId,
+      },
+      {
+        $set: {
+          status: newStatus,
+        },
+      }
+    );
+    res.status(200).json({
+      message: "Success",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "fail",
     });
   }
 };

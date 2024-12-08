@@ -9,6 +9,10 @@ const categorySchema = new mongoose.Schema({
   thumbnail_url: String,
   children: Array,
   is_leaf: Boolean,
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Category = new mongoose.model("Category", categorySchema, "categories");

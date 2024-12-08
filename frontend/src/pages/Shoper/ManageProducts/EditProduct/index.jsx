@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./EditProduct.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Tooltip, Upload, message } from "antd";
@@ -11,14 +11,22 @@ const EditProduct = () => {
 
   const [name, setName] = useState(product?.name);
   const [price, setPrice] = useState(product?.price);
-  const [discountRate, setDiscountRate] = useState(product?.discount_rate);
+  const [discountRate, setDiscountRate] = useState(product?.discountRate);
   const [description, setDescription] = useState(product?.description);
-  const [stockQty, setStockQty] = useState(product?.stock_item.qty);
+  const [stockQty, setStockQty] = useState(product?.quantity || 0);
+  const [categories, setCategories] = useState();
 
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState();
 
   const [isUploadImage, setIsUploadImage] = useState(false);
+
+  useEffect(() => {
+    axiosApi("/api/v1/seller/product")
+      .then(res => {
+        setCategories(res.data.categories);
+      })
+  }, []);
 
   const uploadImage = async () => {
     const formData = new FormData();
@@ -174,7 +182,9 @@ const EditProduct = () => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="row">
+              <div className="col-6">
+              <div className="form-group">
               <label htmlFor="thumbnail_url">Ảnh sản phẩm</label>
               <Tooltip title="Click để upload ảnh" placement="rightTop">
                 <Upload
@@ -186,7 +196,7 @@ const EditProduct = () => {
                     <img src={imageUrl} alt="" className="product-image" />
                   ) : (
                     <img
-                      src={product?.thumbnail_url}
+                      src={product?.thumbnail}
                       alt=""
                       className="product-image"
                     />
@@ -194,6 +204,20 @@ const EditProduct = () => {
                 </Upload>
               </Tooltip>
             </div>
+              </div>
+              <div className="col-6">
+                <div className="form-group">
+                  <label htmlFor="category">Danh mục sản phẩm</label>
+                  <select name="category" id="category" disabled>
+                    <option disabled selected>-- Chọn danh mục --</option>
+                    {categories?.map(category => (
+                      <option value={category.id} selected={parseInt(product.categoryId) === category.id}>{category.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+            
 
             <div className="form-group button-action">
               <button type="submit" className="btn btn-primary">

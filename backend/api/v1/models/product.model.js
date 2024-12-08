@@ -6,7 +6,7 @@ const productSchema = new mongoose.Schema(
     id: {
       type: Number,
       unique: true,
-      default: parseInt(generateOTP(9))
+      default: parseInt(generateOTP(9)),
     },
     name: String,
     slug: {
@@ -17,22 +17,32 @@ const productSchema = new mongoose.Schema(
     price: Number,
     original_price: Number,
     discount_rate: Number,
-    rating_average: Number,
-    primary_category_path: String,
+    rating_average: {
+      type: Number,
+      default: 0,
+    },
+    primary_category_path: {
+      type: String,
+      default: "1/2",
+    },
     thumbnail_url: String,
-    description: String,
+    description: { type: String, default: "" },
     stock_item: {
-      qty : Number,
+      qty: { type: Number, default: 0 },
     },
     quantity_sold: {
       text: {
-        type : String,
-        default: "Đã bán 0"
+        type: String,
+        default: "Đã bán 0",
       },
       value: {
         type: Number,
-        default: 0
-      }
+        default: 0,
+      },
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
     },
     categories: Object,
   },

@@ -13,14 +13,13 @@ module.exports.index = async (req, res) => {
 
     const products = await Product.find({
       primary_category_path: { $regex: regex },
+      deleted: false,
     })
-      .limit(100)
-      .select(
-        "_id id thumbnail_url name price stock_item quantity_sold categories"
-      );
+      .limit(500);
     res.status(200).json({
       message: "Success",
       products: products,
+      categories: category.children,
     });
   } catch (error) {
     res.status(400).json({
@@ -38,8 +37,15 @@ module.exports.search = async (req, res) => {
     const slug = unidecode(keyword).trim().replace(/\s+/g, "-");
     const regexSlug = new RegExp(slug, "i");
 
+    const token = req.headers.authorization.split(" ")[1];
+    const seller = await User.findOne({ token: token });
+    const category = await Category.findOne({ seller_id: seller.id });
+    const regexCate = new RegExp(`^\\d+/\\d+/${category.id}/`);
+
     const products = await Product.find({
       $or: [{ name: regex }, { slug: regexSlug }],
+      deleted: false,
+      primary_category_path: { $regex: regexCate },
     })
       .limit(100)
       .select(
@@ -63,10 +69,25 @@ module.exports.search = async (req, res) => {
   }
 };
 
-//[POST]/api/v1/seller/product/add
+// [POST] /api/v1/seller/product/add
 module.exports.add = async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
+    const token = req.headers.authorization.split(" ")[1];
+    const seller = await User.findOne({ token: token });
+    const category = await Category.findOne({ seller_id: seller.id });
+    const categoryId = String(category.id);
+    const newProduct = new Product({
+      name: req.body.name,
+      price: req.body.price,
+      discount_rate: req.body.discountRate,
+      description: req.body.description,
+      "stock_item.qty": req.body.stockQty,
+      primary_category_path: "1/2/" + categoryId + "/",
+      categories: {
+        id: req.body.categoryId,
+        name: req.body.categoryName,
+      }
+    });
     await newProduct.save();
     res.status(200).json({
       message: "Tạo sản phẩm mới thành công",
@@ -78,7 +99,7 @@ module.exports.add = async (req, res) => {
   }
 };
 
-//[PATCH]/api/v1/seller/product/edit
+// [PATCH] /api/v1/seller/product/edit
 module.exports.edit = async (req, res) => {
   try {
     const productId = req.body.id;
@@ -95,7 +116,7 @@ module.exports.edit = async (req, res) => {
       },
       {
         $set: {
-          "stock_item.$.qty": quantity,
+          "stock_item.qty": quantity,
           name: nameProduct,
           discount_rate: discount,
           price: priceProduct,
@@ -110,6 +131,21 @@ module.exports.edit = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: "Lỗi không cập nhật được sản phẩm",
+    });
+  }
+};
+
+// [PATCH] /api/v1/seller/product/delete
+module.exports.delete = async (req, res) => {
+  try {
+    console.log(req.body._id);
+    await Product.updateOne({ _id: req.body._id }, { deleted: true });
+    res.status(200).json({
+      message: "Xóa sản phẩm thành công",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Lỗi không xóa được sản phẩm",
     });
   }
 };

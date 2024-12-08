@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
   {
     fullname: String,
     nickname: {
-      type: "String",
+      type: String,
       default: "",
     },
     avatar: String,
@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema(
     token: {
       type: String,
       default: generateTokenString(20),
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {
