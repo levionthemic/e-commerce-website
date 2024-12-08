@@ -13,11 +13,13 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const arr = document.cookie.split("; ");
-    for (const item of arr) {
-      const [key] = item.split("=");
-      if (key === "token") {
+    if (localStorage.getItem("token")) {
+      if (localStorage.getItem("role") === "buyer") {
         navigate("/");
+      } else if (localStorage.getItem("role") === "seller") {
+        navigate("/shop/overview");
+      } else {
+        navigate("/admin/dashboard");
       }
     }
   });
@@ -50,6 +52,7 @@ function Login() {
       })
       .then((res) => {
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", role);
         if (role === "buyer") {
           localStorage.setItem("cartId", res.data.cartId);
           navigate("/");
@@ -61,10 +64,11 @@ function Login() {
         window.location.reload();
       })
       .catch((error) => {
+        console.log(error);
         Swal.fire({
           icon: "error",
-          title: "Đăng nhập thất bại!",
-          text: error.response.data.message,
+          title: "Thất bại!",
+          text: "Đăng nhập không thành công!",
         });
       });
   };

@@ -46,6 +46,11 @@ const ShopOverview = () => {
           <h3>Sản Phẩm Bán Chạy Nhất</h3>
           <p>{statistics.bestSellingProduct}</p>
         </div>
+        
+        <div className="overview-card">
+          <h3>Đơn Hàng Đã Hủy</h3>
+          <p>{statistics.bestSellingProduct}</p>
+        </div>
       </div>
     </div>
   );

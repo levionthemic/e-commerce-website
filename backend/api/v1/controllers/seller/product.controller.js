@@ -16,13 +16,11 @@ module.exports.index = async (req, res) => {
       primary_category_path: { $regex: regex },
       deleted: false,
     })
-      .limit(100)
-      .select(
-        "_id id thumbnail_url name price stock_item quantity_sold categories"
-      );
+      .limit(500);
     res.status(200).json({
       message: "Success",
       products: products,
+      categories: category.children,
     });
   } catch (error) {
     res.status(400).json({
@@ -40,9 +38,15 @@ module.exports.search = async (req, res) => {
     const slug = unidecode(keyword).trim().replace(/\s+/g, "-");
     const regexSlug = new RegExp(slug, "i");
 
+    const token = req.headers.authorization.split(" ")[1];
+    const seller = await User.findOne({ token: token });
+    const category = await Category.findOne({ seller_id: seller.id });
+    const regexCate = new RegExp(`^\\d+/\\d+/${category.id}/`);
+
     const products = await Product.find({
       $or: [{ name: regex }, { slug: regexSlug }],
       deleted: false,
+      primary_category_path: { $regex: regexCate },
     })
       .limit(100)
       .select(
@@ -66,7 +70,7 @@ module.exports.search = async (req, res) => {
   }
 };
 
-//[POST]/api/v1/seller/product/add
+// [POST] /api/v1/seller/product/add
 module.exports.add = async (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -80,8 +84,11 @@ module.exports.add = async (req, res) => {
       description: req.body.description,
       "stock_item.qty": req.body.stockQty,
       primary_category_path: "1/2/" + categoryId + "/",
+      categories: {
+        id: req.body.categoryId,
+        name: req.body.categoryName,
+      }
     });
-
     await newProduct.save();
     res.status(200).json({
       message: "Tạo sản phẩm mới thành công",
@@ -93,7 +100,7 @@ module.exports.add = async (req, res) => {
   }
 };
 
-//[PATCH]/api/v1/seller/product/edit
+// [PATCH] /api/v1/seller/product/edit
 module.exports.edit = async (req, res) => {
   try {
     const productId = req.body.id;
@@ -129,12 +136,11 @@ module.exports.edit = async (req, res) => {
   }
 };
 
-//[PATCH]/api/v1/seller/product/delete
+// [PATCH] /api/v1/seller/product/delete
 module.exports.delete = async (req, res) => {
   try {
-    // console.log(req.body._id);
+    console.log(req.body._id);
     await Product.updateOne({ _id: req.body._id }, { deleted: true });
-    // const product = await Product.findOne({ "_id": req });
     res.status(200).json({
       message: "Xóa sản phẩm thành công",
     });
