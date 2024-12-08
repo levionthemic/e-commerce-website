@@ -1,11 +1,17 @@
 const Category = require("../../models/category.model");
+const User = require("../../models/user.model");
 
 // [GET] /api/v1/admin/category
 module.exports.index = async (req, res) => {
   const categories = await Category.find({});
-  res.status(200).json({
-    message: "Success",
-    data: categories,
+  Promise.all(
+    categories.map((category) => User.findOne({ _id: category.seller_id }))
+  ).then((sellers) => {
+    res.status(200).json({
+      message: "Success",
+      data: categories,
+      sellers: sellers,
+    });
   });
 };
 
