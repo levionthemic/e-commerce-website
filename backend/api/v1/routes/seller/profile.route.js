@@ -1,13 +1,11 @@
 const express = require("express");
 
-const controller = require("../../controllers/seller/order.controller");
+const controller = require("../../controllers/seller/profile.controller");
 
 const routes = express.Router();
 
 routes.get("/" , controller.index);
-routes.patch("/changeStatus", controller.changeStatus);
-routes.patch("/cancel", controller.cancel);
-
+routes.patch("/edit", controller.edit);
 // routes.get("/search", controller.search);
 
 module.exports = routes; 

@@ -8,9 +8,13 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: generateOrderId(15),
     },
-    status: String,
+    status: Array,
     products: Array,
     sellerId: String,
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

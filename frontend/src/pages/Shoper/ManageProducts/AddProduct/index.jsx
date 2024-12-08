@@ -78,7 +78,7 @@ const AddProduct = () => {
     }
 
     axiosApi
-      .patch("/api/v1/seller/product/add", {
+      .post("/api/v1/seller/product/add", {
         name: name,
         price: price,
         discountRate: discountRate,

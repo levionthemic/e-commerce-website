@@ -8,6 +8,7 @@ import {
   StyledCloseSquare,
 } from "./Style";
 import { axiosApi } from "../../../services/UserService";
+import Swal from "sweetalert2";
 
 const { TabPane } = StyledTabs;
 const { RangePicker } = DatePicker;
@@ -16,27 +17,124 @@ const ManageOrders = () => {
   const [searchValue, setSearchValue] = useState("");
   const [dateRange, setDateRange] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [hasUpdated, setHasUpdated] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     axiosApi.get("/api/v1/seller/order").then((res) => {
       setOrders(res.data.orders);
+      setLoading(false);
     });
-  }, []);
-  // const handleConfirmOrder = (orderId) => {
-  //   setOrders((prevOrders) =>
-  //     prevOrders.map((order) =>
-  //       order.orderId === orderId ? { ...order, status: "Chờ lấy hàng" } : order
-  //     )
-  //   );
-  // };
+  }, [hasUpdated]);
 
-  // const handleRejectOrder = (productId) => {
-  //   setOrders((prevOrders) =>
-  //     prevOrders.map((order) => 
-  //       order.productId === productId ? { ...order, status: "cancelled" } : order
-  //     )
-  //   );
-  // };
+  const handleConfirmOrder = (record) => {
+    Swal.fire({
+      icon: "warning",
+      showCancelButton: true,
+      showConfirmButton: true,
+      title: "Cảnh báo!",
+      text: "Bạn có chắc chắn muốn đổi trạng thái đơn hàng?",
+      confirmButtonText: "Chắc chắn",
+      cancelButtonText: "Hủy",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        setLoading(true);
+        axiosApi
+          .patch("/api/v1/seller/order/changeStatus", {
+            productId: record.productId,
+            orderId: record.orderId,
+          })
+          .then((res) => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "success",
+              title: "Đã đổi trạng thái đơn hàng!",
+            });
+            setHasUpdated(!hasUpdated);
+            setLoading(false);
+          })
+          .catch((error) => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "error",
+              title: "Đã có lỗi!",
+            });
+            setLoading(false);
+          });
+      }
+    });
+  };
+
+  const handleRejectOrder = (record) => {
+    Swal.fire({
+      icon: "warning",
+      showCancelButton: true,
+      showConfirmButton: true,
+      title: "Cảnh báo!",
+      text: "Bạn có chắc chắn muốn hủy đơn hàng?",
+      confirmButtonText: "Chắc chắn",
+      cancelButtonText: "Hủy",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        setLoading(true);
+        axiosApi
+          .patch("/api/v1/seller/order/cancel", {
+            productId: record.productId,
+            orderId: record.orderId,
+          })
+          .then((res) => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "success",
+              title: "Đã hủy đơn hàng!",
+            });
+            setHasUpdated(!hasUpdated);
+            setLoading(false);
+          })
+          .catch((error) => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 1500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+              icon: "error",
+              title: "Đã có lỗi!",
+            });
+            setLoading(false);
+          });
+      }
+    });
+  };
 
   const getFilteredData = (status) => {
     return orders.filter((order) => {
@@ -87,13 +185,11 @@ const ManageOrders = () => {
       dataIndex: "userName",
       key: "userName",
     },
-
     {
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
     },
-
     {
       title: "Đơn giá",
       dataIndex: "price",
@@ -111,9 +207,9 @@ const ManageOrders = () => {
       key: "status",
       render: (status) => {
         if (status === "pending") return <Tag color={"red"}>Chờ xác nhận</Tag>;
-        if (status === "delivering")
-          return <Tag color={"orange"}>Chờ lấy hàng</Tag>;
         if (status === "packaging")
+          return <Tag color={"orange"}>Đang đóng gói</Tag>;
+        if (status === "delivering")
           return <Tag color={"blue"}>Đang vận chuyển</Tag>;
         if (status === "delivered") return <Tag color={"green"}>Đã giao</Tag>;
         return <Tag color={"gray"}>Đã hủy</Tag>;
@@ -133,16 +229,20 @@ const ManageOrders = () => {
       title: "Thao tác",
       key: "action",
       render: (_, record) =>
-        record.status === "pending" ? (
+        record.status !== "cancelled" && record.status !== "delivered" ? (
           <Space className="action">
             <StyledCheckSquare
-              // onClick={() => handleConfirmOrder(record.orderId)}
+              onClick={() => handleConfirmOrder(record)}
             ></StyledCheckSquare>
-            <div classname="deny">
-              <StyledCloseSquare
-                // onClick={() => handleRejectOrder(record.productId)}
-              ></StyledCloseSquare>
-            </div>
+            {record.status === "delivering" ? (
+              <></>
+            ) : (
+              <div classname="deny">
+                <StyledCloseSquare
+                  onClick={() => handleRejectOrder(record)}
+                ></StyledCloseSquare>
+              </div>
+            )}
           </Space>
         ) : null,
     },
@@ -158,7 +258,7 @@ const ManageOrders = () => {
             style={{ marginBottom: 16, display: "flex", gap: "10px" }}
           >
             <StyledInput
-              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng hoặc Tên sản phẩm"
+              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
@@ -166,17 +266,17 @@ const ManageOrders = () => {
               format="DD-MM-YYYY"
               onChange={(dates) => setDateRange(dates)}
             />
-
-            <Button type="primary" onClick={() => setSearchValue("")}>
-              Reset
-            </Button>
           </div>
-          <Table columns={columns} dataSource={getFilteredData()} />
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={getFilteredData()}
+          />
         </TabPane>
         <TabPane tab="Chờ xác nhận" key="2">
           <Table columns={columns} dataSource={getFilteredData("pending")} />
         </TabPane>
-        <TabPane tab="Chờ lấy hàng" key="3">
+        <TabPane tab="Đang đóng gói" key="3">
           <Table columns={columns} dataSource={getFilteredData("packaging")} />
         </TabPane>
         <TabPane tab="Đang vận chuyển" key="4">

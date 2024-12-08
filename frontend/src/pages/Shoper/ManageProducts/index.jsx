@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { axiosApi } from "../../../services/UserService"; // Giả sử file service của bạn tên là axiosApi.js
+import { axiosApi } from "../../../services/UserService";
 import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import "./ManageProducts.css";
+import Swal from "sweetalert2";
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
+  const [hasDeleted, setHasDeleted] = useState(true);
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -19,8 +20,8 @@ const ManageProducts = () => {
       }
     };
     fetchAllProducts();
-  }, []);
-  
+  }, [hasDeleted]);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -56,6 +57,38 @@ const ManageProducts = () => {
     navigate("/shop/products/edit", { state: { product: product } });
   };
 
+  const handleDelete = (product) => {
+    Swal.fire({
+      icon: "warning",
+      title: "Cảnh báo",
+      text: "Xác nhận xóa sản phẩm?",
+      showCancelButton: true,
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        axiosApi
+          .patch("/api/v1/seller/product/delete", {
+            _id: product._id,
+          })
+          .then((res) => {
+            Swal.fire({
+              icon: "success",
+              title: "Thành công",
+              text: res.data.message,
+            });
+            setHasDeleted(!hasDeleted);
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Thất bại",
+              text: error.response.data.message,
+            });
+          });
+      }
+    });
+  };
   return (
     <div className="store-products mx-4 my-3">
       <h2 className="mb-3">Quản lý sản phẩm</h2>
@@ -123,7 +156,10 @@ const ManageProducts = () => {
                     >
                       <FaEdit />
                     </button>
-                    <button className="btn btn-danger btn-sm">
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDelete(product)}
+                    >
                       <FaTrashAlt />
                     </button>
                   </td>

@@ -2,6 +2,7 @@ const Product = require("../../models/product.model");
 const User = require("../../models/user.model");
 const Category = require("../../models/category.model");
 const unidecode = require("unidecode");
+// const mongoose = require("mongoose");
 
 // [GET] /api/v1/seller/product
 module.exports.index = async (req, res) => {
@@ -13,6 +14,7 @@ module.exports.index = async (req, res) => {
 
     const products = await Product.find({
       primary_category_path: { $regex: regex },
+      deleted: false,
     })
       .limit(100)
       .select(
@@ -40,6 +42,7 @@ module.exports.search = async (req, res) => {
 
     const products = await Product.find({
       $or: [{ name: regex }, { slug: regexSlug }],
+      deleted: false,
     })
       .limit(100)
       .select(
@@ -66,7 +69,19 @@ module.exports.search = async (req, res) => {
 //[POST]/api/v1/seller/product/add
 module.exports.add = async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
+    const token = req.headers.authorization.split(" ")[1];
+    const seller = await User.findOne({ token: token });
+    const category = await Category.findOne({ seller_id: seller.id });
+    const categoryId = String(category.id);
+    const newProduct = new Product({
+      name: req.body.name,
+      price: req.body.price,
+      discount_rate: req.body.discountRate,
+      description: req.body.description,
+      "stock_item.qty": req.body.stockQty,
+      primary_category_path: "1/2/" + categoryId + "/",
+    });
+
     await newProduct.save();
     res.status(200).json({
       message: "Tạo sản phẩm mới thành công",
@@ -95,7 +110,7 @@ module.exports.edit = async (req, res) => {
       },
       {
         $set: {
-          "stock_item.$.qty": quantity,
+          "stock_item.qty": quantity,
           name: nameProduct,
           discount_rate: discount,
           price: priceProduct,
@@ -110,6 +125,22 @@ module.exports.edit = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       message: "Lỗi không cập nhật được sản phẩm",
+    });
+  }
+};
+
+//[PATCH]/api/v1/seller/product/delete
+module.exports.delete = async (req, res) => {
+  try {
+    // console.log(req.body._id);
+    await Product.updateOne({ _id: req.body._id }, { deleted: true });
+    // const product = await Product.findOne({ "_id": req });
+    res.status(200).json({
+      message: "Xóa sản phẩm thành công",
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Lỗi không xóa được sản phẩm",
     });
   }
 };
