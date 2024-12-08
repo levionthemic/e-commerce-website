@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./CartPage.css";
 import { axiosApi } from "../../../services/UserService";
-import { cookies } from "../../../helpers/cookies";
 import { useNavigate } from "react-router-dom";
 import { Table, Skeleton } from "antd";
 import { DeleteOutlined, DiffOutlined } from "@ant-design/icons";
@@ -67,7 +66,7 @@ const CartPage = () => {
       if (res.isConfirmed) {
         axiosApi
           .post("/api/v1/cart/delete", {
-            cartId: cookies().cartId,
+            cartId: localStorage.getItem("cartId"),
             productId: cartList[indexRow].id,
           })
           .then(() => {
@@ -98,7 +97,7 @@ const CartPage = () => {
       e.currentTarget.parentElement.parentElement.parentElement.getAttribute(
         "data-row-key"
       );
-    const cartId = cookies().cartId;
+    const cartId = localStorage.getItem("cartId");
     const productId = cartList[indexRow].id;
     const quantity = parseInt(
       e.currentTarget.parentElement.parentElement.previousSibling
@@ -158,7 +157,8 @@ const CartPage = () => {
   useEffect(() => {
     setLoading(true);
     axiosApi
-      .get("/api/v1/cart/" + cookies().cartId)
+      .get("/api/v1/cart/" + localStorage.getItem("cartId")
+      )
       .then((res) => {
         setCartList(res.data.data);
         setQuantities(res.data.data.map((item) => item.quantity));

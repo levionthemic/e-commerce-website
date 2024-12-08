@@ -8,7 +8,6 @@ import {
 import img from "../../../../../assets/images/lock-icon.svg";
 import "./UpdatePasswordModal1.scss";
 import Swal from "sweetalert2";
-import { cookies } from "../../../../../helpers/cookies";
 import { axiosApi } from "../../../../../services/UserService";
 
 function UpdatePasswordModal1() {
@@ -82,7 +81,7 @@ function UpdatePasswordModal1() {
   };
 
   const handleOption = (e) => {
-    const token = cookies().token;
+    const token = localStorage.getItem("token");
     let email = "";
     axiosApi
       .get(`/api/v1/user/${token}`)

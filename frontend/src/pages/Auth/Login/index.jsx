@@ -22,7 +22,7 @@ function Login() {
         navigate("/admin/dashboard");
       }
     }
-  });
+  }, []);
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);

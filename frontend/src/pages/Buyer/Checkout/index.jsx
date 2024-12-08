@@ -3,7 +3,6 @@ import "./Checkout.scss";
 import icon from "../../../assets/images/money-icon.svg";
 import icon1 from "../../../assets/images/arrow-icon.svg";
 import { useLocation, useNavigate } from "react-router-dom";
-import { cookies } from "../../../helpers/cookies";
 import { axiosApi } from "../../../services/UserService";
 import Swal from "sweetalert2";
 
@@ -46,7 +45,7 @@ function Checkout() {
   const handleCheckout = () => {
     axiosApi
       .post("/api/v1/checkout/order", {
-        cartId: cookies().cartId,
+        cartId: localStorage.getItem("cartId"),
       })
       .then(() => {
         Swal.fire({
@@ -66,7 +65,7 @@ function Checkout() {
 
   useEffect(() => {
     axiosApi
-      .get("/api/v1/user/" + cookies().token)
+      .get("/api/v1/user/" + localStorage.getItem("token"))
       .then((res) => {
         setUser(res.data.user);
       })

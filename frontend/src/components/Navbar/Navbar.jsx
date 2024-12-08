@@ -11,7 +11,6 @@ import {
 } from "@ant-design/icons";
 import { axiosApi } from "../../services/UserService";
 import { setCartQuantity } from "../../redux/slices/cartSlice";
-import { cookies } from "../../helpers/cookies";
 
 const items = [
   {
@@ -34,8 +33,7 @@ const items = [
       <span
         style={{ color: "red", fontWeight: "bold" }}
         onClick={() => {
-          document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-          document.cookie = "cartId=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+          localStorage.clear();
           window.location.reload();
         }}
       >
@@ -71,7 +69,7 @@ function Navbar() {
 
   useEffect(() => {
     axiosApi
-      .get("api/v1/cart/" + cookies().cartId)
+      .get("api/v1/cart/" + localStorage.getItem("cartId"))
       .then((res) => {
         const quantity = res.data.data.length;
         dispatch(setCartQuantity(quantity));
