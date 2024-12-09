@@ -45,6 +45,10 @@ const productSchema = new mongoose.Schema(
       default: false,
     },
     categories: Object,
+    deleted: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,

@@ -9,6 +9,22 @@ module.exports.index = async (req, res) => {
   });
 };
 
+// [GET] /api/v1/admin/user/get-info
+module.exports.getInfo = async (req, res) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = await User.findOne({ token: token });
+    res.status(200).json({
+      message: "Success",
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "Error",
+    });
+  }
+};
+
 // [POST] /api/v1/admin/user/add
 module.exports.add = async (req, res) => {
   const { ...userInfo } = req.body;

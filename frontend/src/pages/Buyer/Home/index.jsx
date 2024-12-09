@@ -10,7 +10,6 @@ import {
 import { Col } from "react-bootstrap";
 
 import "react-multi-carousel/lib/styles.css";
-import { useNavigate } from "react-router-dom";
 import { axiosApi } from "../../../services/UserService";
 import ProductItem from "../../../components/ProductItem";
 import { CustomCarousel } from "./style";
@@ -22,7 +21,6 @@ const Home = () => {
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [productsDisplayed, setProductsDisplayed] = useState(15);
   const [categories, setCategories] = useState([]);
-
 
   useEffect(() => {
     axiosApi

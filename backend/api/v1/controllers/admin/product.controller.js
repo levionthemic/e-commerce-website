@@ -3,13 +3,14 @@ const Product = require("../../models/product.model");
 // [GET] /api/v1/admin/product
 module.exports.index = async (req, res) => {
   let page = parseInt(req.query.page);
-  
+  let categoryId = req.query?.categoryId;
+
   if (!page) {
     page = 0;
   }
 
   try {
-    const productsPerPage = 40;
+    const productsPerPage = 2000;
 
     const totalProducts = await Product.countDocuments({});
     const totalPages = Math.floor(totalProducts / 40);
@@ -19,9 +20,19 @@ module.exports.index = async (req, res) => {
       });
       return;
     }
-    const products = await Product.find({})
-      .skip(page * productsPerPage)
-      .limit(productsPerPage);
+
+    const regex = new RegExp(`^\\d+/\\d+/${categoryId}/`);
+
+    let products = [];
+    if (categoryId) {
+      products = await Product.find({ primary_category_path: regex })
+        .skip(page * productsPerPage)
+        .limit(productsPerPage);
+    } else {
+      products = await Product.find({})
+        .skip(page * productsPerPage)
+        .limit(productsPerPage);
+    }
 
     res.status(200).json({
       message: "Success",
@@ -61,8 +72,6 @@ module.exports.edit = async (req, res) => {
   res.status(200).json({
     message: "Edit Success",
   });
-
-  
 };
 
 // [DELETE] /api/v1/admin/product/delete

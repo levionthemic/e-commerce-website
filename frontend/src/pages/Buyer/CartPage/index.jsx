@@ -53,7 +53,9 @@ const CartPage = () => {
 
   const handleDelete = (e) => {
     const indexRow =
-      e.currentTarget.parentElement.parentElement.parentElement.getAttribute("data-row-key");
+      e.currentTarget.parentElement.parentElement.parentElement.getAttribute(
+        "data-row-key"
+      );
     Swal.fire({
       icon: "warning",
       showCancelButton: true,
@@ -157,8 +159,7 @@ const CartPage = () => {
   useEffect(() => {
     setLoading(true);
     axiosApi
-      .get("/api/v1/cart/" + localStorage.getItem("cartId")
-      )
+      .get("/api/v1/cart/" + localStorage.getItem("cartId"))
       .then((res) => {
         setCartList(res.data.data);
         setQuantities(res.data.data.map((item) => item.quantity));

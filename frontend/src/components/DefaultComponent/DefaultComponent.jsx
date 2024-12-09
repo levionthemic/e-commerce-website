@@ -4,6 +4,8 @@ import Navbar from "../Navbar/Navbar";
 import "./DefaultComponent.css";
 import Footer from "../Footer/Footer"; // Import Footer component
 import SiderSeller from "../Sider/SiderSeller";
+import SiderAdmin from "../Sider/SiderAdmin";
+import HeaderAdmin from "../Header/HeaderAdmin";
 
 const DefaultComponent = ({ children, isShowHeader, role }) => {
   if (role === "seller") {
@@ -18,6 +20,19 @@ const DefaultComponent = ({ children, isShowHeader, role }) => {
           </div>
         </div>
       </>
+    )
+  }
+  if (role === "admin") {
+    return (
+      <div className="row">
+        <div className="col-2">
+          <SiderAdmin />
+        </div>
+        <div className="col-10">
+          <HeaderAdmin />
+          <main>{children}</main>
+        </div>
+      </div>
     )
   }
   return (
