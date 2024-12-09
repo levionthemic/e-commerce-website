@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
+const slug = require("mongoose-slug-updater");
 const { generateOTP } = require("../../../helpers/generate");
+mongoose.plugin(slug);
 
 const productSchema = new mongoose.Schema(
   {
@@ -44,11 +46,14 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    categories: Object,
+    categories: {
+      id: Number,
+      name: String,
+    },
     deleted: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   {
     timestamps: true,

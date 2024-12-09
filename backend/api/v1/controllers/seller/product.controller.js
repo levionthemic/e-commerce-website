@@ -79,16 +79,19 @@ module.exports.add = async (req, res) => {
       description: req.body.description,
       "stock_item.qty": req.body.stockQty,
       primary_category_path: "1/2/" + categoryId + "/",
+      thumbnail_url: req.body.thumbnailUrl,
       categories: {
-        id: req.body.categoryId,
+        id: parseInt(req.body.categoryId),
         name: req.body.categoryName,
       },
     });
+    console.log(newProduct);
     await newProduct.save();
     res.status(200).json({
       message: "Tạo sản phẩm mới thành công",
     });
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       message: "Lỗi không tạo được sản phẩm mới",
     });
