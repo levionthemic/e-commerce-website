@@ -56,7 +56,6 @@ function SiderSeller() {
   };
 
   useEffect(() => {
-    console.log("OK");
     const temp = [false, false, false, false, false];
     switch (pathname) {
       case "/shop/overview":
