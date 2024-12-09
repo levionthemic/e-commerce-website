@@ -1,5 +1,6 @@
 const Order = require("../../models/order.model");
 const User = require("../../models/user.model");
+const Product = require("../../models/product.model");
 const Category = require("../../models/category.model");
 
 // [GET] /api/v1/seller/order
@@ -37,7 +38,7 @@ module.exports.index = async (req, res) => {
               ),
               status: order?.status[index],
               orderId: order?.orderId,
-              orderDate: order?.createdAt.toLocaleDateString("vi-VN")
+              orderDate: order?.createdAt.toLocaleDateString("vi-VN"),
             });
           }
         });
@@ -59,16 +60,19 @@ module.exports.changeStatus = async (req, res) => {
   try {
     const { orderId, productId } = req.body;
     let newStatus = [];
-
+    let quantity = 0;
+    let id = null;
     const order = await Order.findOne({ orderId: orderId });
     for (let i = 0; i < order.products.length; i++) {
       let temp = order.status[i];
 
       if (order.products[i].id == productId) {
+        id = order.products[i].id;
         if (order.status[i] == "pending") {
           temp = "packaging";
         } else if (order.status[i] == "packaging") {
           temp = "delivering";
+          quantity = order.products[i].quantity;
         } else if (order.status[i] == "delivering") {
           temp = "delivered";
         }
@@ -83,6 +87,16 @@ module.exports.changeStatus = async (req, res) => {
         $set: {
           status: newStatus,
         },
+      }
+    );
+    const product = Product.findOne({ id: id });
+    const oldQty = product.stock_item.qty;
+    await Product.updateOne(
+      {
+        id: id,
+      },
+      {
+        "stock_item.qty": oldQty - quantity,
       }
     );
     res.status(200).json({
