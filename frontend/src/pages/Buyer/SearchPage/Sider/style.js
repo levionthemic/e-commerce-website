@@ -15,17 +15,20 @@ export const StyledMenu = styled(Menu)`
     height: 30px !important;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-family: "Lexend", sans-serif;
   }
 
   .ant-menu-item-only-child {
     height: fit-content;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-family: "Lexend", sans-serif;
 
     .ant-menu-title-content {
       height: 30px;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-family: "Lexend", sans-serif;
     }
   }
 `;

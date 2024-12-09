@@ -21,3 +21,10 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.ant-table table,
+.ant-radio-group span, 
+.ant-picker .ant-picker-input input,
+.ant-input {
+  font-family: "Lexend", sans-serif;
+} 

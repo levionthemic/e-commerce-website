@@ -15,8 +15,7 @@ module.exports.index = async (req, res) => {
     const products = await Product.find({
       primary_category_path: { $regex: regex },
       deleted: false,
-    })
-      .limit(500);
+    }).limit(500);
     res.status(200).json({
       message: "Success",
       products: products,
@@ -47,11 +46,7 @@ module.exports.search = async (req, res) => {
       $or: [{ name: regex }, { slug: regexSlug }],
       deleted: false,
       primary_category_path: { $regex: regexCate },
-    })
-      .limit(100)
-      .select(
-        "-_id thumbnail_url name price stock_item quantity_sold categories"
-      );
+    }).limit(500);
 
     if (products) {
       res.json({
@@ -87,7 +82,7 @@ module.exports.add = async (req, res) => {
       categories: {
         id: req.body.categoryId,
         name: req.body.categoryName,
-      }
+      },
     });
     await newProduct.save();
     res.status(200).json({

@@ -24,7 +24,7 @@ export const StyledTabs = styled(Tabs)`
   .ant-tabs-nav .ant-tabs-nav-list .ant-tabs-tab .ant-tabs-tab-btn {
     color: rgba(0, 0, 0, 50%);
     font-size: 16px;
-    font-family: Roboto, sans-serif;
+    font-family: "Lexend", sans-serif;
   }
   .ant-tabs-nav .ant-tabs-nav-list .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
     color: black;

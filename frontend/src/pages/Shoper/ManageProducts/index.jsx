@@ -183,7 +183,7 @@ const ManageProducts = () => {
         <input
           type="text"
           className="form-control"
-          placeholder="Tìm kiếm sản phẩm..."
+          placeholder="Tìm kiếm theo Tên sản phẩm"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

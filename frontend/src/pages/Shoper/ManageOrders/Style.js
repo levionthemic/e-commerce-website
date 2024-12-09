@@ -11,27 +11,27 @@ export  const StyledTabs = styled(Tabs)`
     background: white;
     border-radius: 5px;
   }
-  .ant-tabs > .ant-tabs-nav .ant-tabs-nav-list {
+  .ant-tabs-nav .ant-tabs-nav-list {
     justify-content: space-between;
     width: 100%;
   }
-  .ant-tabs .ant-tabs-tab {
+  .ant-tabs-nav .ant-tabs-nav-list .ant-tabs-tab {
     width: calc(100% / 6);
     margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .ant-tabs .ant-tabs-tab .ant-tabs-tab-btn {
+  .ant-tabs-nav .ant-tabs-nav-list .ant-tabs-tab .ant-tabs-tab-btn {
     color: rgba(0, 0, 0, 50%);
     font-size: 16px;
-    font-family: Roboto, sans-serif;
+    font-family: "Lexend", sans-serif;
   }
-  .ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  .ant-tabs-nav .ant-tabs-nav-list .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
     color: black;
     font-weight: 500;
   }
-  .ant-tabs .ant-tabs-ink-bar {
+  .ant-tabs-nav .ant-tabs-nav-list .ant-tabs-ink-bar {
     background: black;
   }
 `;
