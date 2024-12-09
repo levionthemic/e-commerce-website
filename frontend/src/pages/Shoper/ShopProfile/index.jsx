@@ -207,7 +207,7 @@ const ShopProfile = () => {
       {/* Tên cửa hàng */}
       <div className="shop-name-container">
         {isEditingProfile ? (
-          <div className="card">
+          <div className="card card-shop">
             <h5>
               <FaStore className="icon" /> Tên Shop
             </h5>
@@ -231,7 +231,7 @@ const ShopProfile = () => {
       </div>
 
       <div className="row">
-        <div className="card">
+        <div className="card card-shop">
           <h5>
             <FaInfoCircle className="icon" /> Mô tả Shop
           </h5>
@@ -263,7 +263,7 @@ const ShopProfile = () => {
       {/* Thông tin cửa hàng */}
       <div className="shop-info">
         <div className="row">
-          <div className="card">
+          <div className="card card-shop">
             <h5>
               <FaBuilding className="icon" /> Địa chỉ
             </h5>
@@ -279,7 +279,7 @@ const ShopProfile = () => {
               <p>{profile.address}</p>
             )}
           </div>
-          <div className="card">
+          <div className="card card-shop">
             <h5>
               <FaPhone className="icon" /> Số điện thoại
             </h5>
@@ -295,7 +295,7 @@ const ShopProfile = () => {
               <p>{profile.phone}</p>
             )}
           </div>
-          <div className="card">
+          <div className="card card-shop">
             <h5>
               <FaEnvelope className="icon" /> Email
             </h5>

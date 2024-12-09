@@ -77,7 +77,7 @@ module.exports.login = async (req, res) => {
     message: "Login Success",
     token: user.token,
     cartId: cart.id,
-    role: role
+    role: role,
   });
 };
 
@@ -227,25 +227,20 @@ module.exports.resetPassword = async (req, res) => {
 
 // [GET] /api/v1/user/order
 module.exports.getOrder = async (req, res) => {
-  const status = req.query.status;
-  const token = req.headers.authorization.split(" ")[1];
+  try {
+    const token = req.headers.authorization.split(" ")[1];
 
-  const user = await User.findOne({ token: token });
+    const user = await User.findOne({ token: token });
 
-  let orders = null;
-  if (status === "all") {
-    orders = await Order.find({
-      userId: user._id,
+    const orders = await Order.find({ userId: user.id });
+
+    res.status(200).json({
+      message: "Success",
+      data: orders,
     });
-  } else {
-    orders = await Order.find({
-      userId: user.id,
-      status: status,
+  } catch (error) {
+    res.status(400).json({
+      message: error,
     });
   }
-
-  res.status(200).json({
-    message: "Success",
-    data: orders,
-  });
 };

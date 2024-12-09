@@ -12,7 +12,7 @@ module.exports.index = async (req, res) => {
 
     // Truy vấn tất cả đơn hàng từ MongoDB
     const orders = await Order.find({}).select(
-      "-_id userId orderId status products"
+      "-_id userId orderId status products createdAt"
     );
 
     let products = [];
@@ -30,9 +30,14 @@ module.exports.index = async (req, res) => {
               productName: productInOrder.name,
               userName: user?.fullname,
               quantity: productInOrder.quantity,
-              price: productInOrder.price,
+              total_price: parseInt(
+                productInOrder.price *
+                  (1 - productInOrder.discount_rate / 100) *
+                  productInOrder.quantity
+              ),
               status: order?.status[index],
               orderId: order?.orderId,
+              orderDate: order?.createdAt.toLocaleDateString("vi-VN")
             });
           }
         });

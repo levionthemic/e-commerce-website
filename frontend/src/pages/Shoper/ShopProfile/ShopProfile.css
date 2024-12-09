@@ -136,7 +136,7 @@ body {
   padding: 0;
 }
 
-.card {
+.card-shop {
   background: #ffffff; /* Màu nền trắng */
   border: 1px solid #ddd; /* Viền màu xám nhạt */
   border-radius: 10px; /* Góc bo tròn */
@@ -147,12 +147,12 @@ body {
   text-align: left; /* Căn lề trái cho nội dung */
 }
 
-.card:hover {
+.card-shop:hover {
   transform: translateY(-5px); /* Hiệu ứng nổi lên khi hover */
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Đổ bóng đậm hơn khi hover */
 }
 
-.card h5 {
+.card-shop h5 {
   font-size: 16px; /* Kích thước chữ của tiêu đề */
   color: #007bff; /* Màu xanh cho tiêu đề */
   margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
@@ -162,14 +162,14 @@ body {
 }
 
 /* Biểu tượng */
-.card .icon {
+.card-shop .icon {
   font-size: 20px; /* Kích thước biểu tượng */
   color: #007bff; /* Màu xanh giống với tiêu đề */
 }
 
 /* Văn bản hoặc input */
-.card p,
-.card .form-control {
+.card-shop p,
+.card-shop .form-control {
   font-size: 14px; /* Kích thước chữ cho văn bản */
   color: #333; /* Màu chữ đen nhạt */
   margin: 0; /* Xóa khoảng cách mặc định */
@@ -180,7 +180,7 @@ body {
 }
 
 /* Textarea */
-.card textarea {
+.card-shop textarea {
   resize: none; /* Vô hiệu hóa thay đổi kích thước */
   width: 100%; /* Độ rộng bằng khung cha */
   height: auto; /* Độ cao tự động điều chỉnh */
@@ -191,11 +191,11 @@ body {
 }
 
 /* Khoảng cách đồng bộ giữa các phần */
-.card + .card {
+.card-shop + .card-shop {
   margin-top: 15px; /* Khoảng cách giữa các card liền kề */
 }
 
-.card p {
+.card-shop p {
   font-size: 14px; /* Kích thước chữ vừa phải */
   color: #333; /* Màu chữ dễ nhìn */
   margin: 0; /* Xóa khoảng cách trên và dưới */
@@ -203,7 +203,7 @@ body {
   line-height: 1.6; /* Giãn dòng để dễ đọc */
 }
 
-.card .btn-link {
+.card-shop .btn-link {
   display: block; /* Đảm bảo nút "Xem thêm/Thu gọn" nằm riêng */
   margin-top: 10px; /* Tạo khoảng cách giữa đoạn văn và nút */
   text-align: right; /* Căn nút về bên phải */
@@ -213,7 +213,7 @@ body {
   font-weight: bold; /* Làm đậm chữ */
 }
 
-.card .btn-link:hover {
+.card-shop .btn-link:hover {
   color: #0056b3; /* Đổi màu khi hover */
   text-decoration: underline; /* Gạch chân khi hover */
 }

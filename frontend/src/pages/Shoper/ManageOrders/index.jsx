@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
-import { Table, Tag, Button, DatePicker, Space } from "antd";
+import { Table, Tag, DatePicker, Space } from "antd";
 import "./ManageOrders.scss";
 import {
   StyledTabs,
@@ -160,7 +160,7 @@ const ManageOrders = () => {
               .format("DD-MM-YYYY")
               .split("-");
             const [orderDay, orderMonth, orderYear] =
-              order.orderDate.split("-");
+              order.orderDate.split("/");
 
             const startDate = new Date(startYear, startMonth - 1, startDay);
             const endDate = new Date(endYear, endMonth - 1, endDay);
@@ -191,12 +191,12 @@ const ManageOrders = () => {
       key: "quantity",
     },
     {
-      title: "Đơn giá",
-      dataIndex: "price",
-      key: "price",
-      render: (price) => (
+      title: "Tổng tiền",
+      dataIndex: "total_price",
+      key: "total_price",
+      render: (total_price) => (
         <>
-          {price.toLocaleString()}
+          {total_price.toLocaleString()}
           <sup>đ</sup>
         </>
       ),
@@ -274,18 +274,88 @@ const ManageOrders = () => {
           />
         </TabPane>
         <TabPane tab="Chờ xác nhận" key="2">
+          <div
+            classname="inner-search"
+            style={{ marginBottom: 16, display: "flex", gap: "10px" }}
+          >
+            <StyledInput
+              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <RangePicker
+              format="DD-MM-YYYY"
+              onChange={(dates) => setDateRange(dates)}
+            />
+          </div>
           <Table columns={columns} dataSource={getFilteredData("pending")} />
         </TabPane>
         <TabPane tab="Đang đóng gói" key="3">
+          <div
+            classname="inner-search"
+            style={{ marginBottom: 16, display: "flex", gap: "10px" }}
+          >
+            <StyledInput
+              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <RangePicker
+              format="DD-MM-YYYY"
+              onChange={(dates) => setDateRange(dates)}
+            />
+          </div>
           <Table columns={columns} dataSource={getFilteredData("packaging")} />
         </TabPane>
         <TabPane tab="Đang vận chuyển" key="4">
+          <div
+            classname="inner-search"
+            style={{ marginBottom: 16, display: "flex", gap: "10px" }}
+          >
+            <StyledInput
+              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <RangePicker
+              format="DD-MM-YYYY"
+              onChange={(dates) => setDateRange(dates)}
+            />
+          </div>
           <Table columns={columns} dataSource={getFilteredData("delivering")} />
         </TabPane>
         <TabPane tab="Đã giao" key="5">
+          <div
+            classname="inner-search"
+            style={{ marginBottom: 16, display: "flex", gap: "10px" }}
+          >
+            <StyledInput
+              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <RangePicker
+              format="DD-MM-YYYY"
+              onChange={(dates) => setDateRange(dates)}
+            />
+          </div>
           <Table columns={columns} dataSource={getFilteredData("delivered")} />
         </TabPane>
         <TabPane tab="Đã hủy" key="6">
+          <div
+            classname="inner-search"
+            style={{ marginBottom: 16, display: "flex", gap: "10px" }}
+          >
+            <StyledInput
+              placeholder="Tìm kiếm đơn hàng theo Mã đơn hàng"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <RangePicker
+              format="DD-MM-YYYY"
+              onChange={(dates) => setDateRange(dates)}
+            />
+          </div>
           <Table columns={columns} dataSource={getFilteredData("cancelled")} />
         </TabPane>
       </StyledTabs>

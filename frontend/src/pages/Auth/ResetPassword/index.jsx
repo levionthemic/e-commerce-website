@@ -35,7 +35,7 @@ function ResetPassword() {
           title: "Đặt lại mật khẩu thành công!",
           text: "Vui lòng đăng nhập lại để tiếp tục",
         });
-        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        localStorage.removeItem("token");
         navigate("/auth/login");
       })
       .catch((error) => {
