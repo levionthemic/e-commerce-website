@@ -145,7 +145,7 @@ const DetailProduct = () => {
                     readonly
                     style={{ color: "#FBCA04" }}
                   />
-                  <p>{product?.rating_average || 5}</p>
+                  <p>{product?.rating_average || 0}</p>
                 </div>
                 <div className="divider"></div>
                 <div className="review-info">
@@ -184,14 +184,14 @@ const DetailProduct = () => {
               <div className="prices mt-2">
                 <span className="new-price">
                   {(
-                    product?.original_price *
+                    product?.price *
                     (1 - product?.discount_rate / 100)
                   ).toLocaleString()}
                   <sup>đ</sup>
                 </span>
                 <span className="discount-rate">{`-${product?.discount_rate}%`}</span>
                 <span className="old-price text-muted ml-2">
-                  {product?.original_price.toLocaleString()}
+                  {product?.price.toLocaleString()}
                   <sup>đ</sup>
                 </span>
               </div>

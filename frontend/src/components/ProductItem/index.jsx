@@ -48,7 +48,7 @@ function ProductItem({ product, loading }) {
             <Card.Text>
               <span className="product-price">
                 {(
-                  product.original_price *
+                  product.price *
                   (1 - product.discount_rate / 100)
                 ).toLocaleString()}
                 <sup>đ</sup>
