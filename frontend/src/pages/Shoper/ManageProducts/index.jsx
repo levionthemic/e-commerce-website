@@ -89,13 +89,13 @@ const ManageProducts = () => {
     {
       title: "Mã sản phẩm",
       dataIndex: "productId",
-      key: "productId"
+      key: "productId",
     },
     {
       title: "Hình ảnh",
       dataIndex: "thumbnail",
       key: "thumbnail",
-      render: (url) => <img src={url} alt="" width={80} height={80}/>
+      render: (url) => <img src={url} alt="" width={80} height={80} />,
     },
     {
       title: "Tên sản phẩm",
@@ -117,11 +117,7 @@ const ManageProducts = () => {
       title: "Giảm giá",
       dataIndex: "discountRate",
       key: "discountRate",
-      render: (discountRate) => 
-        <>
-          {discountRate}%
-        </>
-      ,
+      render: (discountRate) => <>{discountRate}%</>,
     },
     {
       title: "Số lượng",
@@ -143,27 +139,33 @@ const ManageProducts = () => {
       dataIndex: "category",
       key: "category",
     },
-    
+
     {
       title: "Thao tác",
       key: "actions",
       dataIndex: "actions",
-      render: (_, record) => <><button
-      className="btn btn-warning btn-sm"
-      onClick={() => handleEdit(record)}
-    >
-      <FaEdit />
-    </button>
-    <button
-      className="btn btn-danger btn-sm"
-      onClick={() => handleDelete(record)}
-    >
-      <FaTrashAlt />
-    </button></>
+      render: (_, record) => (
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "5px"}}>
+          <button
+            className="btn btn-warning btn-sm"
+            onClick={() => handleEdit(record)}
+            style={{ borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", width: "35px", height: "35px", fontSize: "20px"}}
+          >
+            <FaEdit />
+          </button>
+          <button
+            className="btn btn-danger btn-sm"
+            onClick={() => handleDelete(record)}
+            style={{ borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", width: "35px", height: "35px", fontSize: "18px"}}
+          >
+            <FaTrashAlt />
+          </button>
+        </div>
+      ),
     },
   ];
 
-  const data = products.map(product => ({
+  const data = products.map((product) => ({
     key: product._id,
     productId: product.id,
     thumbnail: product.thumbnail_url,
@@ -189,11 +191,7 @@ const ManageProducts = () => {
         />
       </div>
 
-      <Table
-        loading={loading}
-        columns={columns}
-        dataSource={data}
-      />
+      <Table loading={loading} columns={columns} dataSource={data} />
     </div>
   );
 };

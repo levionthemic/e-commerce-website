@@ -1,19 +1,20 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
 import "./SiderSeller.css";
-import {
-  FaHome,
-  FaPlus,
-  FaBox,
-  FaShoppingCart,
-  FaComments,
-  FaUser,
-} from "react-icons/fa";
+import { FaHome, FaPlus, FaBox, FaShoppingCart, FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function SiderSeller() {
   const navigate = useNavigate();
-
+  const [navLinksActive, setNavLinksActive] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+  const pathname = new URL(window.location.href).pathname;
   const handleMenuClick = (tab) => {
     switch (tab) {
       case "overview":
@@ -32,14 +33,54 @@ function SiderSeller() {
         navigate("/shop/profile");
         break;
       case "logout":
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        window.location.reload();
+        Swal.fire({
+          icon: "warning",
+          title: "Cảnh báo",
+          text: "Bạn có chắc chắn muốn đăng xuất?",
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: "Đăng xuất",
+          cancelButtonText: "Hủy",
+        }).then((res) => {
+          if (res.isConfirmed) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            window.location.reload();
+          }
+        });
+
         break;
       default:
         break;
     }
   };
+
+  useEffect(() => {
+    console.log("OK");
+    const temp = [false, false, false, false, false];
+    switch (pathname) {
+      case "/shop/overview":
+        temp[0] = true;
+        break;
+      case "/shop/products/add":
+        temp[1] = true;
+        break;
+      case "/shop/products":
+        temp[2] = true;
+        break;
+      case "/shop/orders":
+        temp[3] = true;
+        break;
+      case "/shop/profile":
+        temp[4] = true;
+        break;
+
+      default:
+        break;
+    }
+    setNavLinksActive(temp);
+  }, [pathname]);
+
   return (
     <div className="sidebar">
       <h2 className="text-center mb-4">seller</h2>
@@ -59,16 +100,21 @@ function SiderSeller() {
           },
           { id: "profile", label: "Hồ sơ cửa hàng", icon: <FaUser /> },
           { id: "logout", label: "Đăng xuất", icon: <IoLogOut /> },
-        ].map((item) => (
+        ].map((item, index) => (
           <li
             key={item.id}
             className={`nav-item`}
             onClick={() => handleMenuClick(item.id)}
           >
-            <button className="custom-nav-link">
+            <div
+              className={
+                "custom-nav-link " +
+                (navLinksActive[index] ? "custom-active" : "")
+              }
+            >
               <span className="me-2">{item.icon}</span>
               {item.label}
-            </button>
+            </div>
           </li>
         ))}
       </ul>
