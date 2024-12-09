@@ -6,11 +6,7 @@ import {
   FaPhone,
   FaEnvelope,
   FaBuilding,
-  FaClock,
   FaStore,
-  FaFacebook,
-  FaInstagram,
-  FaTwitter,
   FaInfoCircle,
 } from "react-icons/fa";
 
@@ -37,15 +33,15 @@ const ShopProfile = () => {
       "https://i.pinimg.com/736x/95/02/1d/95021d39f6cfc93508fd313864adc1ae.jpg", // Add ảnh đại diện mẫu
   });
 
-  const [isEditingProfile, setIsEditingProfile] = useState(false); // Điều khiển chế độ chỉnh sửa
-  const [isModalOpen, setIsModalOpen] = useState(false); // Điều khiển hộp thoại thông báo
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editMode, setEditMode] = useState(null); // "banner" hoặc "avatar"
-  const [imageToEdit, setImageToEdit] = useState(null); // Ảnh được chọn để chỉnh sửa
-  const [scale, setScale] = useState(1); // Giá trị thu phóng
-  const editorRef = useRef(null); // Tham chiếu đến AvatarEditor
-
+  const [editMode, setEditMode] = useState(null);  
+  const [imageToEdit, setImageToEdit] = useState(null); 
+  const [scale, setScale] = useState(1); 
+  const editorRef = useRef(null); 
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
