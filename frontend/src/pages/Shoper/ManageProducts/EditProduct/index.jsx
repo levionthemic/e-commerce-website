@@ -88,7 +88,7 @@ const EditProduct = () => {
 
     axiosApi
       .patch("/api/v1/seller/product/edit", {
-        id: product.id,
+        id: product.productId,
         name: name,
         price: price,
         discountRate: discountRate,
