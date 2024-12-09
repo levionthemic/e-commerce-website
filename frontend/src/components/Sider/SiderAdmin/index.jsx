@@ -21,6 +21,7 @@ function SiderAdmin() {
       setUser(data.data.data);
     });
   }, []);
+  console.log(user);
   return (
     <div className="sider-admin">
       <div className="sider-logo">
@@ -29,7 +30,7 @@ function SiderAdmin() {
       <div className="sider-info">
         <Link to={`${prefixAdmin}/account`}>
           <div className="inner-avatar">
-            <img src={defaultUserIcon || user.avatar } alt="" />
+            <img src={user?.avatar || defaultUserIcon} alt="" />
           </div>
           <div className="inner-info">
             <h6>{user?.fullname}</h6>
