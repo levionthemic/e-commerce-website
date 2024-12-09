@@ -145,7 +145,7 @@ const DetailProduct = () => {
                     readonly
                     style={{ color: "#FBCA04" }}
                   />
-                  <p>{product?.rating || 5}</p>
+                  <p>{product?.rating_average || 5}</p>
                 </div>
                 <div className="divider"></div>
                 <div className="review-info">
@@ -167,7 +167,7 @@ const DetailProduct = () => {
               </div>
 
               <div className="product-id mb-2">
-                Mã sản phẩm: {product?.productId}
+                Mã sản phẩm: {product?.id}
               </div>
 
               <div className="quantity mb-2">

@@ -107,7 +107,7 @@ body {
   margin-top: 20px; /* Khoảng cách giữa tên shop và banner */
 }
 
-.description-input {
+.description1-input {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
@@ -115,7 +115,7 @@ body {
 }
 
 /* Hiển thị đầy đủ khi người dùng chọn "Xem thêm" */
-.description {
+.description1 {
   max-height: 60px; /* Giới hạn chiều cao mặc định */
   overflow: hidden;
   text-overflow: ellipsis;
@@ -125,7 +125,7 @@ body {
   opacity: 1; /* Không mờ */
 }
 
-.description.full {
+.description1.full {
   max-height: none; /* Bỏ giới hạn khi người dùng chọn "Xem thêm" */
   overflow: visible;
 }

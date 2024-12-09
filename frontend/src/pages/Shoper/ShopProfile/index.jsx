@@ -241,7 +241,7 @@ const ShopProfile = () => {
               rows="3"
             ></textarea>
           ) : (
-            <p className={`description ${showFullDescription ? "full" : ""}`}>
+            <p className={`description1 ${showFullDescription ? "full" : ""}`}>
               {profile.description}
             </p>
           )}
