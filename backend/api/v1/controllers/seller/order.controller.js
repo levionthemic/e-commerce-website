@@ -89,14 +89,24 @@ module.exports.changeStatus = async (req, res) => {
         },
       }
     );
-    const product = Product.findOne({ id: id });
+
+    const product = await Product.findOne({ id: id });
     const oldQty = product.stock_item.qty;
+    const qtySold = {
+      text: "Đã bán " + (quantity + product.quantity_sold.value),
+      value: quantity + product.quantity_sold.value,
+    };
+    console.log(oldQty, qtySold, quantity);
+
     await Product.updateOne(
       {
         id: id,
       },
       {
-        "stock_item.qty": oldQty - quantity,
+        $set: {
+          "stock_item.qty": oldQty - quantity,
+          quantity_sold: qtySold,
+        },
       }
     );
     res.status(200).json({
