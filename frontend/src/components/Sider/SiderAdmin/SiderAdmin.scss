@@ -20,13 +20,11 @@
     margin: 10px 0 10px 0px;
     border-radius: 10px;
 
-    a {
-      display: flex;
-      align-items: center;
-      justify-content: space-evenly;
-      text-decoration: none;
-      color: white;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    text-decoration: none;
+    color: white;
 
     &:hover {
       background: #ecb1b34f;
@@ -63,17 +61,17 @@
       padding: 15px;
       height: auto;
 
-      a {
-        display: flex;
-        align-items: center;
-        color: white;
+      display: flex;
+      align-items: center;
+      color: white;
 
-        gap: 15px;
-        text-decoration: none;
-      }
+      gap: 15px;
+      text-decoration: none;
+      margin-bottom: 10px;
 
       &:hover {
         background: #ecb1b34f;
+        cursor: pointer;
       }
     }
 
