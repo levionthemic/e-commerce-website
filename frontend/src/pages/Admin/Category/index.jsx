@@ -2,6 +2,7 @@ import { memo, useEffect } from "react";
 import React, { useState } from "react";
 import { Space, Switch, Table } from "antd";
 import { axiosApi } from "../../../services/UserService";
+import { DeleteOutlined, DiffOutlined, DownOutlined } from "@ant-design/icons";
 
 const columns = [
   {
@@ -16,7 +17,7 @@ const columns = [
     key: "icon",
     width: "10%",
     render: (url) => (
-      <>{url ? <img src={url} alt="" width={80} height={80} /> : <></>}</>
+      <>{url ? <img src={url} alt="" width={60} height={60} /> : <></>}</>
     ),
   },
 
@@ -37,6 +38,21 @@ const columns = [
     key: "sellerName",
     width: "20%",
   },
+  {
+    title: "Hành động",
+    dataIndex: "actions",
+    key: "actions",
+    render: () => (
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button className="delete-btn">
+          <DeleteOutlined />
+        </button>
+        <button className="delete-btn">
+          <DiffOutlined />
+        </button>
+      </div>
+    ),
+  }
 ];
 
 const rowSelection = {
@@ -59,11 +75,14 @@ function Category() {
   const [checkStrictly, setCheckStrictly] = useState(false);
   const [categories, setCategories] = useState([]);
   const [sellers, setSellers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     axiosApi.get("/api/v1/admin/category").then((res) => {
       setCategories(res.data.data);
       setSellers(res.data.sellers);
+      setLoading(false);
     });
   }, []);
 
@@ -115,6 +134,7 @@ function Category() {
               checkStrictly,
             }}
             dataSource={data}
+            loading={loading}
           />
         </div>
       </div>
