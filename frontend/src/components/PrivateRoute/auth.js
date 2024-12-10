@@ -6,6 +6,10 @@ export const isAuthenticated = () => {
       isLogin = false;
     }
   }
+  const pathname = new URL(window.location.href).pathname;
+  if (pathname === "/" && localStorage.getItem("role") !== "buyer") {
+    isLogin = false;
+  }
   if (!isLogin) {
     localStorage.clear();
   }

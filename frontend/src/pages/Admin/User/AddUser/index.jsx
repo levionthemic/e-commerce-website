@@ -1,7 +1,7 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, memo } from "react";
 import "./AddUser.scss";
 import { useNavigate } from "react-router-dom";
-import { DatePicker, Radio, Select, Tooltip, Upload, message } from "antd";
+import { DatePicker, Radio, Tooltip, Upload, message } from "antd";
 import { axiosApi } from "../../../../services/UserService";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";

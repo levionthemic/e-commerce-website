@@ -2,7 +2,7 @@ import { memo, useEffect } from "react";
 import React, { useState } from "react";
 import { Space, Switch, Table } from "antd";
 import { axiosApi } from "../../../services/UserService";
-import { DeleteOutlined, DiffOutlined, DownOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 const rowSelection = {
@@ -37,10 +37,9 @@ function Category() {
     });
   }, []);
 
-
-  const handleMoveToEdit = () => {
-    navigate("/admin/category/edit");
-  }
+  const handleMoveToEdit = (category) => {
+    navigate("/admin/category/edit", { state: { category: category}});
+  };
 
   const columns = [
     {
@@ -58,7 +57,6 @@ function Category() {
         <>{url ? <img src={url} alt="" width={60} height={60} /> : <></>}</>
       ),
     },
-  
     {
       title: "Tên danh mục",
       dataIndex: "name",
@@ -80,50 +78,58 @@ function Category() {
       title: "Hành động",
       dataIndex: "actions",
       key: "actions",
-      render: () => (
+      render: (_, record) => (
         <div style={{ display: "flex", gap: "10px" }}>
-          <button className="delete-btn" >
+          <button className="delete-btn" onClick={() => handleMoveToEdit(record)}>
+            <EditOutlined />
+          </button>
+          {/* <button className="delete-btn" onClick={() => handleDelete(record)}>
             <DeleteOutlined />
-          </button>
-          <button className="delete-btn" onClick={handleMoveToEdit}>
-            <DiffOutlined />
-          </button>
+          </button> */}
         </div>
       ),
-    }
+    },
   ];
 
-  const getListChildCategories = (categories) => {
+  const getListChildCategories = (categories, parentId) => {
     return categories.map((category) => {
       if (category.children) {
         return {
           key: category.id,
           id: category.id,
           name: category.name || category.text,
-          children: getListChildCategories(category.children),
+          children: getListChildCategories(category.children, category.id),
+          isParentCategory: false,
+          parentId: parentId
         };
       }
       return {
         key: category.id,
         id: category.id,
         name: category.name || category.text,
+        isParentCategory: false,
+        parentId: parentId
       };
     });
   };
+
   const data = categories.map((category, index) => ({
     key: category.id,
     id: category.id,
     icon: category.icon_url,
     name: category.text || category.name,
     seller_id: category.seller_id,
-    sellerName: sellers[index]?.nickname,
-    children: getListChildCategories(category.children),
+    sellerName: sellers[index]?.fullname,
+    children: getListChildCategories(category.children, category.id),
+    isParentCategory: true
   }));
 
-  console.log(data);
   return (
     <div className="container-fluid">
-      <div className="row">
+      <div className="row my-3">
+        <h2 className="page-title">Quản lý danh mục</h2>
+      </div>
+      <div className="row my-3">
         <div className="col-12">
           <Space
             align="center"

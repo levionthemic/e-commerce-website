@@ -23,7 +23,6 @@ import Account from "../pages/Admin/Account";
 import Dashboard from "../pages/Admin/Dashboard";
 import LoginLog from "../pages/Admin/LoginLog";
 import Category from "../pages/Admin/Category";
-import AddCategory from "../pages/Admin/Category/AddCategory";
 import EditCategory from "../pages/Admin/Category/EditCategory";
 import Product from "../pages/Admin/Product";
 import AddProduct_Admin from "../pages/Admin/Product/AddProduct";
@@ -132,12 +131,6 @@ export const routes = [
   {
     path: `${prefixAdmin}/category`,
     page: Category,
-    role: "admin",
-    isAuthorized: true,
-  },
-  {
-    path: `${prefixAdmin}/category/add`,
-    page: AddCategory,
     role: "admin",
     isAuthorized: true,
   },

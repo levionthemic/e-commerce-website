@@ -1,7 +1,7 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, memo } from "react";
 import "./EditUser.scss";
 import { useLocation, useNavigate } from "react-router-dom";
-import { DatePicker, Radio, Select, Tooltip, Upload, message } from "antd";
+import { DatePicker, Radio, Tooltip, Upload, message } from "antd";
 import { axiosApi } from "../../../../services/UserService";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
@@ -13,7 +13,7 @@ const EditUser = () => {
 
   const [fullname, setFullname] = useState(user?.fullname);
   const [nickname, setNickname] = useState(user?.nickname);
-  const [birthday, setBirthday] = useState(user?.birthday);
+  const [birthday, setBirthday] = useState(user?.birthday || "01/01/1990");
   const [sex, setSex] = useState(user?.sex);
   const [address, setAddress] = useState(user?.address);
   const [email, setEmail] = useState(user?.email);
@@ -265,7 +265,7 @@ const EditUser = () => {
                     required
                   >
                     <Radio value={"buyer"}>Người mua</Radio>
-                    <Radio value={"selller"}>Người bán</Radio>
+                    <Radio value={"seller"}>Người bán</Radio>
                     <Radio value={"admin"}>Quản trị viên</Radio>
                   </Radio.Group>
                 </div>
