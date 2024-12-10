@@ -1,31 +1,32 @@
 import React, { useState, useEffect, memo } from "react";
 import "./EditUser.scss";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { DatePicker, Radio, Select, Tooltip, Upload, message } from "antd";
 import { axiosApi } from "../../../../services/UserService";
 import Swal from "sweetalert2";
 import dayjs from "dayjs";
 
 const EditUser = () => {
+  const user = useLocation().state?.user;
+  console.log(user);
   const navigate = useNavigate();
 
-  const [text, setText] = useState();
-  const [id, setId] = useState();
-  const [iconUrl, setIconUrl] = useState();
-  const [sellerId, setSellerId] = useState();
-  const [parentId, setParentId] = useState();
+  const [fullname, setFullname] = useState(user?.fullname);
+  const [nickname, setNickname] = useState(user?.nickname);
+  const [birthday, setBirthday] = useState(user?.birthday);
+  const [sex, setSex] = useState(user?.sex);
+  const [address, setAddress] = useState(user?.address);
+  const [email, setEmail] = useState(user?.email);
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
+  const [role, setRole] = useState(user?.role);
+  const [username, setUsername] = useState(user?.username);
+  const [password, setPassword] = useState(user?.password);
+  const [deleted, setDeleted] = useState(user?.deleted);
 
   const [imageUrl, setImageUrl] = useState();
   const [imageFile, setImageFile] = useState();
 
   const [isUploadImage, setIsUploadImage] = useState(false);
-
-  // useEffect(() => {
-  //   axiosApi("/api/v1/seller/product")
-  //     .then(res => {
-  //       setCategories(res.data.categories);
-  //     })
-  // }, []);
 
   const uploadImage = async () => {
     const formData = new FormData();
@@ -80,39 +81,55 @@ const EditUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let imgUrl = "";
-    if (isUploadImage) {
-      imgUrl = await uploadImage();
-    }
 
-    // axiosApi
-    //   .post("/api/v1/seller/product/add", {
-    //     name: name,
-    //     price: price,
-    //     discountRate: discountRate,
-    //     description: description,
-    //     stockQty: stockQty,
-    //     thumbnailUrl: imgUrl,
-    //     categoryId: category.split("&")[0],
-    //     categoryName: category.split("&")[1]
-    //   })
-    //   .then((res) => {
-    //     Swal.fire({
-    //       icon: "success",
-    //       title: "Thành công!",
-    //       text: res.data.message,
-    //       didClose: () => {
-    //         navigate(-1);
-    //       },
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     Swal.fire({
-    //       icon: "error",
-    //       title: "Lỗi!",
-    //       text: error.response.data.message,
-    //     });
-    //   });
+    Swal.fire({
+      icon: "warning",
+      title: "Cảnh báo",
+      text: "Xác nhận cập nhật thông tin tài khoản?",
+      showCancelButton: true,
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then(async (res) => {
+      if (res.isConfirmed) {
+        let imgUrl = "";
+        if (isUploadImage) {
+          imgUrl = await uploadImage();
+        }
+
+        axiosApi
+          .patch("/api/v1/admin/user/edit", {
+            avatar: imgUrl || user?.avatar,
+            fullname: fullname,
+            nickname: nickname,
+            birthday: birthday,
+            sex: sex,
+            address: address,
+            email: email,
+            phoneNumber: phoneNumber,
+            role: role,
+            username: username,
+            password: password,
+            deleted: deleted,
+          })
+          .then((res) => {
+            Swal.fire({
+              icon: "success",
+              title: "Thành công!",
+              text: res.data.message,
+              didClose: () => {
+                navigate(-1);
+              },
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Lỗi!",
+              text: error.response.data.message,
+            });
+          });
+      }
+    });
   };
 
   return (
@@ -139,7 +156,7 @@ const EditUser = () => {
                           className="product-image mx-5"
                         />
                       ) : (
-                        <p className="click-upload">Upload tại đây</p>
+                        <img src={user?.avatar} alt="" className="user-image" />
                       )}
                     </Upload>
                   </Tooltip>
@@ -150,9 +167,11 @@ const EditUser = () => {
                   <label>Họ và tên</label>
                   <input
                     className="form-control"
-                    id="id"
-                    value={id}
-                    onChange={(e) => setId(e.target.value)}
+                    id="fullname"
+                    value={fullname}
+                    onChange={(e) => setFullname(e.target.value)}
+                    required
+                    disabled
                   />
                 </div>
                 <div className="form-group">
@@ -161,13 +180,11 @@ const EditUser = () => {
                   <DatePicker
                     picker="date"
                     format="DD/MM/YYYY"
-                    // value={dayjs(user.birthday)}
-                    // onChange={(e) => {
-                    //   const newUser = { ...user };
-                    //   newUser.birthday = e.format("MM/DD/YYYY");
-                    //   setUser(newUser);
-                    //   setHasUpdated(true);
-                    // }}
+                    value={dayjs(birthday)}
+                    onChange={(e) => {
+                      setBirthday(e.format("MM/DD/YYYY"));
+                    }}
+                    required
                   />
                 </div>
               </div>
@@ -181,20 +198,18 @@ const EditUser = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập tên biệt danh"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
                   />
                 </div>
                 <div className="form-group mb-3">
                   <label htmlFor="sex">Giới tính</label> <br></br>
                   <Radio.Group
-                    // value={user.sex}
+                    value={sex}
                     onChange={(e) => {
-                      // const newUser = { ...user };
-                      // newUser.sex = e.target.value;
-                      // setUser(newUser);
-                      // setHasUpdated(true);
+                      setSex(e.target.value);
                     }}
+                    required
                   >
                     <Radio value={"male"}>Nam</Radio>
                     <Radio value={"female"}>Nữ</Radio>
@@ -208,8 +223,9 @@ const EditUser = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập địa chỉ"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={address}
+                    required
+                    onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
 
@@ -219,8 +235,9 @@ const EditUser = () => {
                     type="email"
                     className="form-control"
                     placeholder="Nhập email"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={email}
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
@@ -228,23 +245,24 @@ const EditUser = () => {
                   <label>Số điện thoại: </label>
                   <input
                     type="tel"
+                    maxLength={10}
+                    minLength={10}
                     className="form-control"
-                    placeholder="Nhập email"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Nhập số điện thoại"
+                    value={phoneNumber}
+                    required
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                   />
                 </div>
 
                 <div className="form-group mb-3">
                   <label htmlFor="sex">Vai trò</label>
                   <Radio.Group
-                    // value={user.sex}
+                    value={role}
                     onChange={(e) => {
-                      // const newUser = { ...user };
-                      // newUser.sex = e.target.value;
-                      // setUser(newUser);
-                      // setHasUpdated(true);
+                      setRole(e.target.value);
                     }}
+                    required
                   >
                     <Radio value={"buyer"}>Người mua</Radio>
                     <Radio value={"selller"}>Người bán</Radio>
@@ -259,35 +277,36 @@ const EditUser = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập username"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    disabled
                   />
                 </div>
 
                 <div className="form-group mb-3">
                   <label>Mật khẩu: </label>
                   <input
-                    type="text"
+                    type="password"
                     className="form-control"
                     placeholder="Nhập mật khẩu"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                 </div>
 
                 <div className="form-group mb-3">
                   <label htmlFor="sex">Trạng thái</label> <br></br>
                   <Radio.Group
-                    // value={user.sex}
+                    value={deleted}
                     onChange={(e) => {
-                      // const newUser = { ...user };
-                      // newUser.sex = e.target.value;
-                      // setUser(newUser);
-                      // setHasUpdated(true);
+                      setDeleted(e.target.value);
                     }}
+                    required
                   >
-                    <Radio value={"true"}>Đã khóa</Radio>
-                    <Radio value={"false"}>Khả dụng</Radio>
+                    <Radio value={true}>Đã khóa</Radio>
+                    <Radio value={false}>Khả dụng</Radio>
                   </Radio.Group>
                 </div>
               </div>
@@ -301,7 +320,7 @@ const EditUser = () => {
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => {
-                  navigate("/admin/category");
+                  navigate("/admin/user");
                 }}
               >
                 Hủy

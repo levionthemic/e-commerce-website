@@ -42,10 +42,11 @@
       text-decoration: underline;
     }
 
-    .product-image {
-      width: 200px;
-      height: 200px;
+    .user-image {
+      width: 150px;
+      height: 150px;
       object-fit: contain;
+      margin-top: 5px;
     }
 
     .ant-select {

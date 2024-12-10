@@ -9,11 +9,17 @@ import dayjs from "dayjs";
 const AddUser = () => {
   const navigate = useNavigate();
 
-  const [text, setText] = useState();
-  const [id, setId] = useState();
-  const [iconUrl, setIconUrl] = useState();
-  const [sellerId, setSellerId] = useState();
-  const [parentId, setParentId] = useState();
+  const [fullname, setFullname] = useState();
+  const [nickname, setNickname] = useState();
+  const [birthday, setBirthday] = useState();
+  const [sex, setSex] = useState();
+  const [address, setAddress] = useState();
+  const [email, setEmail] = useState();
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [role, setRole] = useState();
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [deleted, setDeleted] = useState(false);
 
   const [imageUrl, setImageUrl] = useState();
   const [imageFile, setImageFile] = useState();
@@ -80,44 +86,59 @@ const AddUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let imgUrl = "";
-    if (isUploadImage) {
-      imgUrl = await uploadImage();
-    }
+    Swal.fire({
+      icon: "warning",
+      title: "Cảnh báo",
+      text: "Xác nhận tạo tài khoản?",
+      showCancelButton: true,
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Hủy",
+    }).then(async (res) => {
+      if (res.isConfirmed) {
+        let imgUrl = "";
+        if (isUploadImage) {
+          imgUrl = await uploadImage();
+        }
 
-    // axiosApi
-    //   .post("/api/v1/seller/product/add", {
-    //     name: name,
-    //     price: price,
-    //     discountRate: discountRate,
-    //     description: description,
-    //     stockQty: stockQty,
-    //     thumbnailUrl: imgUrl,
-    //     categoryId: category.split("&")[0],
-    //     categoryName: category.split("&")[1]
-    //   })
-    //   .then((res) => {
-    //     Swal.fire({
-    //       icon: "success",
-    //       title: "Thành công!",
-    //       text: res.data.message,
-    //       didClose: () => {
-    //         navigate(-1);
-    //       },
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     Swal.fire({
-    //       icon: "error",
-    //       title: "Lỗi!",
-    //       text: error.response.data.message,
-    //     });
-    //   });
+        axiosApi
+          .post("/api/v1/admin/user/add", {
+            avatar: imgUrl,
+            fullname: fullname,
+            nickname: nickname,
+            birthday: birthday,
+            sex: sex,
+            address: address,
+            email: email,
+            phoneNumber: phoneNumber,
+            role: role,
+            username: username,
+            password: password,
+            deleted: deleted,
+          })
+          .then((res) => {
+            Swal.fire({
+              icon: "success",
+              title: "Thành công!",
+              text: res.data.message,
+              didClose: () => {
+                navigate(-1);
+              },
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Lỗi!",
+              text: error.response.data.message,
+            });
+          });
+      }
+    });
   };
 
   return (
-    <div className="edit-user">
-      <h3>Chỉnh sửa tài khoản</h3>
+    <div className="add-user">
+      <h3>Tạo tài khoản</h3>
       <form action="" onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-12">
@@ -150,9 +171,10 @@ const AddUser = () => {
                   <label>Họ và tên</label>
                   <input
                     className="form-control"
-                    id="id"
-                    value={id}
-                    onChange={(e) => setId(e.target.value)}
+                    id="fullname"
+                    value={fullname}
+                    onChange={(e) => setFullname(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="form-group">
@@ -161,13 +183,11 @@ const AddUser = () => {
                   <DatePicker
                     picker="date"
                     format="DD/MM/YYYY"
-                    // value={dayjs(user.birthday)}
-                    // onChange={(e) => {
-                    //   const newUser = { ...user };
-                    //   newUser.birthday = e.format("MM/DD/YYYY");
-                    //   setUser(newUser);
-                    //   setHasUpdated(true);
-                    // }}
+                    value={dayjs(birthday)}
+                    onChange={(e) => {
+                      setBirthday(e.format("MM/DD/YYYY"));
+                    }}
+                    required
                   />
                 </div>
               </div>
@@ -181,20 +201,18 @@ const AddUser = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập tên biệt danh"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={nickname}
+                    onChange={(e) => setNickname(e.target.value)}
                   />
                 </div>
                 <div className="form-group mb-3">
                   <label htmlFor="sex">Giới tính</label> <br></br>
                   <Radio.Group
-                    // value={user.sex}
+                    value={sex}
                     onChange={(e) => {
-                      // const newUser = { ...user };
-                      // newUser.sex = e.target.value;
-                      // setUser(newUser);
-                      // setHasUpdated(true);
+                      setSex(e.target.value);
                     }}
+                    required
                   >
                     <Radio value={"male"}>Nam</Radio>
                     <Radio value={"female"}>Nữ</Radio>
@@ -208,8 +226,9 @@ const AddUser = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập địa chỉ"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={address}
+                    required
+                    onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
 
@@ -219,8 +238,9 @@ const AddUser = () => {
                     type="email"
                     className="form-control"
                     placeholder="Nhập email"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={email}
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
 
@@ -228,23 +248,24 @@ const AddUser = () => {
                   <label>Số điện thoại: </label>
                   <input
                     type="tel"
+                    maxLength={10}
+                    minLength={10}
                     className="form-control"
-                    placeholder="Nhập email"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Nhập số điện thoại"
+                    value={phoneNumber}
+                    required
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                   />
                 </div>
 
                 <div className="form-group mb-3">
                   <label htmlFor="sex">Vai trò</label>
                   <Radio.Group
-                    // value={user.sex}
+                    value={role}
                     onChange={(e) => {
-                      // const newUser = { ...user };
-                      // newUser.sex = e.target.value;
-                      // setUser(newUser);
-                      // setHasUpdated(true);
+                      setRole(e.target.value);
                     }}
+                    required
                   >
                     <Radio value={"buyer"}>Người mua</Radio>
                     <Radio value={"selller"}>Người bán</Radio>
@@ -259,35 +280,35 @@ const AddUser = () => {
                     type="text"
                     className="form-control"
                     placeholder="Nhập username"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={username}
+                    required
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
 
                 <div className="form-group mb-3">
                   <label>Mật khẩu: </label>
                   <input
-                    type="text"
+                    type="password"
                     className="form-control"
                     placeholder="Nhập mật khẩu"
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    value={password}
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
 
                 <div className="form-group mb-3">
                   <label htmlFor="sex">Trạng thái</label> <br></br>
                   <Radio.Group
-                    // value={user.sex}
+                    value={deleted}
                     onChange={(e) => {
-                      // const newUser = { ...user };
-                      // newUser.sex = e.target.value;
-                      // setUser(newUser);
-                      // setHasUpdated(true);
+                      setDeleted(e.target.value);
                     }}
+                    required
                   >
-                    <Radio value={"true"}>Đã khóa</Radio>
-                    <Radio value={"false"}>Khả dụng</Radio>
+                    <Radio value={true}>Đã khóa</Radio>
+                    <Radio value={false}>Khả dụng</Radio>
                   </Radio.Group>
                 </div>
               </div>
@@ -295,13 +316,13 @@ const AddUser = () => {
 
             <div className="form-group button-action">
               <button type="submit" className="btn btn-primary">
-                Cập nhật
+                Tạo tài khoản
               </button>
               <button
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => {
-                  navigate("/admin/category");
+                  navigate("/admin/user");
                 }}
               >
                 Hủy

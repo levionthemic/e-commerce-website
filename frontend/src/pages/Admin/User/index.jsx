@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react";
+import { memo, useEffect, useRef } from "react";
 import "./User.scss";
 import { useState } from "react";
 import { Dropdown, Table } from "antd";
@@ -11,11 +11,12 @@ function User() {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
+  const dropdownRole = useRef();
 
   useEffect(() => {
     setLoading(true);
     axiosApi
-      .get("/api/v1/admin/user")
+      .get("/api/v1/admin/user", { params: { role: dropdownRole.current } })
       .then((res) => {
         setUsers(res.data.data);
         setLoading(false);
@@ -26,9 +27,9 @@ function User() {
       });
   }, []);
 
-  const handleMoveToEdit = () => {
-    navigate("/admin/user/edit");
-  }
+  const handleMoveToEdit = (user) => {
+    navigate("/admin/user/edit", { state: { user: user } });
+  };
 
   const columns = [
     {
@@ -78,6 +79,15 @@ function User() {
       title: "Vai trò",
       key: "role",
       dataIndex: "role",
+      render: (role) => (
+        <>
+          {role === "buyer"
+            ? "Người mua"
+            : role === "seller"
+            ? "Người bán"
+            : "Quản trị viên"}
+        </>
+      ),
     },
     {
       title: "Username",
@@ -93,18 +103,22 @@ function User() {
       title: "Trạng thái",
       key: "deleted",
       dataIndex: "deleted",
+      render: (deleted) => <>{deleted ? "Đã khóa" : "Khả dụng"}</>,
     },
     {
       title: "Hành động",
       key: "actions",
       dataIndex: "actions",
-      render: () => (
+      render: (_, record) => (
         <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
+          <button
+            className="delete-btn"
+            onClick={() => handleMoveToEdit(record)}
+          >
+            <DiffOutlined />
+          </button>
           <button className="delete-btn">
             <DeleteOutlined />
-          </button>
-          <button className="delete-btn" onClick={handleMoveToEdit}>
-            <DiffOutlined />
           </button>
         </div>
       ),
@@ -115,9 +129,48 @@ function User() {
     const temp = { ...user };
     var bytes = CryptoJS.AES.decrypt(temp.password, "secretkey");
     temp.password = bytes.toString(CryptoJS.enc.Utf8);
-    temp.deleted = temp.deleted ? "Đã khóa" : "Khả dụng";
+    temp.deleted = user.deleted ? true : false;
     return temp;
   });
+
+  const handleClickDropdown = (e) => {
+    const role = e.target.getAttribute("roleUser");
+    dropdownRole.current = role;
+    setLoading(true);
+    axiosApi("/api/v1/admin/user", {
+      params: { role: role },
+    }).then((res) => {
+      setUsers(res.data.data);
+      setLoading(false);
+    });
+  };
+
+  const dropdownItems = [
+    {
+      key: "buyer",
+      label: (
+        <div onClick={handleClickDropdown} roleUser="buyer">
+          Người mua
+        </div>
+      ),
+    },
+    {
+      key: "seller",
+      label: (
+        <div onClick={handleClickDropdown} roleUser="seller">
+          Người bán
+        </div>
+      ),
+    },
+    {
+      key: "admin",
+      label: (
+        <div onClick={handleClickDropdown} roleUser="admin">
+          Quản trị viên
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="container-fluid">
@@ -125,16 +178,27 @@ function User() {
         <h2 className="page-title">Quản lý tài khoản</h2>
       </div>
 
-      {/* <div className="row my-3">
-        <div className="col-12">
+      <div className="row my-3 mx-4 justify-content-between">
+        <div className="col-6">
           <Dropdown menu={{ items: dropdownItems, selectable: true }}>
             <button type="button" className="dropdown-button">
-              <span>Danh mục gốc</span>
+              <span>Vai trò</span>
               <DownOutlined />
             </button>
           </Dropdown>
         </div>
-      </div> */}
+        <div className="col-6">
+          <button
+            className="btn btn-danger"
+            type="button"
+            onClick={() => {
+              navigate("/admin/user/add");
+            }}
+          >
+            + Thêm tài khoản
+          </button>
+        </div>
+      </div>
 
       <div className="row my-3">
         <div className="col-12">
