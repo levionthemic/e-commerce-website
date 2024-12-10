@@ -3,57 +3,7 @@ import React, { useState } from "react";
 import { Space, Switch, Table } from "antd";
 import { axiosApi } from "../../../services/UserService";
 import { DeleteOutlined, DiffOutlined, DownOutlined } from "@ant-design/icons";
-
-const columns = [
-  {
-    title: "ID danh mục",
-    dataIndex: "id",
-    key: "id",
-    width: "10%",
-  },
-  {
-    title: "Ảnh minh họa",
-    dataIndex: "icon",
-    key: "icon",
-    width: "10%",
-    render: (url) => (
-      <>{url ? <img src={url} alt="" width={60} height={60} /> : <></>}</>
-    ),
-  },
-
-  {
-    title: "Tên danh mục",
-    dataIndex: "name",
-    key: "name",
-    width: "40%",
-  },
-  {
-    title: "ID người bán",
-    dataIndex: "seller_id",
-    key: "seller_id",
-  },
-  {
-    title: "Tên người bán",
-    dataIndex: "sellerName",
-    key: "sellerName",
-    width: "20%",
-  },
-  {
-    title: "Hành động",
-    dataIndex: "actions",
-    key: "actions",
-    render: () => (
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button className="delete-btn">
-          <DeleteOutlined />
-        </button>
-        <button className="delete-btn">
-          <DiffOutlined />
-        </button>
-      </div>
-    ),
-  }
-];
+import { useNavigate } from "react-router-dom";
 
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {
@@ -76,6 +26,7 @@ function Category() {
   const [categories, setCategories] = useState([]);
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -85,6 +36,62 @@ function Category() {
       setLoading(false);
     });
   }, []);
+
+
+  const handleMoveToEdit = () => {
+    navigate("/admin/category/edit");
+  }
+
+  const columns = [
+    {
+      title: "ID danh mục",
+      dataIndex: "id",
+      key: "id",
+      width: "10%",
+    },
+    {
+      title: "Ảnh minh họa",
+      dataIndex: "icon",
+      key: "icon",
+      width: "10%",
+      render: (url) => (
+        <>{url ? <img src={url} alt="" width={60} height={60} /> : <></>}</>
+      ),
+    },
+  
+    {
+      title: "Tên danh mục",
+      dataIndex: "name",
+      key: "name",
+      width: "40%",
+    },
+    {
+      title: "ID người bán",
+      dataIndex: "seller_id",
+      key: "seller_id",
+    },
+    {
+      title: "Tên người bán",
+      dataIndex: "sellerName",
+      key: "sellerName",
+      width: "20%",
+    },
+    {
+      title: "Hành động",
+      dataIndex: "actions",
+      key: "actions",
+      render: () => (
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button className="delete-btn" >
+            <DeleteOutlined />
+          </button>
+          <button className="delete-btn" onClick={handleMoveToEdit}>
+            <DiffOutlined />
+          </button>
+        </div>
+      ),
+    }
+  ];
 
   const getListChildCategories = (categories) => {
     return categories.map((category) => {

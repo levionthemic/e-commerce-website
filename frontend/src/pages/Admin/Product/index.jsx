@@ -7,11 +7,13 @@ import {
 } from "@ant-design/icons";
 import { Dropdown, Table } from "antd";
 import "./Product.scss";
+import { useNavigate } from "react-router-dom";
 
 function Product() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axiosApi.get("/api/v1/admin/product").then((data) => {
@@ -27,6 +29,9 @@ function Product() {
     });
   }, []);
 
+  const handleMoveToEdit = () => {
+    navigate("/admin/product/edit");
+  }
   const columns = [
     {
       title: "Mã sản phẩm",
@@ -106,7 +111,7 @@ function Product() {
           <button className="delete-btn">
             <DeleteOutlined />
           </button>
-          <button className="delete-btn">
+          <button className="delete-btn" onClick={handleMoveToEdit}>
             <DiffOutlined />
           </button>
         </div>

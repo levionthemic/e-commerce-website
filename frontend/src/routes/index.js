@@ -23,8 +23,14 @@ import Account from "../pages/Admin/Account";
 import Dashboard from "../pages/Admin/Dashboard";
 import LoginLog from "../pages/Admin/LoginLog";
 import Category from "../pages/Admin/Category";
+import AddCategory from "../pages/Admin/Category/AddCategory";
+import EditCategory from "../pages/Admin/Category/EditCategory";
 import Product from "../pages/Admin/Product";
+import AddProduct_Admin from "../pages/Admin/Product/AddProduct";
+import EditProduct_Admin from "../pages/Admin/Product/EditProduct";
 import User from "../pages/Admin/User";
+import AddUser from "../pages/Admin/User/AddUser";
+import EditUser from "../pages/Admin/User/EditUser";
 import Config from "../pages/Admin/Config";
 
 import { prefixAdmin } from "../config/system";
@@ -130,14 +136,50 @@ export const routes = [
     isAuthorized: true,
   },
   {
+    path: `${prefixAdmin}/category/add`,
+    page: AddCategory,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/category/edit`,
+    page: EditCategory,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
     path: `${prefixAdmin}/product`,
     page: Product,
     role: "admin",
     isAuthorized: true,
   },
   {
+    path: `${prefixAdmin}/product/add`,
+    page: AddProduct_Admin,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/product/edit`,
+    page: EditProduct_Admin,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
     path: `${prefixAdmin}/user`,
     page: User,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/user/add`,
+    page: AddUser,
+    role: "admin",
+    isAuthorized: true,
+  },
+  {
+    path: `${prefixAdmin}/user/edit`,
+    page: EditUser,
     role: "admin",
     isAuthorized: true,
   },

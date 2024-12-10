@@ -5,10 +5,12 @@ import { Dropdown, Table } from "antd";
 import { axiosApi } from "../../../services/UserService";
 import { DeleteOutlined, DiffOutlined, DownOutlined } from "@ant-design/icons";
 import CryptoJS from "crypto-js";
+import { useNavigate } from "react-router-dom";
 
 function User() {
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -23,6 +25,10 @@ function User() {
         setLoading(false);
       });
   }, []);
+
+  const handleMoveToEdit = () => {
+    navigate("/admin/user/edit");
+  }
 
   const columns = [
     {
@@ -97,7 +103,7 @@ function User() {
           <button className="delete-btn">
             <DeleteOutlined />
           </button>
-          <button className="delete-btn">
+          <button className="delete-btn" onClick={handleMoveToEdit}>
             <DiffOutlined />
           </button>
         </div>

@@ -33,8 +33,10 @@ a:hover {
 .ant-table table,
 .ant-radio-group span, 
 .ant-picker .ant-picker-input input,
-.ant-input {
+.ant-input,
+.ant-select span, .ant-select-item-option-content {
   font-family: "Lexend", sans-serif;
+  font-size: 16px;
 } 
 ul, li, h1, h2, h3, h6, p {
   margin: 0;
