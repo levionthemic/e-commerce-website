@@ -78,7 +78,7 @@ module.exports.add = async (req, res) => {
       discount_rate: req.body.discountRate,
       description: req.body.description,
       "stock_item.qty": req.body.stockQty,
-      primary_category_path: "1/2/" + categoryId + "/",
+      primary_category_path: "1/2/" + categoryId + "/" + String(req.body.categoryId),
       thumbnail_url: req.body.thumbnailUrl,
       categories: {
         id: parseInt(req.body.categoryId),
