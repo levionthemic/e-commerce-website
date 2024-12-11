@@ -19,7 +19,7 @@ function Login() {
       } else if (localStorage.getItem("role") === "seller") {
         navigate("/shop/overview");
       } else {
-        navigate("/admin/dashboard");
+        navigate("/admin/account");
       }
     }
   }, []);
@@ -59,7 +59,7 @@ function Login() {
         } else if (role === "seller") {
           navigate("/shop/overview");
         } else {
-          navigate("/admin/dashboard");
+          navigate("/admin/account");
         }
         window.location.reload();
       })

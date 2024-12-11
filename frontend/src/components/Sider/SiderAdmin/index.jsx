@@ -5,7 +5,6 @@ import { axiosApi } from "../../../services/UserService";
 import { prefixAdmin } from "../../../config/system";
 import { useNavigate } from "react-router-dom";
 
-import siderIcon1 from "../../../assets/images/admin/sider-menu-icon-1.svg";
 import siderIcon2 from "../../../assets/images/admin/sider-menu-icon-2.svg";
 import siderIcon3 from "../../../assets/images/admin/sider-menu-icon-3.svg";
 import siderIcon4 from "../../../assets/images/admin/sider-menu-icon-4.svg";
@@ -22,8 +21,6 @@ function SiderAdmin() {
     false,
     false,
     false,
-    false,
-    false,
   ]);
 
   useEffect(() => {
@@ -34,28 +31,22 @@ function SiderAdmin() {
 
   const pathname = new URL(window.location.href).pathname;
   useEffect(() => {
-    const temp = [false, false, false, false, false, false, false];
+    const temp = [false, false, false, false, false];
     switch (pathname) {
       case `${prefixAdmin}/account`:
         temp[0] = true;
         break;
-      case `${prefixAdmin}/dashboard`:
+      case `${prefixAdmin}/login-log`:
         temp[1] = true;
         break;
-      case `${prefixAdmin}/login-log`:
+      case `${prefixAdmin}/category`:
         temp[2] = true;
         break;
-      case `${prefixAdmin}/category`:
+      case `${prefixAdmin}/product`:
         temp[3] = true;
         break;
-      case `${prefixAdmin}/product`:
-        temp[4] = true;
-        break;
       case `${prefixAdmin}/user`:
-        temp[5] = true;
-        break;
-      case `${prefixAdmin}/config`:
-        temp[6] = true;
+        temp[4] = true;
         break;
 
       default:
@@ -69,9 +60,6 @@ function SiderAdmin() {
       case "account":
         navigate(`${prefixAdmin}/account`);
         break;
-      case "dashboard":
-        navigate(`${prefixAdmin}/dashboard`);
-        break;
       case "login-log":
         navigate(`${prefixAdmin}/login-log`);
         break;
@@ -83,9 +71,6 @@ function SiderAdmin() {
         break;
       case "user":
         navigate(`${prefixAdmin}/user`);
-        break;
-      case "config":
-        navigate(`${prefixAdmin}/config`);
         break;
       default:
         break;
@@ -115,17 +100,6 @@ function SiderAdmin() {
           className={
             "sider-menu-item " + (navLinksActive[1] ? "sider-menu-active" : "")
           }
-          onClick={() => handleClickMenu("dashboard")}
-        >
-          <div className="inner-icon">
-            <img src={siderIcon1} alt="" />
-          </div>
-          <div className="inner-title">TRANG CHỦ</div>
-        </li>
-        <li
-          className={
-            "sider-menu-item " + (navLinksActive[2] ? "sider-menu-active" : "")
-          }
           onClick={() => handleClickMenu("login-log")}
         >
           <div className="inner-icon">
@@ -135,7 +109,7 @@ function SiderAdmin() {
         </li>
         <li
           className={
-            "sider-menu-item " + (navLinksActive[3] ? "sider-menu-active" : "")
+            "sider-menu-item " + (navLinksActive[2] ? "sider-menu-active" : "")
           }
           onClick={() => handleClickMenu("category")}
         >
@@ -146,7 +120,7 @@ function SiderAdmin() {
         </li>
         <li
           className={
-            "sider-menu-item " + (navLinksActive[4] ? "sider-menu-active" : "")
+            "sider-menu-item " + (navLinksActive[3] ? "sider-menu-active" : "")
           }
           onClick={() => handleClickMenu("product")}
         >
@@ -157,7 +131,7 @@ function SiderAdmin() {
         </li>
         <li
           className={
-            "sider-menu-item " + (navLinksActive[5] ? "sider-menu-active" : "")
+            "sider-menu-item " + (navLinksActive[4] ? "sider-menu-active" : "")
           }
           onClick={() => handleClickMenu("user")}
         >

@@ -20,7 +20,6 @@ import AddProduct from "../pages/Shoper/ManageProducts/AddProduct";
 import EditProduct from "../pages/Shoper/ManageProducts/EditProduct";
 
 import Account from "../pages/Admin/Account";
-import Dashboard from "../pages/Admin/Dashboard";
 import LoginLog from "../pages/Admin/LoginLog";
 import Category from "../pages/Admin/Category";
 import EditCategory from "../pages/Admin/Category/EditCategory";
@@ -113,12 +112,6 @@ export const routes = [
   {
     path: `${prefixAdmin}/account`,
     page: Account,
-    role: "admin",
-    isAuthorized: true,
-  },
-  {
-    path: `${prefixAdmin}/dashboard`,
-    page: Dashboard,
     role: "admin",
     isAuthorized: true,
   },

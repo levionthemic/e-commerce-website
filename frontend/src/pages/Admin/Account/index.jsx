@@ -47,7 +47,7 @@ function Account() {
   const [user, setUser] = useState({
     fullname: "",
     nickname: "",
-    birthday: "",
+    birthday: "01/01/1990",
     sex: "",
     nationality: "",
   });
@@ -482,6 +482,7 @@ function Account() {
                             setUser(newUser);
                             setHasUpdated(true);
                           }}
+                          disabled
                         >
                           <option selected disabled>
                             -- Chọn quốc tịch --
