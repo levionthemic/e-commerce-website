@@ -9,7 +9,6 @@ import siderIcon1 from "../../../assets/images/admin/sider-menu-icon-1.svg";
 import siderIcon2 from "../../../assets/images/admin/sider-menu-icon-2.svg";
 import siderIcon3 from "../../../assets/images/admin/sider-menu-icon-3.svg";
 import siderIcon4 from "../../../assets/images/admin/sider-menu-icon-4.svg";
-import siderIcon5 from "../../../assets/images/admin/sider-menu-icon-5.svg";
 import siderIcon6 from "../../../assets/images/admin/sider-menu-icon-6.svg";
 
 import defaultUserIcon from "../../../assets/images/admin/default-user-icon.webp";
@@ -166,17 +165,6 @@ function SiderAdmin() {
             <img src={siderIcon6} alt="" />
           </div>
           <div className="inner-title">QUẢN LÝ TÀI KHOẢN</div>
-        </li>
-        <li
-          className={
-            "sider-menu-item " + (navLinksActive[6] ? "sider-menu-active" : "")
-          }
-          onClick={() => handleClickMenu("config")}
-        >
-          <div className="inner-icon">
-            <img src={siderIcon5} alt="" />
-          </div>
-          <div className="inner-title">QUẢN LÝ CẤU HÌNH</div>
         </li>
       </ul>
     </div>

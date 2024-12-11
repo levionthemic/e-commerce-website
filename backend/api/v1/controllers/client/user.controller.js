@@ -1,5 +1,6 @@
 const User = require("../../models/user.model");
 const Nation = require("../../models/nation.model");
+const LoginLog = require("../../models/login-log.model");
 const OTP = require("../../models/otp.model");
 const Order = require("../../models/order.model");
 const CryptoJS = require("crypto-js");
@@ -36,49 +37,60 @@ module.exports.signup = async (req, res) => {
 
 // [POST] /api/v1/user/login
 module.exports.login = async (req, res) => {
-  const { username, password, role } = req.body;
+  try {
+    const { username, password, role } = req.body;
 
-  const user = await User.findOne({
-    username: username,
-  });
+    const user = await User.findOne({
+      username: username,
+    });
 
-  if (!user) {
+    if (!user) {
+      res.status(400).json({
+        message: "Username không tồn tại!",
+      });
+      return;
+    }
+
+    const bytes = CryptoJS.AES.decrypt(user.password, "secretkey");
+    const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+    if (password !== decryptedPassword) {
+      res.status(400).json({
+        message: "Mật khẩu không đúng!",
+      });
+      return;
+    }
+
+    if (role !== user.role) {
+      res.status(400).json({
+        message: "Tài khoản không tồn tại!",
+      });
+      return;
+    }
+
+    let cart = await Cart.findOne({ userId: user.id });
+    if (!cart) {
+      cart = new Cart({
+        userId: user.id,
+      });
+      await cart.save();
+    }
+
+    if (user.role !== "admin") {
+      const loginLog = new LoginLog({ userId: user.id });
+      await loginLog.save();
+    }
+
+    res.status(200).json({
+      message: "Login Success",
+      token: user.token,
+      cartId: cart.id,
+      role: role,
+    });
+  } catch (error) {
     res.status(400).json({
-      message: "Username không tồn tại!",
+      message: "Login Error",
     });
-    return;
   }
-
-  const bytes = CryptoJS.AES.decrypt(user.password, "secretkey");
-  const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
-  if (password !== decryptedPassword) {
-    res.status(400).json({
-      message: "Mật khẩu không đúng!",
-    });
-    return;
-  }
-
-  if (role !== user.role) {
-    res.status(400).json({
-      message: "Tài khoản không tồn tại!",
-    });
-    return;
-  }
-
-  let cart = await Cart.findOne({ userId: user.id });
-  if (!cart) {
-    cart = new Cart({
-      userId: user.id,
-    });
-    await cart.save();
-  }
-
-  res.status(200).json({
-    message: "Login Success",
-    token: user.token,
-    cartId: cart.id,
-    role: role,
-  });
 };
 
 // [GET] /api/v1/user/nations
