@@ -22,7 +22,7 @@
   color: #333;
 }
 
-.delete-btn {
+.delete-btn-1 {
   transition: all 0.3s linear;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -32,18 +32,18 @@
   width: fit-content;
 }
 
-.delete-btn:last-child {
+.delete-btn-1:last-child {
   border-color: rgb(255, 141, 141);
   color: red;
 }
 
 
-.delete-btn:hover {
+.delete-btn-1:hover {
   background-color: rgba(0, 0, 0, 0.1);
   transition: all 0.3s linear;
 }
 
-.delete-btn:last-child:hover {
+.delete-btn-1:last-child:hover {
   background-color: rgba(255, 0, 0, 0.1);
 }
 

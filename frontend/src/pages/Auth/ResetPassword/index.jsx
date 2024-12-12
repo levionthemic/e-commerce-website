@@ -26,10 +26,11 @@ function ResetPassword() {
     }
 
     axiosApi
-      .post("/api/v1/user/reset-password", {
+      .patch("/api/v1/user/reset-password", {
         password: password,
       })
-      .then(() => {
+      .then((res) => {
+        console.log(res);
         Swal.fire({
           icon: "success",
           title: "Đặt lại mật khẩu thành công!",

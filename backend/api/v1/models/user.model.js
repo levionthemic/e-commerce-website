@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { generateTokenString } = require("../../../helpers/generate");
 
 const userSchema = new mongoose.Schema(
   {
@@ -20,7 +19,7 @@ const userSchema = new mongoose.Schema(
     address: String,
     token: {
       type: String,
-      default: generateTokenString(20),
+      unique: true,
     },
     deleted: {
       type: Boolean,

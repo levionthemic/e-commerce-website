@@ -31,6 +31,8 @@ import AddUser from "../pages/Admin/User/AddUser";
 import EditUser from "../pages/Admin/User/EditUser";
 import Config from "../pages/Admin/Config";
 
+import Page404 from "../pages/Page404";
+
 import { prefixAdmin } from "../config/system";
 
 export const routes = [
@@ -175,50 +177,54 @@ export const routes = [
     role: "admin",
     isAuthorized: true,
   },
-  
 
-  // Các route dành cho người bán 
+  // Các route dành cho người bán
   {
     path: "/shop/overview",
     page: ShopOverview,
     isShowHeader: false,
     isAuthorized: true,
-    role: "seller"
+    role: "seller",
   },
   {
     path: "/shop/products/add",
     page: AddProduct,
     isShowHeader: false,
     isAuthorized: true,
-    role: "seller"
+    role: "seller",
   },
   {
     path: "/shop/products",
     page: ManageProducts,
     isShowHeader: false,
     isAuthorized: true,
-    role: "seller"
+    role: "seller",
   },
   {
     path: "/shop/orders",
     page: ManageOrders,
     isShowHeader: false,
     isAuthorized: true,
-    role: "seller"
+    role: "seller",
   },
   {
     path: "/shop/profile",
     page: ShopProfle,
     isShowHeader: false,
     isAuthorized: true,
-    role: "seller"
+    role: "seller",
   },
   {
     path: "/shop/products/edit",
     page: EditProduct,
     isShowHeader: false,
     isAuthorized: true,
-    role: "seller"
+    role: "seller",
   },
-  
+
+  // 404
+  {
+    path: "*",
+    page: Page404,
+  },
 ];

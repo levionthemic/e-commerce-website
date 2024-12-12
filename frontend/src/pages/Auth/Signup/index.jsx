@@ -41,7 +41,8 @@ function Signup() {
       });
       return;
     }
-    const role = e.target[0].checked ? "buyer" : "seller";
+    // const role = e.target[0].checked ? "buyer" : "seller";
+    const role = "buyer";
 
     try {
       await axiosApi.post("/api/v1/user/signup", {
@@ -92,12 +93,14 @@ function Signup() {
                       id="buyer"
                       autoComplete="off"
                       required
+                      checked
+                      readOnly
                     />
                     <label className="btn btn-outline-primary" htmlFor="buyer">
                       Người mua
                     </label>
                   </div>
-                  <div className="options">
+                  {/* <div className="options">
                     <input
                       type="radio"
                       className="btn-check"
@@ -109,7 +112,7 @@ function Signup() {
                     <label className="btn btn-outline-primary" htmlFor="seller">
                       Người bán
                     </label>
-                  </div>
+                  </div> */}
                 </div>
 
                 <input

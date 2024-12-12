@@ -8,8 +8,7 @@ module.exports.requireAuth = async (req, res, next) => {
   }).select("-password -token");
 
   if (!user) {
-    res.json({
-      code: 401,
+    res.status(401).json({
       message: "Invalid Token",
     });
     return;

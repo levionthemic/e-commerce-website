@@ -4,7 +4,7 @@ const LoginLog = require("../../models/login-log.model");
 const OTP = require("../../models/otp.model");
 const Order = require("../../models/order.model");
 const CryptoJS = require("crypto-js");
-const { generateOTP } = require("../../../../helpers/generate");
+const { generateOTP, generateTokenString } = require("../../../../helpers/generate");
 const { sendMail } = require("../../../../helpers/sendMail");
 const Cart = require("../../models/cart.model");
 
@@ -25,6 +25,7 @@ module.exports.signup = async (req, res) => {
   const user = new User({
     username: username,
     password: CryptoJS.AES.encrypt(password, "secretkey").toString(),
+    token: generateTokenString(20),
     email: email,
     role: role,
   });
@@ -53,6 +54,7 @@ module.exports.login = async (req, res) => {
 
     const bytes = CryptoJS.AES.decrypt(user.password, "secretkey");
     const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+
     if (password !== decryptedPassword) {
       res.status(400).json({
         message: "Mật khẩu không đúng!",
@@ -175,10 +177,8 @@ module.exports.otpRequest = async (req, res) => {
 module.exports.otpCheck = async (req, res) => {
   const { otp } = req.body;
 
-  const otpObj = await OTP.findOne({
-    otp: otp,
-  });
-  if (!otpObj) {
+  const otps = await OTP.find({});
+  if (otps && otps[otps.length - 1].otp !== otp) {
     res.status(400).json({
       message:
         "Mã OTP sai hoặc hết hiệu lực. Vui lòng nhập lại OTP hoặc gửi lại mã!",
@@ -186,7 +186,7 @@ module.exports.otpCheck = async (req, res) => {
     return;
   }
   const user = await User.findOne({
-    email: otpObj.email,
+    email: otps[otps.length - 1].email,
   });
   res.status(200).json({
     message: "OTP hợp lệ",
@@ -196,27 +196,27 @@ module.exports.otpCheck = async (req, res) => {
 
 // [POST] /api/v1/user/reset-password
 module.exports.resetPassword = async (req, res) => {
-  const { password, currentPassword } = req.body;
-  const token = req.headers.authorization.split(" ")[1];
-
-  if (currentPassword) {
-    const user = await User.findOne({ token: token });
-    const bytes = CryptoJS.AES.decrypt(user.password, "secretkey");
-    const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
-    if (currentPassword !== decryptedPassword) {
-      res.status(400).json({
-        message: "Mật khẩu hiện tại không trùng khớp!",
-      });
-      return;
-    }
-    if (password === currentPassword) {
-      res.status(400).json({
-        message: "Mật khẩu mới không được giống mật khẩu hiện tại!",
-      });
-      return;
-    }
-  }
   try {
+    const password = req.body.password;
+    const currentPassword = req.body.currentPassword;
+    const token = req.headers.authorization.split(" ")[1];
+    if (currentPassword) {
+      const user = await User.findOne({ token: token });
+      const bytes = CryptoJS.AES.decrypt(user.password, "secretkey");
+      const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+      if (currentPassword !== decryptedPassword) {
+        res.status(400).json({
+          message: "Mật khẩu hiện tại không trùng khớp!",
+        });
+        return;
+      }
+      if (password === currentPassword) {
+        res.status(400).json({
+          message: "Mật khẩu mới không được giống mật khẩu hiện tại!",
+        });
+        return;
+      }
+    }
     await User.updateOne(
       {
         token: token,

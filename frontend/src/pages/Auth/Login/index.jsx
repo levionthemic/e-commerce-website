@@ -68,7 +68,7 @@ function Login() {
         Swal.fire({
           icon: "error",
           title: "Thất bại!",
-          text: "Đăng nhập không thành công!",
+          text: error.response.data.message,
         });
       });
   };

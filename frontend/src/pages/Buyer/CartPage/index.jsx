@@ -22,7 +22,7 @@ const CartPage = () => {
   const showUpdateButton = (e, temp, indexRow) => {
     const updateButton =
       e.target.parentElement.parentElement.nextSibling.nextSibling.querySelector(
-        ".delete-btn:nth-child(2)"
+        ".delete-btn-1:nth-child(2)"
       );
     if (temp[indexRow] !== cartList[indexRow].quantity) {
       updateButton.classList.remove("d-none");
@@ -35,7 +35,6 @@ const CartPage = () => {
       e.target.parentElement.parentElement.parentElement.getAttribute(
         "data-row-key"
       );
-    console.log(e.target.parentElement.parentElement.parentElement);
     let temp = [...quantities];
     temp[indexRow]++;
     showUpdateButton(e, temp, indexRow);
@@ -138,7 +137,7 @@ const CartPage = () => {
               title: "Cập nhật số lượng thành công!",
             });
             const updateButton = document.querySelector(
-              ".delete-btn:last-child"
+              ".delete-btn-1:last-child"
             );
             updateButton.classList.add("d-none");
             cartList[indexRow].quantity = quantity;
@@ -308,10 +307,10 @@ const CartPage = () => {
       dataIndex: "actions",
       render: () => (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <button className="delete-btn" onClick={handleDelete}>
+          <button className="delete-btn-1" onClick={handleDelete}>
             <DeleteOutlined />
           </button>
-          <button className="delete-btn d-none" onClick={handleUpdateQuantity}>
+          <button className="delete-btn-1 d-none" onClick={handleUpdateQuantity}>
             <DiffOutlined />
           </button>
         </div>

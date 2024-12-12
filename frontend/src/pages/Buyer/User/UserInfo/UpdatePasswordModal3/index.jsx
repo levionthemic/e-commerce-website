@@ -40,7 +40,7 @@ function UpdatePasswordModal3() {
     }
 
     axiosApi
-      .post("/api/v1/user/reset-password", {
+      .patch("/api/v1/user/reset-password", {
         password: password,
       })
       .then(() => {

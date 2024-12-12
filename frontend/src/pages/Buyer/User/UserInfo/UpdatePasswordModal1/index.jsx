@@ -41,7 +41,7 @@ function UpdatePasswordModal1() {
     }
 
     axiosApi
-      .post("/api/v1/user/reset-password", {
+      .patch("/api/v1/user/reset-password", {
         currentPassword: currentPassword,
         password: newPassword,
       })
