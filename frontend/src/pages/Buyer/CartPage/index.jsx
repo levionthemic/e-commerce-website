@@ -13,6 +13,8 @@ const CartPage = () => {
   const [quantities, setQuantities] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedRows, setSelectedRows] = useState([]); // Lưu trữ các dòng được chọn
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cartQuantity = useSelector((state) => state.cart.quantity);
@@ -149,12 +151,23 @@ const CartPage = () => {
     });
   };
 
-  const totalPrice = cartList.reduce(
-    (sum, item, index) =>
+  const totalPrice = selectedRows.reduce((sum, rowIndex) => {
+    const item = cartList[rowIndex];
+    return (
       sum +
-      quantities[index] * item.original_price * (1 - item.discount_rate / 100),
-    0
-  );
+      quantities[rowIndex] *
+        item.original_price *
+        (1 - item.discount_rate / 100)
+    );
+  }, 0);
+
+  const handleSelectRow = (rowIndex, isSelected) => {
+    if (isSelected) {
+      setSelectedRows((prev) => [...prev, rowIndex]); // Thêm sản phẩm vào danh sách được chọn
+    } else {
+      setSelectedRows((prev) => prev.filter((index) => index !== rowIndex)); // Bỏ sản phẩm khỏi danh sách được chọn
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -177,10 +190,15 @@ const CartPage = () => {
       title: "",
       key: "selected",
       dataIndex: "selected",
-      render: (selected) => (
-        <input type="checkbox" name="select" selected={selected} />
+      render: (_, record, index) => (
+        <input
+          type="checkbox"
+          checked={selectedRows.includes(index)} // Kiểm tra trạng thái tick
+          onChange={(e) => handleSelectRow(index, e.target.checked)} // Gọi hàm khi tick hoặc bỏ tick
+        />
       ),
     },
+
     {
       title: "Ảnh sản phẩm",
       key: "thumbnail",
@@ -340,7 +358,20 @@ const CartPage = () => {
                 <button
                   className="btn btn-success mt-3"
                   onClick={() => {
-                    navigate("/checkout", { state: { cartList: cartList } });
+                    const selectedItems = cartList.filter((_, index) =>
+                      selectedRows.includes(index)
+                    );
+                    if (selectedItems.length === 0) {
+                      Swal.fire({
+                        icon: "warning",
+                        title: "Chưa chọn sản phẩm!",
+                        text: "Vui lòng chọn ít nhất một sản phẩm để tiếp tục.",
+                      });
+                      return;
+                    }
+                    navigate("/checkout", {
+                      state: { cartList: selectedItems },
+                    });
                   }}
                 >
                   Mua Hàng
