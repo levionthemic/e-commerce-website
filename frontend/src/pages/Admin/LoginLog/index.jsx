@@ -47,8 +47,8 @@ function LoginLog() {
   const data = loginLogs?.map((loginLog, index) => ({
     stt: index + 1,
     userId: loginLog.userId,
-    fullname: users[index].fullname,
-    role: users[index].role,
+    fullname: users[index]?.fullname,
+    role: users[index]?.role,
     time: new Date(loginLog.createdAt).toLocaleString("vi-VN"),
   }));
 

@@ -20,12 +20,13 @@ module.exports.index = async (req, res) => {
     Promise.all(
       orders.map((order) => User.findOne({ _id: order.userId }))
     ).then((users) => {
+      console.log(users, orders);
       orders.forEach((order) => {
         // console.log(user);
         order.products.forEach((productInOrder, index) => {
           const pathSegments = productInOrder.primary_category_path.split("/");
           if (pathSegments[2] === category_id) {
-            const user = users.find((user) => user.id === order.userId);
+            const user = users.find((u) => u?._id === order.userId);
             products.push({
               productId: productInOrder.id,
               productName: productInOrder.name,
